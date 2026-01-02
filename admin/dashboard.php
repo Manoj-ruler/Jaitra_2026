@@ -30,7 +30,8 @@ $matchQuery = "SELECT m.*, s.name as sport_name,
 if ($allowed_sport_id !== null) {
     $matchQuery .= " AND m.sport_id = :sport_id";
 }
-$matchQuery .= " ORDER BY m.match_time ASC LIMIT 10";
+// Prioritize 'live' matches, then by time
+$matchQuery .= " ORDER BY CASE WHEN m.status = 'live' THEN 0 ELSE 1 END, m.match_time ASC LIMIT 10";
 
 $matchStmt = $conn->prepare($matchQuery);
 if ($allowed_sport_id !== null) {

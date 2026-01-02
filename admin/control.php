@@ -32,6 +32,29 @@ $stmt->execute(['sport_id' => $sport_id]);
 $teams = $stmt->fetchAll();
 
 $sportName = $sport['name'];
+
+// Check for active match to persist state
+$activeMatch = null;
+$initialState = null;
+
+if ($match_id) {
+    $stmt = $conn->prepare("
+        SELECT m.*, t1.name as t1_name, t2.name as t2_name 
+        FROM matches m 
+        JOIN teams t1 ON m.team1_id = t1.id 
+        JOIN teams t2 ON m.team2_id = t2.id 
+        WHERE m.id = :id AND m.sport_id = :sport_id
+    ");
+    $stmt->execute(['id' => $match_id, 'sport_id' => $sport_id]);
+    $activeMatch = $stmt->fetch();
+
+    if ($activeMatch) {
+        $stmt = $conn->prepare("SELECT score_json FROM live_scores WHERE match_id = :id");
+        $stmt->execute(['id' => $match_id]);
+        $scoreRow = $stmt->fetch();
+        $initialState = $scoreRow ? $scoreRow['score_json'] : null;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,6 +98,12 @@ $sportName = $sport['name'];
             .score-display { font-size: 3rem; }
             .control-btn { height: 50px; font-size: 0.9rem; }
         }
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        input, select {
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +116,7 @@ $sportName = $sport['name'];
 
     <div class="container py-4">
         <!-- SETUP SECTION -->
-        <div id="setup-panel" class="glass-card p-4 mx-auto" style="max-width: 600px;">
+        <div id="setup-panel" class="glass-card p-4 mx-auto <?= $activeMatch ? 'd-none' : '' ?>" style="max-width: 600px;">
             <h3 class="text-white mb-3">Start New Match</h3>
             <div class="mb-3">
                 <label class="text-secondary">Team 1</label>
@@ -101,8 +130,8 @@ $sportName = $sport['name'];
                     <?php endforeach; ?>
                 </select>
                 <div id="new-team1" class="mt-2 d-none">
-                    <input type="text" id="team1-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="Team Name">
-                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary" placeholder="College Name">
+                    <input type="text" id="team1-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Thunders FC">
+                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Madras">
                 </div>
             </div>
             <div class="mb-3">
@@ -117,28 +146,52 @@ $sportName = $sport['name'];
                     <?php endforeach; ?>
                 </select>
                 <div id="new-team2" class="mt-2 d-none">
-                    <input type="text" id="team2-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="Team Name">
-                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary" placeholder="College Name">
+                    <input type="text" id="team2-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Paws United">
+                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Bombay">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-6">
-                    <input type="text" id="venue" class="form-control bg-dark text-white border-secondary" placeholder="Venue">
+                    <input type="text" id="venue" class="form-control bg-dark text-white border-secondary" placeholder="e.g. Court 1">
                 </div>
                 <div class="col-6">
-                    <input type="text" id="round" class="form-control bg-dark text-white border-secondary" placeholder="Round">
+                    <input type="text" id="round" class="form-control bg-dark text-white border-secondary" placeholder="e.g. Semi Final">
                 </div>
             </div>
             <button onclick="startMatch()" class="btn btn-primary w-100 py-3 fw-bold">START MATCH</button>
         </div>
 
         <!-- LIVE CONTROL SECTION -->
-        <div id="live-panel" class="d-none">
+        <div id="live-panel" class="<?= $activeMatch ? '' : 'd-none' ?>">
+            
+            <!-- Edit Names Toggle -->
+            <div class="text-end mb-2">
+                <button onclick="toggleEditNames()" class="btn btn-sm btn-outline-secondary text-white-50">
+                    <i class="fas fa-edit me-1"></i> Edit Teams
+                </button>
+            </div>
+
+            <!-- Edit Names Panel -->
+            <div id="edit-names-panel" class="glass-card p-3 mb-4 d-none">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-5">
+                         <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
+                    </div>
+                    <div class="col-md-2 text-center text-secondary">vs</div>
+                    <div class="col-md-5">
+                         <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
+                    </div>
+                    <div class="col-12 mt-2 text-center">
+                        <button onclick="saveTeamNames()" class="btn btn-success btn-sm px-4">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Scoreboard Display -->
             <div class="row mb-4">
                 <div class="col-5">
                     <div class="glass-card p-3 text-center">
-                        <h4 id="lbl-t1" class="text-primary mb-2">Team 1</h4>
+                        <h4 id="lbl-t1" class="text-primary mb-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t1_name']) : 'Team 1' ?></h4>
                         <div class="score-display text-white" id="val-t1">0</div>
                     </div>
                 </div>
@@ -266,10 +319,22 @@ $sportName = $sport['name'];
 
 <script>
     const SPORT_ID = <?= $sport_id ?>;
-    let matchId = null;
+    let matchId = <?= $activeMatch ? $activeMatch['id'] : 'null' ?>;
     
     // Score state - matches reference repo structure
-    let state = {
+    let state = <?= $activeMatch && $initialState ? $initialState : json_encode([
+        'team1_score' => 0,
+        'team2_score' => 0,
+        't1_players' => 7,
+        't2_players' => 7,
+        'current_raider' => 'team1',
+        'is_timeout' => false,
+        'last_animation' => null,
+        'history' => []
+    ]) ?>;
+    
+    // Ensure defaults if state was partial
+    state = {
         team1_score: 0,
         team2_score: 0,
         t1_players: 7,
@@ -277,9 +342,18 @@ $sportName = $sport['name'];
         current_raider: 'team1',
         is_timeout: false,
         last_animation: null,
-        history: []
+        history: [],
+        ...state
     };
     
+    // Initial Render
+    if (matchId) {
+        document.addEventListener('DOMContentLoaded', () => {
+            render();
+            setRaider(state.current_raider || 'team1');
+        });
+    }
+
     function toggleNewTeam(num) {
         const select = document.getElementById(`team${num}-select`);
         document.getElementById(`new-team${num}`).classList.toggle('d-none', select.value !== 'new');
@@ -316,6 +390,10 @@ $sportName = $sport['name'];
             
             if (result.success) {
                 matchId = result.match_id;
+                // Update URL without reloading to ensure persistence on refresh
+                const newUrl = `${window.location.pathname}?sport=${SPORT_ID}&match=${matchId}`;
+                window.history.pushState({path: newUrl}, '', newUrl);
+
                 document.getElementById('lbl-t1').innerText = result.team1_name || data.team1_name;
                 document.getElementById('lbl-t2').innerText = result.team2_name || data.team2_name;
                 document.getElementById('setup-panel').classList.add('d-none');
@@ -404,6 +482,56 @@ $sportName = $sport['name'];
                 btnTimeout.innerText = '⏱️ START TIMEOUT';
                 btnTimeout.className = 'btn btn-warning fw-bold px-5 py-2';
             }
+        }
+    }
+
+    function toggleEditNames() {
+        const panel = document.getElementById('edit-names-panel');
+        const isHidden = panel.classList.contains('d-none');
+        
+        if (isHidden) {
+            // Pre-fill current names
+            document.getElementById('edit-t1').value = document.getElementById('lbl-t1').innerText;
+            document.getElementById('edit-t2').value = document.getElementById('lbl-t2').innerText;
+            panel.classList.remove('d-none');
+        } else {
+            panel.classList.add('d-none');
+        }
+    }
+
+    async function saveTeamNames() {
+        if (!matchId) return;
+
+        const t1 = document.getElementById('edit-t1').value;
+        const t2 = document.getElementById('edit-t2').value;
+
+        if (!t1 || !t2) {
+            alert('Team names cannot be empty');
+            return;
+        }
+
+        try {
+            const res = await fetch('update_score.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'update_team_names',
+                    match_id: matchId,
+                    team1_name: t1,
+                    team2_name: t2
+                })
+            });
+            const result = await res.json();
+            
+            if (result.success) {
+                document.getElementById('lbl-t1').innerText = t1;
+                document.getElementById('lbl-t2').innerText = t2;
+                toggleEditNames(); // Hide panel
+            } else {
+                alert('Error: ' + (result.error || 'Failed to update names'));
+            }
+        } catch (err) {
+            alert('Network error: ' + err.message);
         }
     }
     
