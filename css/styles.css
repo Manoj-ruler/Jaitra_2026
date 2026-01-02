@@ -1653,7 +1653,7 @@ img {
 .matches-scroll {
   display: flex;
   gap: 1.5rem;
-  overflow-x: hidden;
+  overflow-x: auto;
   padding: 1.5rem 0.5rem;
   scroll-behavior: smooth;
   scrollbar-width: thin;
@@ -1667,10 +1667,7 @@ img {
 }
 
 .matches-scroll::-webkit-scrollbar {
-  display: none;
-  /* Hide scrollbar for auto-scroll look */
-  height: 0;
-  width: 0;
+  height: 10px;
 }
 
 .matches-scroll::-webkit-scrollbar-track {
@@ -2322,5 +2319,63 @@ img {
     white-space: nowrap;
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
+  }
+}
+
+/* Matches Carousel Navigation */
+.matches-carousel-container {
+  position: relative;
+  padding: 0 1rem;
+}
+
+.matches-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--color-light);
+  color: var(--color-primary);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  line-height: 1;
+  padding-bottom: 4px;
+}
+
+.matches-nav:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.matches-nav.prev {
+  left: -15px;
+}
+
+.matches-nav.next {
+  right: -15px;
+}
+
+@media (max-width: 768px) {
+  .matches-nav {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+
+  .matches-nav.prev {
+    left: -5px;
+  }
+
+  .matches-nav.next {
+    right: -5px;
   }
 }

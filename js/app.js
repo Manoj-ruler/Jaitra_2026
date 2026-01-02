@@ -10,12 +10,12 @@ let matchesData = [];
 let homeMatchesData = []; // Store home page matches data for comparison
 let homeMatchesDataHash = ''; // Hash to detect changes
 let refreshInterval = null;
-let autoScrollTimer = null; // Timer for auto-scrolling
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     initializeFilters();
     initializeNavigation();
+    initializeScrollNavigation();
 
     // Check if we're on the scoreboard page
     if (document.querySelector('.scorecards-grid')) {
@@ -60,8 +60,6 @@ async function loadHomeMatches(forceRender = false) {
                 homeMatchesDataHash = newHash;
                 homeMatchesData = data.matches;
                 container.innerHTML = data.matches.map(match => createHomeMatchCard(match)).join('');
-                // Initialize auto-scroll if matches exist
-                startAutoScroll();
             }
             // If data hasn't changed, do nothing - seamless refresh!
         } else if (forceRender || homeMatchesData.length > 0) {
@@ -488,38 +486,6 @@ function initializeNavigation() {
     });
 }
 
-
-
-/**
- * Start auto-scrolling for home matches
- */
-function startAutoScroll() {
-    const container = document.getElementById('all-matches');
-    if (!container) return;
-
-    // Clear existing timer to prevent duplicates if called multiple times
-    if (autoScrollTimer) clearInterval(autoScrollTimer);
-
-    function scroll() {
-        // If scrolled to end, reset to start
-        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 2) {
-            container.scrollLeft = 0;
-        } else {
-            container.scrollLeft += 1; // Speed: 1px per tick
-        }
-    }
-
-    // Start scrolling (30ms = ~30fps for smooth scroll)
-    autoScrollTimer = setInterval(scroll, 30);
-
-    // Pause on hover
-    container.onmouseenter = () => clearInterval(autoScrollTimer);
-    container.onmouseleave = () => {
-        clearInterval(autoScrollTimer);
-        autoScrollTimer = setInterval(scroll, 30);
-    };
-}
-
 /**
  * Initialize scorecard click handlers for navigation
  */
@@ -569,3 +535,22 @@ style.textContent = `
     .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
 `;
 document.head.appendChild(style);
+
+/**
+ * Initialize Scroll Navigation for Index Page
+ */
+function initializeScrollNavigation() {
+    const scrollContainer = document.querySelector('.matches-scroll');
+    const prevBtn = document.querySelector('.matches-nav.prev');
+    const nextBtn = document.querySelector('.matches-nav.next');
+
+    if (scrollContainer && prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            scrollContainer.scrollBy({ left: -320, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+        });
+    }
+}

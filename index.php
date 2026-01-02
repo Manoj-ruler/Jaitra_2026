@@ -98,8 +98,12 @@ include 'includes/header.php';
             </div>
 
             <!-- All Matches in Single Scroll -->
-            <div class="matches-scroll" id="all-matches">
-                <p class="loading-text">Loading matches...</p>
+            <div class="matches-carousel-container">
+                <button class="matches-nav prev" aria-label="Previous matches">‹</button>
+                <div class="matches-scroll" id="all-matches">
+                    <p class="loading-text">Loading matches...</p>
+                </div>
+                <button class="matches-nav next" aria-label="Next matches">›</button>
             </div>
         </div>
     </section>
