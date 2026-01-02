@@ -7,6 +7,8 @@
 const BASE_URL = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 const API_BASE = BASE_URL + 'api';
 let matchesData = [];
+let homeMatchesData = []; // Store home page matches data for comparison
+let homeMatchesDataHash = ''; // Hash to detect changes
 let refreshInterval = null;
 
 // Wait for DOM to be fully loaded
@@ -16,23 +18,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Check if we're on the scoreboard page
     if (document.querySelector('.scorecards-grid')) {
-        loadMatches();
+        loadMatches(true); // Initial load - force render
         // Auto-refresh every 3 seconds for live updates
-        refreshInterval = setInterval(loadMatches, 3000);
+        refreshInterval = setInterval(() => loadMatches(false), 3000);
     }
 
     // Check if we're on the index page (has #all-matches section)
     if (document.querySelector('#all-matches')) {
-        loadHomeMatches();
+        loadHomeMatches(true); // Initial load - force render
         // Auto-refresh every 5 seconds for live updates on home page
-        setInterval(loadHomeMatches, 5000);
+        setInterval(() => loadHomeMatches(false), 5000);
     }
 });
 
 /**
- * Load matches for the home page
+ * Generate a simple hash from data for comparison
  */
-async function loadHomeMatches() {
+function generateDataHash(data) {
+    return JSON.stringify(data);
+}
+
+/**
+ * Load matches for the home page with seamless refresh
+ * @param {boolean} forceRender - If true, always render (for initial load)
+ */
+async function loadHomeMatches(forceRender = false) {
     const container = document.getElementById('all-matches');
     if (!container) return;
 
@@ -41,8 +51,20 @@ async function loadHomeMatches() {
         const data = await response.json();
 
         if (data.success && data.matches.length > 0) {
-            container.innerHTML = data.matches.map(match => createHomeMatchCard(match)).join('');
-        } else {
+            // Generate hash of new data
+            const newHash = generateDataHash(data.matches);
+
+            // Only update DOM if data has changed or it's initial load
+            if (forceRender || newHash !== homeMatchesDataHash) {
+                homeMatchesDataHash = newHash;
+                homeMatchesData = data.matches;
+                container.innerHTML = data.matches.map(match => createHomeMatchCard(match)).join('');
+            }
+            // If data hasn't changed, do nothing - seamless refresh!
+        } else if (forceRender || homeMatchesData.length > 0) {
+            // Only show "no matches" if it's initial load or we previously had matches
+            homeMatchesData = [];
+            homeMatchesDataHash = '';
             container.innerHTML = `
                 <div class="no-matches-message">
                     <p>No matches scheduled yet. Check back soon!</p>
@@ -51,11 +73,15 @@ async function loadHomeMatches() {
         }
     } catch (error) {
         console.error('Failed to load matches for home page:', error);
-        container.innerHTML = `
-            <div class="no-matches-message">
-                <p>Unable to load matches. Please try again later.</p>
-            </div>
-        `;
+        // Only show error on initial load, not on refresh failures
+        if (forceRender) {
+            container.innerHTML = `
+                <div class="no-matches-message">
+                    <p>Unable to load matches. Please try again later.</p>
+                </div>
+            `;
+        }
+        // On refresh failure, keep existing content - silent fail
     }
 }
 
@@ -167,20 +193,32 @@ const filterState = {
     sport: 'all'
 };
 
+// Hash for scoreboard data comparison
+let scoreboardDataHash = '';
+
 /**
- * Load matches from API
+ * Load matches from API with seamless refresh
  */
-async function loadMatches() {
+async function loadMatches(forceRender = false) {
     try {
         const response = await fetch(`${API_BASE}/get_matches.php`);
         const data = await response.json();
 
         if (data.success) {
-            matchesData = data.matches;
-            renderScorecards(matchesData);
+            // Generate hash of new data
+            const newHash = generateDataHash(data.matches);
+
+            // Only update if data changed or forced
+            if (forceRender || newHash !== scoreboardDataHash) {
+                scoreboardDataHash = newHash;
+                matchesData = data.matches;
+                renderScorecards(matchesData);
+            }
+            // If data hasn't changed, do nothing - seamless!
         }
     } catch (error) {
         console.error('Failed to load matches:', error);
+        // On error, keep existing content - silent fail
     }
 }
 
