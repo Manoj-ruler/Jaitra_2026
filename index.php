@@ -507,6 +507,10 @@
         /* Host Section / About SRKR */
         .host-section {
             margin-bottom: 4rem;
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .host-section h3 {
