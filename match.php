@@ -1,47 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+/**
+ * JAITRA 2026 - Match Details Page
+ * Displays detailed information about a specific match
+ */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Match Details - JAITRA 2026 Sports Carnival">
-    <title>Match Details | JAITRA 2026 - SRKR Engineering College</title>
+// Page configuration for header include
+$pageTitle = 'Match Details | JAITRA 2026 - SRKR Engineering College';
+$pageDescription = 'Match Details - JAITRA 2026 Sports Carnival';
+$currentPage = 'match';
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+// Page-specific styles
+$pageStyles = '
+    .animation-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #timeout-overlay {
+        background: rgba(0, 0, 0, 0.95);
+    }
+    .timeout-title {
+        font-size: 4rem;
+        font-weight: bold;
+        color: #fbbf24;
+        letter-spacing: 5px;
+        margin-bottom: 2rem;
+        animation: pulse 1s infinite;
+    }
+    .timeout-scoreboard {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+    .timeout-team {
+        text-align: center;
+    }
+    .timeout-team-name {
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .timeout-team-score {
+        font-size: 5rem;
+        color: #3b82f6;
+        font-weight: bold;
+    }
+    .timeout-divider {
+        font-size: 4rem;
+        color: white;
+        opacity: 0.5;
+    }
+    
+    #animation-overlay {
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    }
+    .anim-content {
+        text-align: center;
+        animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    .anim-text {
+        font-size: 5rem;
+        font-weight: bold;
+        color: #fbbf24;
+        text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+        margin: 0;
+        animation: shake 0.5s ease-in-out;
+    }
+    .anim-bar {
+        height: 8px;
+        background: #fbbf24;
+        margin: 1rem auto;
+        border-radius: 4px;
+        animation: expandBar 0.5s ease-out forwards;
+    }
+    .anim-team {
+        font-size: 2rem;
+        color: white;
+        font-weight: bold;
+        letter-spacing: 3px;
+        margin: 0;
+        opacity: 0;
+        animation: fadeInUp 0.5s 0.3s forwards;
+    }
+    
+    @keyframes bounceIn {
+        0% { transform: scale(0.3); opacity: 0; }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    @keyframes expandBar {
+        from { width: 0; }
+        to { width: 300px; }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .timeout-title { font-size: 2.5rem; }
+        .timeout-team-score { font-size: 3rem; }
+        .anim-text { font-size: 2.5rem; }
+        .anim-team { font-size: 1.2rem; }
+    }
+';
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-main">
-            <div class="logo-section">
-                <img src="assets/logo.png" alt="SRKR Engineering College Logo" class="logo"
-                    onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23384959%22/><text x=%2250%22 y=%2260%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2230%22 font-weight=%22bold%22>S</text></svg>'">
-                <div class="brand-info">
-                    <div class="brand-text">
-                        <h1 class="event-name">JAITRA <span>2026</span></h1>
-                        <span class="event-tagline">Sports Carnival for All A.P. State Engineering Colleges</span>
-                    </div>
-                </div>
-            </div>
-            <div class="header-info">
-                <div class="event-dates">
-                    <div class="dates">7, 8 & 9 January 2026</div>
-                    <div class="venue">SRKR Marg, Bhimavaram</div>
-                </div>
-                <div class="prize-badge">
-                    <div class="label">Prize Pool</div>
-                    <div class="amount">₹5 Lakhs</div>
-                </div>
-            </div>
-        </div>
-    </header>
+// Include the common header
+include 'includes/header.php';
+?>
 
     <!-- Main Content -->
     <main class="main match-detail-page">
@@ -150,33 +229,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>JAITRA 2026</h3>
-                <p>Sports Carnival for All A.P. State Engineering Colleges</p>
-            </div>
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <p>SRKR Engineering College</p>
-                <p>Bhimavaram, Andhra Pradesh</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="index.php#volleyball">Volleyball</a></li>
-                    <li><a href="index.php#kabaddi">Kabaddi</a></li>
-                    <li><a href="index.php#badminton">Badminton</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 SRKR Engineering College. All rights reserved.</p>
-        </div>
-    </footer>
-
     <!-- TIMEOUT OVERLAY -->
     <div id="timeout-overlay" class="animation-overlay" style="display: none;">
         <h1 class="timeout-title">⏱️ TIMEOUT</h1>
@@ -202,124 +254,17 @@
         </div>
     </div>
 
-    <!-- Animation Styles -->
-    <style>
-        .animation-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        #timeout-overlay {
-            background: rgba(0, 0, 0, 0.95);
-        }
-        .timeout-title {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #fbbf24;
-            letter-spacing: 5px;
-            margin-bottom: 2rem;
-            animation: pulse 1s infinite;
-        }
-        .timeout-scoreboard {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-        .timeout-team {
-            text-align: center;
-        }
-        .timeout-team-name {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .timeout-team-score {
-            font-size: 5rem;
-            color: #3b82f6;
-            font-weight: bold;
-        }
-        .timeout-divider {
-            font-size: 4rem;
-            color: white;
-            opacity: 0.5;
-        }
-        
-        #animation-overlay {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-        }
-        .anim-content {
-            text-align: center;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        .anim-text {
-            font-size: 5rem;
-            font-weight: bold;
-            color: #fbbf24;
-            text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-            margin: 0;
-            animation: shake 0.5s ease-in-out;
-        }
-        .anim-bar {
-            height: 8px;
-            background: #fbbf24;
-            margin: 1rem auto;
-            border-radius: 4px;
-            animation: expandBar 0.5s ease-out forwards;
-        }
-        .anim-team {
-            font-size: 2rem;
-            color: white;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin: 0;
-            opacity: 0;
-            animation: fadeInUp 0.5s 0.3s forwards;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        @keyframes expandBar {
-            from { width: 0; }
-            to { width: 300px; }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 768px) {
-            .timeout-title { font-size: 2.5rem; }
-            .timeout-team-score { font-size: 3rem; }
-            .anim-text { font-size: 2.5rem; }
-            .anim-team { font-size: 1.2rem; }
-        }
-    </style>
-
+<?php
+// Footer configuration - use custom JS instead of app.js
+$includeAppJs = false;
+$customScripts = '
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <!-- JavaScript -->
+    
+    <!-- Match Details JavaScript -->
     <script src="js/match-details.js"></script>
-</body>
+';
 
-</html>
+// Include the common footer
+include 'includes/footer.php';
+?>
