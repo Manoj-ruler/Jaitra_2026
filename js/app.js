@@ -84,16 +84,35 @@ function createHomeMatchCard(match) {
         minute: '2-digit'
     });
 
-    // Result text - same logic as scoreboard
+    // Result text - generate descriptive text if not provided by backend
     let resultText = '';
     if (isLive) {
         resultText = 'Match in progress';
     } else if (isCompleted && match.win_description) {
+        // Use backend-provided win description if available
         resultText = match.win_description;
     } else if (isCompleted) {
-        resultText = match.winner_team === 1 ? `${match.team1_name} won` :
-            match.winner_team === 2 ? `${match.team2_name} won` :
-                match.winner_team === 0 ? 'Match Drawn' : 'Completed';
+        // Calculate and generate win description from scores
+        const s1 = parseInt(score1) || 0;
+        const s2 = parseInt(score2) || 0;
+        const pointDiff = Math.abs(s1 - s2);
+
+        if (match.winner_team === 1) {
+            resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+        } else if (match.winner_team === 2) {
+            resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+        } else if (match.winner_team === 0) {
+            resultText = 'Match Drawn';
+        } else {
+            // Fallback: determine winner from scores if winner_team not set
+            if (s1 > s2) {
+                resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+            } else if (s2 > s1) {
+                resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+            } else {
+                resultText = 'Match Drawn';
+            }
+        }
     } else {
         resultText = match.round || 'Upcoming';
     }
@@ -222,16 +241,35 @@ function createScorecardHTML(match) {
         minute: '2-digit'
     });
 
-    // Result text
+    // Result text - generate descriptive text if not provided by backend
     let resultText = '';
     if (isLive) {
         resultText = 'Match in progress';
     } else if (isCompleted && match.win_description) {
+        // Use backend-provided win description if available
         resultText = match.win_description;
     } else if (isCompleted) {
-        resultText = match.winner_team === 1 ? `${match.team1_name} won` :
-            match.winner_team === 2 ? `${match.team2_name} won` :
-                match.winner_team === 0 ? 'Match Drawn' : 'Completed';
+        // Calculate and generate win description from scores
+        const s1 = parseInt(score1) || 0;
+        const s2 = parseInt(score2) || 0;
+        const pointDiff = Math.abs(s1 - s2);
+
+        if (match.winner_team === 1) {
+            resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+        } else if (match.winner_team === 2) {
+            resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+        } else if (match.winner_team === 0) {
+            resultText = 'Match Drawn';
+        } else {
+            // Fallback: determine winner from scores if winner_team not set
+            if (s1 > s2) {
+                resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+            } else if (s2 > s1) {
+                resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+            } else {
+                resultText = 'Match Drawn';
+            }
+        }
     } else {
         resultText = match.round || 'Upcoming';
     }
