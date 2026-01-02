@@ -174,6 +174,36 @@ try {
             echo json_encode(['success' => true, 'anim_id' => $anim_id]);
             break;
             
+        case 'update_team_names':
+            $match_id = (int)$data['match_id'];
+            $t1_name = trim($data['team1_name']);
+            $t2_name = trim($data['team2_name']);
+            
+            if (empty($t1_name) || empty($t2_name)) {
+                echo json_encode(['success' => false, 'error' => 'Team names cannot be empty']);
+                exit;
+            }
+            
+            // Get team IDs from match
+            $stmt = $conn->prepare("SELECT team1_id, team2_id FROM matches WHERE id = :id");
+            $stmt->execute(['id' => $match_id]);
+            $match = $stmt->fetch();
+            
+            if ($match) {
+                // Update Team 1
+                $stmt = $conn->prepare("UPDATE teams SET name = :name WHERE id = :id");
+                $stmt->execute(['name' => $t1_name, 'id' => $match['team1_id']]);
+                
+                // Update Team 2
+                $stmt = $conn->prepare("UPDATE teams SET name = :name WHERE id = :id");
+                $stmt->execute(['name' => $t2_name, 'id' => $match['team2_id']]);
+                
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Match not found']);
+            }
+            break;
+            
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
     }

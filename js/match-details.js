@@ -81,6 +81,9 @@ async function refreshScores(matchId) {
 /**
  * Update score display
  */
+/**
+ * Update score display
+ */
 function updateScoreDisplay() {
     const scores = currentMatch.scores || {};
     const score1 = scores.team1_score ?? '-';
@@ -89,11 +92,57 @@ function updateScoreDisplay() {
     document.getElementById('team-a-score').textContent = score1;
     document.getElementById('team-b-score').textContent = score2;
 
+    // Update Player Counts (Render Icons)
+    const p1 = scores.t1_players ?? 7;
+    const p2 = scores.t2_players ?? 7;
+    renderPlayerIcons('team-a-players-container', p1);
+    renderPlayerIcons('team-b-players-container', p2);
+
+    // Update Raiding Indicator
+    const raider = scores.current_raider || 'team1';
+    const raidA = document.getElementById('team-a-raid');
+    const raidB = document.getElementById('team-b-raid');
+
+    if (raidA && raidB) {
+        if (raider === 'team1') {
+            raidA.style.display = 'block';
+            raidB.style.display = 'none';
+            // highlight team name
+            document.getElementById('team-a-name').style.color = '#fbbf24';
+            document.getElementById('team-b-name').style.color = '';
+        } else {
+            raidA.style.display = 'none';
+            raidB.style.display = 'block';
+            // highlight team name
+            document.getElementById('team-b-name').style.color = '#fbbf24';
+            document.getElementById('team-a-name').style.color = '';
+        }
+    }
+
     // Update timeout overlay if exists
     const toT1Score = document.getElementById('to-t1-score');
     const toT2Score = document.getElementById('to-t2-score');
     if (toT1Score) toT1Score.textContent = score1;
     if (toT2Score) toT2Score.textContent = score2;
+}
+
+/**
+ * Render player icons (7 total, active ones highlighted)
+ */
+function renderPlayerIcons(containerId, activeCount) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // We expect 7 visible info slots for Kabaddi usually
+    const totalPlayers = 7;
+    container.innerHTML = ''; // Clear current
+
+    for (let i = 0; i < totalPlayers; i++) {
+        const icon = document.createElement('i');
+        // If i < activeCount, it's an active player
+        icon.className = `fas fa-user player-icon ${i < activeCount ? 'active' : ''}`;
+        container.appendChild(icon);
+    }
 }
 
 /**
@@ -147,7 +196,8 @@ function triggerAnimation(type, teamName, duration = 4000) {
     const overlay = document.getElementById('animation-overlay');
     const animText = document.getElementById('anim-text');
     const animTeam = document.getElementById('anim-team');
-    const animBar = document.getElementById('anim-bar');
+    const animIcon = document.getElementById('anim-icon');
+    const gamifiedBg = document.querySelector('.gamified-bg');
 
     if (!overlay || !animText || !animTeam) return;
 
@@ -155,89 +205,162 @@ function triggerAnimation(type, teamName, duration = 4000) {
     animText.textContent = type;
     animTeam.textContent = teamName;
 
-    // Change colors based on type
-    let bgColor = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)'; // Default red
-    let textColor = '#fbbf24'; // Gold
+    // Set Icon & Colors
+    let radialColor = 'rgba(220,38,38,0.5)'; // Red
+    let textColor = '#fff';
+    let particles = ['#fbbf24', '#f97316', '#dc2626'];
+    let iconChar = '🔥';
 
     if (type.includes('TACKLE')) {
-        bgColor = 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)';
-        textColor = '#ffffff';
+        radialColor = 'rgba(8, 145, 178, 0.5)'; // Cyan/Blue
+        particles = ['#ffffff', '#22d3ee', '#0891b2'];
+        iconChar = '💪';
     } else if (type.includes('ALL OUT')) {
-        bgColor = 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)';
-        textColor = '#ffffff';
+        radialColor = 'rgba(124, 58, 237, 0.5)'; // Purple
+        particles = ['#ffffff', '#a78bfa', '#7c3aed'];
+        iconChar = '❌';
     }
 
-    overlay.style.background = bgColor;
-    animText.style.color = textColor;
-    if (animBar) animBar.style.background = textColor;
+    if (animIcon) animIcon.textContent = iconChar;
+    if (gamifiedBg) {
+        gamifiedBg.style.background = `radial-gradient(circle, ${radialColor} 0%, rgba(0,0,0,0) 70%)`;
+    }
 
     // Show overlay
     overlay.style.display = 'flex';
 
-    // Trigger confetti for Super Raid
-    if (window.confetti && type.includes('SUPER RAID')) {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#fbbf24', '#f97316', '#dc2626']
-        });
+    // Add pulsing effect to text
+    animText.style.transform = 'scale(0.5)';
+    setTimeout(() => {
+        animText.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        animText.style.transform = 'scale(1.2)';
+    }, 100);
+
+    // Trigger confetti
+    if (window.confetti) {
+        const count = 200;
+        const defaults = {
+            origin: { y: 0.7 }
+        };
+
+        function fire(particleRatio, opts) {
+            confetti(Object.assign({}, defaults, opts, {
+                particleCount: Math.floor(count * particleRatio),
+                colors: particles
+            }));
+        }
+
+        fire(0.25, { spread: 26, startVelocity: 55, });
+        fire(0.2, { spread: 60, });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45, });
     }
 
     // Auto-hide
     setTimeout(() => {
         overlay.style.display = 'none';
+        animText.style.transform = 'scale(1)'; // reset
     }, duration);
 }
 
 /**
- * Trigger winner animation with confetti celebration
+ * Trigger winner animation with fireworks - Celebratory Mode
  */
 function triggerWinnerAnimation(winnerName) {
     const overlay = document.getElementById('animation-overlay');
     const animText = document.getElementById('anim-text');
     const animTeam = document.getElementById('anim-team');
+    const animIcon = document.getElementById('anim-icon');
+    const gamifiedBg = document.querySelector('.gamified-bg');
 
     if (!overlay || !animText || !animTeam) return;
 
+    // Calculate Margin if match data is available
+    let resultText = winnerName;
+    if (typeof currentMatch !== 'undefined' && currentMatch.scores) {
+        const s1 = parseInt(currentMatch.scores.team1_score || 0);
+        const s2 = parseInt(currentMatch.scores.team2_score || 0);
+
+        if (winnerName === currentMatch.team1_name && s1 > s2) {
+            resultText = `${winnerName} won by ${s1 - s2} points`;
+        } else if (winnerName === currentMatch.team2_name && s2 > s1) {
+            resultText = `${winnerName} won by ${s2 - s1} points`;
+        }
+    }
+
     animText.textContent = '🏆 WINNER 🏆';
-    animTeam.textContent = winnerName;
-    animText.style.color = '#ffd700';
-    overlay.style.background = 'linear-gradient(135deg, #1e3a5f 0%, #0d1f33 100%)';
+    animTeam.textContent = resultText;
+
+    // Crown Icon
+    if (animIcon) animIcon.textContent = '👑';
+
+    // Victory Colors
+    animText.style.color = '#fbbf24'; // Gold
+    animText.style.textShadow = '0 0 30px rgba(251, 191, 36, 0.8)';
+
+    // Dark celebratory background
+    overlay.style.background = 'radial-gradient(circle at center, #1e1b4b 0%, #020617 100%)';
+
+    if (gamifiedBg) {
+        // Subtle gold glow in background
+        gamifiedBg.style.background = 'radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(0,0,0,0) 70%)';
+    }
 
     overlay.style.display = 'flex';
 
-    // Confetti celebration!
+    // Intense Fireworks Sequence
     if (window.confetti) {
-        const duration = 5000;
-        const end = Date.now() + duration;
+        const duration = 12000; // 12 seconds
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 100, zIndex: 10000 };
 
-        (function frame() {
-            confetti({
-                particleCount: 5,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffd700']
-            });
-            confetti({
-                particleCount: 5,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffd700']
-            });
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
 
-            if (Date.now() < end) {
-                requestAnimationFrame(frame);
+        const interval = setInterval(function () {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
             }
-        }());
+
+            const particleCount = 50 * (timeLeft / duration);
+
+            // Gold/Red/White mix
+            const colors = ['#ffd700', '#facc15', '#ffffff', '#ef4444'];
+
+            // Left Fan
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                colors: colors
+            }));
+
+            // Right Fan
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                colors: colors
+            }));
+
+            // Occasional Center Burst
+            if (Math.random() > 0.6) {
+                confetti(Object.assign({}, defaults, {
+                    particleCount: 80,
+                    startVelocity: 45,
+                    origin: { x: 0.5, y: 0.4 },
+                    colors: ['#fbbf24', '#ffffff']
+                }));
+            }
+        }, 250);
     }
 
-    // Keep winner animation longer (10 seconds)
+    // Hide after celebration
     setTimeout(() => {
         overlay.style.display = 'none';
-    }, 10000);
+    }, 12000);
 }
 
 /**
