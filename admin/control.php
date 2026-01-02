@@ -69,23 +69,26 @@ if ($match_id) {
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Outfit', sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
+            background: #f8f9fa;
+            color: #1a2332;
             min-height: 100vh;
         }
-        .navbar-custom { background-color: #002147 !important; }
+        .navbar-custom { 
+            background-color: #1a2332 !important; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .glass-card {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .control-btn { height: 70px; font-size: 1.1rem; font-weight: bold; }
-        .score-display { font-size: 5rem; font-weight: 800; }
+        .score-display { font-size: 5rem; font-weight: 800; color: #1a2332; }
         .active-raider-btn { 
-            box-shadow: 0 0 20px #facc15; 
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.5); 
             border-color: #facc15 !important; 
-            background: rgba(250, 204, 21, 0.2) !important;
+            background: rgba(250, 204, 21, 0.1) !important;
         }
         .btn-timeout-active {
             animation: pulse 1s infinite;
@@ -98,11 +101,21 @@ if ($match_id) {
             .score-display { font-size: 3rem; }
             .control-btn { height: 50px; font-size: 0.9rem; }
         }
-        ::placeholder {
-            color: rgba(255, 255, 255, 0.5) !important;
+        /* Form Overrides for Light Theme */
+        input, select, .form-control, .form-select {
+            background-color: #ffffff !important;
+            color: #1a2332 !important;
+            border-color: #d1d5db !important;
         }
-        input, select {
-            color: white !important;
+        input:focus, select:focus, .form-control:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+        }
+        ::placeholder {
+            color: #9ca3af !important;
+        }
+        .text-secondary {
+            color: #64748b !important; /* Blue-gray for better contrast on white */
         }
     </style>
 </head>
