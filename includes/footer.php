@@ -61,6 +61,7 @@ $customScripts = $customScripts ?? '';
             <p>© 2026 SRKR Engineering College. All rights reserved. | Men & Women Categories</p>
         </div>
     </footer>
+    
 
     <?php if ($includeAppJs): ?>
     <!-- App JavaScript -->
