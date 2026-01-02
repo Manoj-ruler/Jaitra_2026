@@ -181,7 +181,7 @@ include 'includes/header.php';
                     📺 Watch Replay
                 </a>
                 <button class="action-btn secondary" id="share-btn">
-                    🔗 Share Match
+                    🔗 Share Match Score
                 </button>
             </div>
         </section>
