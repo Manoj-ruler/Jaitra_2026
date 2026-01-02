@@ -397,7 +397,7 @@ img {
   flex-wrap: wrap;
   gap: var(--spacing-lg);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: var(--color-white);
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);

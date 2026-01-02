@@ -50,26 +50,7 @@ include 'includes/header.php';
                         </button>
                     </div>
                 </div>
-                <div class="filter-group">
-                    <span class="filter-label">Sport Category</span>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-sport="all">
-                            All Sports
-                        </button>
-                        <button class="filter-btn" data-sport="volleyball">
-                            Volleyball
-                        </button>
-                        <button class="filter-btn" data-sport="kabaddi">
-                            Kabaddi
-                        </button>
-                        <button class="filter-btn" data-sport="badminton">
-                            Badminton
-                        </button>
-                        <button class="filter-btn" data-sport="pickleball">
-                            Pickleball
-                        </button>
-                    </div>
-                </div>
+
             </div>
         </section>
 
