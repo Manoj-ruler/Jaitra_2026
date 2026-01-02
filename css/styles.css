@@ -1783,3 +1783,196 @@ img {
     padding: 1rem;
   }
 }
+
+/* ============================================
+   Home Match Cards (JS-rendered)
+   ============================================ */
+.home-match-card {
+  min-width: 320px;
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.home-match-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-accent);
+}
+
+.home-match-card.live {
+  border-color: #dc2626;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.2);
+}
+
+.home-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sport-tag {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sport-tag.volleyball {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.sport-tag.kabaddi {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.sport-tag.badminton {
+  background: rgba(8, 145, 178, 0.1);
+  color: #0891b2;
+}
+
+.sport-tag.pickleball {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.status-tag {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-tag.live {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  animation: pulse 2s infinite;
+}
+
+.status-tag.upcoming {
+  background: rgba(217, 119, 6, 0.1);
+  color: #d97706;
+}
+
+.status-tag.completed {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.home-match-teams {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.home-team {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--color-background);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.home-team.winner {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid var(--color-accent);
+}
+
+.home-team-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.home-team-score {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.home-vs {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  padding: 0.25rem 0.5rem;
+  background: var(--color-light);
+  border-radius: 6px;
+}
+
+.home-match-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-light);
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+}
+
+.home-match-time {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.home-match-venue {
+  font-style: italic;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-matches-message {
+  text-align: center;
+  color: var(--color-secondary);
+  padding: 2rem;
+  font-style: italic;
+  width: 100%;
+}
+
+/* Responsive for home match cards */
+@media (max-width: 768px) {
+  .home-match-card {
+    min-width: 280px;
+    padding: 1rem;
+  }
+  
+  .home-team-name {
+    font-size: 0.875rem;
+  }
+  
+  .home-team-score {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-match-card {
+    min-width: 260px;
+  }
+  
+  .home-match-teams {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .home-vs {
+    padding: 0.15rem 0.4rem;
+  }
+}

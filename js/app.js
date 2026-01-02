@@ -20,7 +20,99 @@ document.addEventListener('DOMContentLoaded', function () {
         // Auto-refresh every 3 seconds for live updates
         refreshInterval = setInterval(loadMatches, 3000);
     }
+
+    // Check if we're on the index page (has #all-matches section)
+    if (document.querySelector('#all-matches')) {
+        loadHomeMatches();
+        // Auto-refresh every 5 seconds for live updates on home page
+        setInterval(loadHomeMatches, 5000);
+    }
 });
+
+/**
+ * Load matches for the home page
+ */
+async function loadHomeMatches() {
+    const container = document.getElementById('all-matches');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/get_matches.php`);
+        const data = await response.json();
+
+        if (data.success && data.matches.length > 0) {
+            container.innerHTML = data.matches.map(match => createHomeMatchCard(match)).join('');
+        } else {
+            container.innerHTML = `
+                <div class="no-matches-message">
+                    <p>No matches scheduled yet. Check back soon!</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Failed to load matches for home page:', error);
+        container.innerHTML = `
+            <div class="no-matches-message">
+                <p>Unable to load matches. Please try again later.</p>
+            </div>
+        `;
+    }
+}
+
+/**
+ * Create a match card for the home page
+ */
+function createHomeMatchCard(match) {
+    const scores = match.scores || {};
+    const score1 = scores.team1_score ?? '-';
+    const score2 = scores.team2_score ?? '-';
+    const isLive = match.status === 'live';
+    const isCompleted = match.status === 'completed';
+    const winnerClass1 = isCompleted && match.winner_team === 1 ? 'winner' : '';
+    const winnerClass2 = isCompleted && match.winner_team === 2 ? 'winner' : '';
+
+    // Format date/time
+    const matchDate = new Date(match.match_time);
+    const dateStr = matchDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+    });
+    const timeStr = matchDate.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+
+    // Status badge class and text
+    let statusClass = match.status;
+    let statusText = capitalizeFirstLetter(match.status);
+    if (isLive) {
+        statusText = '🔴 LIVE';
+    }
+
+    return `
+        <div class="home-match-card ${isLive ? 'live' : ''}" onclick="window.location.href='match.php?id=${match.id}'">
+            <div class="home-match-header">
+                <span class="sport-tag ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                <span class="status-tag ${statusClass}">${statusText}</span>
+            </div>
+            <div class="home-match-teams">
+                <div class="home-team ${winnerClass1}">
+                    <span class="home-team-name">${escapeHtml(match.team1_name)}</span>
+                    <span class="home-team-score">${score1}</span>
+                </div>
+                <div class="home-vs">VS</div>
+                <div class="home-team ${winnerClass2}">
+                    <span class="home-team-name">${escapeHtml(match.team2_name)}</span>
+                    <span class="home-team-score">${score2}</span>
+                </div>
+            </div>
+            <div class="home-match-footer">
+                <span class="home-match-time">${dateStr} • ${timeStr}</span>
+                ${match.venue ? `<span class="home-match-venue">${escapeHtml(match.venue)}</span>` : ''}
+            </div>
+        </div>
+    `;
+}
 
 // Current filter state
 const filterState = {
