@@ -31,6 +31,10 @@ $showNav = $showNav ?? true; // Set to false to hide navigation
     <meta name="keywords" content="JAITRA 2026, SRKR Engineering College, Sports Carnival, Engineering College Sports, AP State, Live Sports, Bhimavaram">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,48 +56,92 @@ $showNav = $showNav ?? true; // Set to false to hide navigation
 </head>
 
 <body>
-    <!-- Live YouTube Ticker -->
+    <!-- Live Scores Ticker -->
     <div class="live-ticker">
         <div class="ticker-content">
+            <?php if ($currentPage === 'home'): ?>
+            <!-- Index Page: Link to scoreboard -->
             <div class="ticker-item">
-                Volleyball Finals - Watch Live:
-                <a href="https://youtube.com/live/example1" target="_blank">YouTube Stream</a>
+                🏐 Volleyball Matches -
+                <a href="scoreboard.php?sport=volleyball">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Kabaddi Semi-Finals - Watch Live:
-                <a href="https://youtube.com/live/example2" target="_blank">YouTube Stream</a>
+                🤼 Kabaddi Matches -
+                <a href="scoreboard.php?sport=kabaddi">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Badminton Quarters - Watch Live:
-                <a href="https://youtube.com/live/example3" target="_blank">YouTube Stream</a>
+                🏸 Badminton Matches -
+                <a href="scoreboard.php?sport=badminton">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Pickleball Opening Match - Watch Live:
-                <a href="https://youtube.com/live/example4" target="_blank">YouTube Stream</a>
+                🎾 Pickleball Matches -
+                <a href="scoreboard.php?sport=pickleball">View Scores</a>
             </div>
             <!-- Duplicate for seamless loop -->
             <div class="ticker-item">
-                Volleyball Finals - Watch Live:
-                <a href="https://youtube.com/live/example1" target="_blank">YouTube Stream</a>
+                🏐 Volleyball Matches -
+                <a href="scoreboard.php?sport=volleyball">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Kabaddi Semi-Finals - Watch Live:
-                <a href="https://youtube.com/live/example2" target="_blank">YouTube Stream</a>
+                🤼 Kabaddi Matches -
+                <a href="scoreboard.php?sport=kabaddi">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Badminton Quarters - Watch Live:
-                <a href="https://youtube.com/live/example3" target="_blank">YouTube Stream</a>
+                🏸 Badminton Matches -
+                <a href="scoreboard.php?sport=badminton">View Scores</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
-                Pickleball Opening Match - Watch Live:
-                <a href="https://youtube.com/live/example4" target="_blank">YouTube Stream</a>
+                🎾 Pickleball Matches -
+                <a href="scoreboard.php?sport=pickleball">View Scores</a>
             </div>
+            <?php else: ?>
+            <!-- Scoreboard/Match Pages: Link to YouTube -->
+            <div class="ticker-item">
+                🏐 Volleyball Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🤼 Kabaddi Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🏸 Badminton Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🎾 Pickleball Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="ticker-item">
+                🏐 Volleyball Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🤼 Kabaddi Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🏸 Badminton Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <span class="ticker-separator">•</span>
+            <div class="ticker-item">
+                🎾 Pickleball Live -
+                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 
