@@ -150,6 +150,51 @@ include 'includes/header.php';
     <section class="sports-section" id="sports">
         <h2 class="section-title-center">Featured Sports</h2>
         
+        <?php
+        // Fetch dynamic stats for sports
+        require_once 'db_connect.php';
+
+        // Initialize default stats
+        $stats = [
+            'volleyball' => ['teams' => 0, 'live' => 0],
+            'kabaddi' => ['teams' => 0, 'live' => 0],
+            'badminton' => ['teams' => 0, 'live' => 0],
+            'pickleball' => ['teams' => 0, 'live' => 0]
+        ];
+
+        try {
+            // Get team counts
+            $teamQuery = "SELECT s.name as sport_name, COUNT(t.id) as team_count 
+                         FROM teams t 
+                         JOIN sports s ON t.sport_id = s.id 
+                         GROUP BY s.name";
+            $stmt = $conn->query($teamQuery);
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $sport = strtolower($row['sport_name']);
+                if (isset($stats[$sport])) {
+                    $stats[$sport]['teams'] = $row['team_count'];
+                }
+            }
+
+            // Get live match counts
+            $liveQuery = "SELECT s.name as sport_name, COUNT(m.id) as live_count 
+                         FROM matches m 
+                         JOIN sports s ON m.sport_id = s.id 
+                         WHERE m.status = 'live' 
+                         GROUP BY s.name";
+            $stmt = $conn->query($liveQuery);
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $sport = strtolower($row['sport_name']);
+                if (isset($stats[$sport])) {
+                    $stats[$sport]['live'] = $row['live_count'];
+                }
+            }
+        } catch (PDOException $e) {
+            // Silently fail to defaults if DB error
+            error_log("Stats Error: " . $e->getMessage());
+        }
+        ?>
+
         <div class="sports-grid">
             <!-- Volleyball -->
             <div class="sport-card volleyball">
@@ -157,11 +202,11 @@ include 'includes/header.php';
                 <h3 class="sport-name">Volleyball</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value">16</span>
+                        <span class="stat-value"><?= $stats['volleyball']['teams'] ?></span>
                         <span class="stat-label">Teams</span>
                     </div>
                     <div class="sport-stat">
-                        <span class="stat-value">3</span>
+                        <span class="stat-value"><?= $stats['volleyball']['live'] ?></span>
                         <span class="stat-label">Live</span>
                     </div>
                 </div>
@@ -174,11 +219,11 @@ include 'includes/header.php';
                 <h3 class="sport-name">Kabaddi</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value">12</span>
+                        <span class="stat-value"><?= $stats['kabaddi']['teams'] ?></span>
                         <span class="stat-label">Teams</span>
                     </div>
                     <div class="sport-stat">
-                        <span class="stat-value">2</span>
+                        <span class="stat-value"><?= $stats['kabaddi']['live'] ?></span>
                         <span class="stat-label">Live</span>
                     </div>
                 </div>
@@ -191,11 +236,11 @@ include 'includes/header.php';
                 <h3 class="sport-name">Badminton</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value">20</span>
+                        <span class="stat-value"><?= $stats['badminton']['teams'] ?></span>
                         <span class="stat-label">Teams</span>
                     </div>
                     <div class="sport-stat">
-                        <span class="stat-value">1</span>
+                        <span class="stat-value"><?= $stats['badminton']['live'] ?></span>
                         <span class="stat-label">Live</span>
                     </div>
                 </div>
@@ -208,11 +253,11 @@ include 'includes/header.php';
                 <h3 class="sport-name">Pickleball</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value">14</span>
+                        <span class="stat-value"><?= $stats['pickleball']['teams'] ?></span>
                         <span class="stat-label">Teams</span>
                     </div>
                     <div class="sport-stat">
-                        <span class="stat-value">0</span>
+                        <span class="stat-value"><?= $stats['pickleball']['live'] ?></span>
                         <span class="stat-label">Live</span>
                     </div>
                 </div>
