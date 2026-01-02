@@ -8,6 +8,7 @@
 $pageTitle = 'Match Details | JAITRA 2026 - SRKR Engineering College';
 $pageDescription = 'Match Details - JAITRA 2026 Sports Carnival';
 $currentPage = 'match';
+$showNav = false; // Hide navbar on match details page
 
 // Page-specific styles
 $pageStyles = '
