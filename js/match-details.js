@@ -385,7 +385,8 @@ function renderSimilarMatches(containerId, matches) {
                      data-status="${match.status}" 
                      data-sport="${match.sport}" 
                      data-match-id="${match.id}"
-                     onclick="window.location.href='match.php?id=${match.id}'">
+                     onclick="window.location.href='match.php?id=${match.id}'"
+                     style="cursor: pointer;">
                 <div class="scorecard-header">
                     <span class="sport-badge ${match.sport}">${capitalizeFirst(match.sport)}</span>
                     <span class="status-badge ${match.status}">${capitalizeFirst(match.status)}</span>

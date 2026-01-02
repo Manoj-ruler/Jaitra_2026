@@ -148,7 +148,8 @@ function createHomeMatchCard(match) {
                  data-status="${match.status}" 
                  data-sport="${match.sport}" 
                  data-match-id="${match.id}"
-                 onclick="window.location.href='match.php?id=${match.id}'">
+                 onclick="window.location.href='match.php?id=${match.id}'"
+                 style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
@@ -316,7 +317,9 @@ function createScorecardHTML(match) {
         <article class="scorecard ${isLive ? 'live' : ''}" 
                  data-status="${match.status}" 
                  data-sport="${match.sport}" 
-                 data-match-id="${match.id}">
+                 data-match-id="${match.id}"
+                 onclick="window.location.href='match.php?id=${match.id}'"
+                 style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
