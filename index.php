@@ -160,23 +160,23 @@ include 'includes/header.php';
 
         // Initialize default stats
         $stats = [
-            'volleyball' => ['teams' => 0, 'live' => 0],
-            'kabaddi' => ['teams' => 0, 'live' => 0],
-            'badminton' => ['teams' => 0, 'live' => 0],
-            'pickleball' => ['teams' => 0, 'live' => 0]
+            'volleyball' => ['matches' => 0, 'live' => 0],
+            'kabaddi' => ['matches' => 0, 'live' => 0],
+            'badminton' => ['matches' => 0, 'live' => 0],
+            'pickleball' => ['matches' => 0, 'live' => 0]
         ];
 
         try {
-            // Get team counts
-            $teamQuery = "SELECT s.name as sport_name, COUNT(t.id) as team_count 
-                         FROM teams t 
-                         JOIN sports s ON t.sport_id = s.id 
-                         GROUP BY s.name";
-            $stmt = $conn->query($teamQuery);
+            // Get total match counts
+            $matchesQuery = "SELECT s.name as sport_name, COUNT(m.id) as match_count 
+                           FROM matches m 
+                           JOIN sports s ON m.sport_id = s.id 
+                           GROUP BY s.name";
+            $stmt = $conn->query($matchesQuery);
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $sport = strtolower($row['sport_name']);
                 if (isset($stats[$sport])) {
-                    $stats[$sport]['teams'] = $row['team_count'];
+                    $stats[$sport]['matches'] = $row['match_count'];
                 }
             }
 
@@ -206,8 +206,8 @@ include 'includes/header.php';
                 <h3 class="sport-name">Volleyball</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value"><?= $stats['volleyball']['teams'] ?></span>
-                        <span class="stat-label">Teams</span>
+                        <span class="stat-value"><?= $stats['volleyball']['matches'] ?></span>
+                        <span class="stat-label">Matches</span>
                     </div>
                     <div class="sport-stat">
                         <span class="stat-value"><?= $stats['volleyball']['live'] ?></span>
@@ -223,8 +223,8 @@ include 'includes/header.php';
                 <h3 class="sport-name">Kabaddi</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value"><?= $stats['kabaddi']['teams'] ?></span>
-                        <span class="stat-label">Teams</span>
+                        <span class="stat-value"><?= $stats['kabaddi']['matches'] ?></span>
+                        <span class="stat-label">Matches</span>
                     </div>
                     <div class="sport-stat">
                         <span class="stat-value"><?= $stats['kabaddi']['live'] ?></span>
@@ -240,8 +240,8 @@ include 'includes/header.php';
                 <h3 class="sport-name">Badminton</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value"><?= $stats['badminton']['teams'] ?></span>
-                        <span class="stat-label">Teams</span>
+                        <span class="stat-value"><?= $stats['badminton']['matches'] ?></span>
+                        <span class="stat-label">Matches</span>
                     </div>
                     <div class="sport-stat">
                         <span class="stat-value"><?= $stats['badminton']['live'] ?></span>
@@ -257,8 +257,8 @@ include 'includes/header.php';
                 <h3 class="sport-name">Pickleball</h3>
                 <div class="sport-stats">
                     <div class="sport-stat">
-                        <span class="stat-value"><?= $stats['pickleball']['teams'] ?></span>
-                        <span class="stat-label">Teams</span>
+                        <span class="stat-value"><?= $stats['pickleball']['matches'] ?></span>
+                        <span class="stat-label">Matches</span>
                     </div>
                     <div class="sport-stat">
                         <span class="stat-value"><?= $stats['pickleball']['live'] ?></span>
