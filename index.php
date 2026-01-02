@@ -8,8 +8,38 @@
 $pageTitle = 'JAITRA 2026 | Home - AP\'s Premier Engineering Sports Carnival';
 $pageDescription = 'JAITRA 2026 - The Ultimate Sports Carnival for All A.P. State Engineering Colleges. Experience thrilling competitions in Volleyball, Kabaddi, Badminton, and Pickleball with ₹5 Lakhs prize pool.';
 $currentPage = 'home';
-$additionalCss = ['css/home-styles.css']; // Home page specific styles
+$additionalCss = ['css/home-styles.css?v=' . time()]; // Home page specific styles
 $showNav = false; // Home page uses carousel instead of nav
+
+require_once 'db_connect.php';
+
+// Fetch live and upcoming matches for the scroller
+try {
+    // Check if matches table exists first to avoid errors if setup isn't complete
+    $stmt = $conn->prepare("
+        SELECT 
+            m.id, m.status, m.match_time, 
+            s.name as sport_name,
+            t1.name as team1_name,
+            t2.name as team2_name,
+            ls.score_json
+        FROM matches m
+        JOIN sports s ON m.sport_id = s.id
+        JOIN teams t1 ON m.team1_id = t1.id
+        JOIN teams t2 ON m.team2_id = t2.id
+        LEFT JOIN live_scores ls ON m.id = ls.match_id
+        WHERE m.status IN ('live', 'upcoming', 'completed')
+        ORDER BY 
+            CASE WHEN m.status = 'live' THEN 1 WHEN m.status = 'upcoming' THEN 2 ELSE 3 END,
+            m.match_time DESC
+        LIMIT 10
+    ");
+    $stmt->execute();
+    $matches = $stmt->fetchAll();
+} catch (Exception $e) {
+    // Fallback if table doesn't exist or other error
+    $matches = [];
+}
 
 // Include the common header
 include 'includes/header.php';
@@ -99,9 +129,107 @@ include 'includes/header.php';
 
             <!-- All Matches in Single Scroll -->
             <div class="matches-scroll" id="all-matches">
-                <p class="loading-text">Loading matches...</p>
-            </div>
-        </div>
+                <div class="matches-track">
+                    <?php 
+                    // Prepare matches data (Unified logic for DB and Fallback)
+                    $displayMatches = [];
+                    
+                    if (count($matches) > 0) {
+                        $displayMatches = $matches;
+                    } else {
+                        // Fallback Dummy Data
+                        $displayMatches = [
+                            [
+                                'id' => 'dummy1', 'status' => 'upcoming', 'match_time' => date('Y-m-d 10:00:00', strtotime('+1 day')),
+                                'sport_name' => 'volleyball', 'team1_name' => 'SRKR Engineering', 'team2_name' => 'Vishnu College',
+                                'score_json' => '{}'
+                            ],
+                            [
+                                'id' => 'dummy2', 'status' => 'live', 'match_time' => date('Y-m-d H:00:00'),
+                                'sport_name' => 'kabaddi', 'team1_name' => 'GRIET Hyderabad', 'team2_name' => 'VNR VJIET',
+                                'score_json' => '{"sets":[{"host":32,"visitor":28}]}'
+                            ],
+                            [
+                                'id' => 'dummy3', 'status' => 'upcoming', 'match_time' => date('Y-m-d 14:00:00', strtotime('+1 day')),
+                                'sport_name' => 'badminton', 'team1_name' => 'JNTU Kakinada', 'team2_name' => 'Aditya Engineering',
+                                'score_json' => '{}'
+                            ],
+                             [
+                                'id' => 'dummy4', 'status' => 'live', 'match_time' => date('Y-m-d H:30:00'),
+                                'sport_name' => 'pickleball', 'team1_name' => 'Vasavi College', 'team2_name' => 'GVP Visakhapatnam',
+                                'score_json' => '{"sets":[{"host":11,"visitor":9}]}'
+                            ]
+                        ];
+                    }
+
+                    // Ensure minimum density for smooth scrolling (at least 8 items)
+                    while (count($displayMatches) < 8) {
+                        $displayMatches = array_merge($displayMatches, $displayMatches);
+                    }
+                    // Extract a slice if it grew too big exponentially, just to keep it manageable? No, more is fine.
+                    
+                    // Display matches twice for seamless loop (Set 1 + Set 2)
+                    // The CSS animation moves 50%, so Set 2 replaces Set 1 exactly.
+                    for ($i = 0; $i < 2; $i++): 
+                        foreach ($displayMatches as $match): 
+                    ?>
+                        <div class="match-card <?php echo $match['status']; ?>">
+                            <div class="match-card-header">
+                                <span class="sport-badge <?php echo strtolower($match['sport_name']); ?>">
+                                    <?php echo ucfirst($match['sport_name']); ?>
+                                </span>
+                                <span class="status-badge <?php echo $match['status']; ?>">
+                                    <?php echo $match['status'] === 'live' ? '🔴 LIVE' : ucfirst($match['status']); ?>
+                                </span>
+                            </div>
+                            
+                            <div class="match-teams-vs">
+                                <div class="team-block">
+                                    <span class="team-name" title="<?php echo htmlspecialchars($match['team1_name']); ?>">
+                                        <?php echo htmlspecialchars($match['team1_name']); ?>
+                                    </span>
+                                </div>
+                                <div class="vs-divider">VS</div>
+                                <div class="team-block">
+                                    <span class="team-name" title="<?php echo htmlspecialchars($match['team2_name']); ?>">
+                                        <?php echo htmlspecialchars($match['team2_name']); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="match-details">
+                                <?php if ($match['status'] === 'live'): ?>
+                                    <?php 
+                                        // Handle potential JSON errors
+                                        $scoreJson = $match['score_json'] ?? '{}';
+                                        $scores = json_decode($scoreJson, true);
+                                        // Simplistic score display
+                                        $scoreText = "Score available";
+                                        if (is_array($scores) && isset($scores['sets']) && !empty($scores['sets'])) {
+                                            $latestSet = end($scores['sets']);
+                                            if (is_array($latestSet)) {
+                                                $scoreText = "Set: " . ($latestSet['host'] ?? 0) . " - " . ($latestSet['visitor'] ?? 0);
+                                            }
+                                        } elseif ($match['status'] === 'live') {
+                                            $scoreText = "Match In Progress";
+                                        }
+                                    ?>
+                                    <span class="match-score highlight"><?php echo $scoreText; ?></span>
+                                <?php else: ?>
+                                    <span class="match-time">
+                                        📅 <?php echo date('M d, h:i A', strtotime($match['match_time'])); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <a href="match.php?id=<?php echo $match['id']; ?>" class="view-match-btn">View Details</a>
+                        </div>
+                    <?php 
+                        endforeach; 
+                    endfor; 
+                    ?>
+                </div>
+            </div>        </div>
     </section>
 
     <!-- About SRKR College Section -->
