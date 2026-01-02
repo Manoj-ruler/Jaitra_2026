@@ -61,6 +61,7 @@ async function loadHomeMatches() {
 
 /**
  * Create a match card for the home page
+ * Uses the same structure as scoreboard cards for consistency
  */
 function createHomeMatchCard(match) {
     const scores = match.scores || {};
@@ -68,51 +69,78 @@ function createHomeMatchCard(match) {
     const score2 = scores.team2_score ?? '-';
     const isLive = match.status === 'live';
     const isCompleted = match.status === 'completed';
-    const winnerClass1 = isCompleted && match.winner_team === 1 ? 'winner' : '';
-    const winnerClass2 = isCompleted && match.winner_team === 2 ? 'winner' : '';
+    const winnerClass1 = isCompleted && match.winner_team === 1 ? ' winner' : '';
+    const winnerClass2 = isCompleted && match.winner_team === 2 ? ' winner' : '';
 
-    // Format date/time
+    // Format date
     const matchDate = new Date(match.match_time);
     const dateStr = matchDate.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        year: 'numeric'
     });
     const timeStr = matchDate.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit'
     });
 
-    // Status badge class and text
-    let statusClass = match.status;
-    let statusText = capitalizeFirstLetter(match.status);
+    // Result text - same logic as scoreboard
+    let resultText = '';
     if (isLive) {
-        statusText = '🔴 LIVE';
+        resultText = 'Match in progress';
+    } else if (isCompleted && match.win_description) {
+        resultText = match.win_description;
+    } else if (isCompleted) {
+        resultText = match.winner_team === 1 ? `${match.team1_name} won` :
+            match.winner_team === 2 ? `${match.team2_name} won` :
+                match.winner_team === 0 ? 'Match Drawn' : 'Completed';
+    } else {
+        resultText = match.round || 'Upcoming';
     }
 
     return `
-        <div class="home-match-card ${isLive ? 'live' : ''}" onclick="window.location.href='match.php?id=${match.id}'">
-            <div class="home-match-header">
-                <span class="sport-tag ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
-                <span class="status-tag ${statusClass}">${statusText}</span>
+        <article class="scorecard ${isLive ? 'live' : ''}" 
+                 data-status="${match.status}" 
+                 data-sport="${match.sport}" 
+                 data-match-id="${match.id}"
+                 onclick="window.location.href='match.php?id=${match.id}'">
+            <div class="scorecard-header">
+                <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
             </div>
-            <div class="home-match-teams">
-                <div class="home-team ${winnerClass1}">
-                    <span class="home-team-name">${escapeHtml(match.team1_name)}</span>
-                    <span class="home-team-score">${score1}</span>
+            <div class="scorecard-body">
+                <div class="teams-container">
+                    <div class="team-row${winnerClass1}">
+                        <div class="team-info">
+                            <span class="team-name">${escapeHtml(match.team1_name)}</span>
+                        </div>
+                        <div class="team-score">
+                            <span class="score-main">${score1}</span>
+                        </div>
+                    </div>
+                    <div class="vs-divider">VS</div>
+                    <div class="team-row${winnerClass2}">
+                        <div class="team-info">
+                            <span class="team-name">${escapeHtml(match.team2_name)}</span>
+                        </div>
+                        <div class="team-score">
+                            <span class="score-main">${score2}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="home-vs">VS</div>
-                <div class="home-team ${winnerClass2}">
-                    <span class="home-team-name">${escapeHtml(match.team2_name)}</span>
-                    <span class="home-team-score">${score2}</span>
+            </div>
+            <div class="scorecard-footer">
+                <div class="match-result${isCompleted ? ' winner' : ''}">
+                    ${escapeHtml(resultText)}
+                </div>
+                <div class="match-time">
+                    ${dateStr} • ${timeStr}
                 </div>
             </div>
-            <div class="home-match-footer">
-                <span class="home-match-time">${dateStr} • ${timeStr}</span>
-                ${match.venue ? `<span class="home-match-venue">${escapeHtml(match.venue)}</span>` : ''}
-            </div>
-        </div>
+        </article>
     `;
 }
+
 
 // Current filter state
 const filterState = {

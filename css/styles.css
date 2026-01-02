@@ -1409,6 +1409,7 @@ img {
     opacity: 0;
     transform: translateX(100px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -1448,21 +1449,28 @@ img {
 }
 
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
 }
 
 @keyframes wiggle {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(0deg) scale(1);
   }
+
   25% {
     transform: rotate(-15deg) scale(1.2);
   }
+
   75% {
     transform: rotate(15deg) scale(1.2);
   }
@@ -1485,7 +1493,7 @@ img {
   font-size: 4rem;
   pointer-events: none;
   animation: floatUp 3s ease-out forwards;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 @keyframes floatUp {
@@ -1493,10 +1501,12 @@ img {
     opacity: 1;
     transform: translateY(0) rotate(0deg) scale(1);
   }
+
   50% {
     opacity: 0.9;
     transform: translateY(-50vh) rotate(180deg) scale(1.8);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-100vh) rotate(360deg) scale(0.5);
@@ -1504,9 +1514,12 @@ img {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
@@ -1520,16 +1533,16 @@ img {
     padding: 0.4rem;
     gap: 0.4rem;
   }
-  
+
   .reaction-popup .reaction-btn {
     width: 40px;
     height: 40px;
   }
-  
+
   .reaction-popup .reaction-btn .emoji {
     font-size: 1.3rem;
   }
-  
+
   .floating-emoji {
     font-size: 2.5rem;
   }
@@ -1542,16 +1555,16 @@ img {
     bottom: 10px;
     right: 10px;
   }
-  
+
   .reaction-popup .reaction-btn {
     width: 35px;
     height: 35px;
   }
-  
+
   .reaction-popup .reaction-btn .emoji {
     font-size: 1.2rem;
   }
-  
+
   .floating-emoji {
     font-size: 2rem;
   }
@@ -1562,7 +1575,7 @@ img {
    ============================================ */
 .scoreboard-section {
   padding: 4rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e5e7eb 100%);
+  background: var(--color-white);
 }
 
 .scoreboard-container {
@@ -1595,6 +1608,12 @@ img {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--color-accent) var(--color-light);
+}
+
+/* Make scorecards work in horizontal scroll */
+.matches-scroll .scorecard {
+  min-width: 320px;
+  flex-shrink: 0;
 }
 
 .matches-scroll::-webkit-scrollbar {
@@ -1744,7 +1763,8 @@ img {
   color: var(--color-secondary);
 }
 
-.match-datetime, .match-venue {
+.match-datetime,
+.match-venue {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1755,15 +1775,15 @@ img {
   .scoreboard-header h2 {
     font-size: 2rem;
   }
-  
+
   .match-card-home {
     min-width: 300px;
   }
-  
+
   .match-team-name {
     font-size: 1rem;
   }
-  
+
   .match-team-score {
     font-size: 1.5rem;
   }
@@ -1773,11 +1793,11 @@ img {
   .scoreboard-section {
     padding: 2rem 1rem;
   }
-  
+
   .scoreboard-header h2 {
     font-size: 1.75rem;
   }
-  
+
   .match-card-home {
     min-width: 280px;
     padding: 1rem;
@@ -1952,11 +1972,11 @@ img {
     min-width: 280px;
     padding: 1rem;
   }
-  
+
   .home-team-name {
     font-size: 0.875rem;
   }
-  
+
   .home-team-score {
     font-size: 1.1rem;
   }
@@ -1966,12 +1986,12 @@ img {
   .home-match-card {
     min-width: 260px;
   }
-  
+
   .home-match-teams {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .home-vs {
     padding: 0.15rem 0.4rem;
   }
