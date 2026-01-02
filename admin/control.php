@@ -131,7 +131,11 @@ if ($match_id) {
                 </select>
                 <div id="new-team1" class="mt-2 d-none">
                     <input type="text" id="team1-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Thunders FC">
-                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Madras">
+                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Madras">
+                    <select id="team1-gender" class="form-select bg-dark text-white border-secondary">
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
                 </div>
             </div>
             <div class="mb-3">
@@ -147,7 +151,11 @@ if ($match_id) {
                 </select>
                 <div id="new-team2" class="mt-2 d-none">
                     <input type="text" id="team2-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Paws United">
-                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Bombay">
+                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Bombay">
+                    <select id="team2-gender" class="form-select bg-dark text-white border-secondary">
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
                 </div>
             </div>
             <div class="row mb-3">
@@ -175,11 +183,11 @@ if ($match_id) {
             <div id="edit-names-panel" class="glass-card p-3 mb-4 d-none">
                 <div class="row g-2 align-items-center">
                     <div class="col-md-5">
-                         <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
+                        <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
                     </div>
                     <div class="col-md-2 text-center text-secondary">vs</div>
                     <div class="col-md-5">
-                         <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
+                        <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
                     </div>
                     <div class="col-12 mt-2 text-center">
                         <button onclick="saveTeamNames()" class="btn btn-success btn-sm px-4">Save Changes</button>
@@ -372,10 +380,12 @@ if ($match_id) {
                 (team1Select.selectedOptions[0]?.dataset.name || ''),
             team1_college: document.getElementById('team1-college')?.value || 
                 (team1Select.selectedOptions[0]?.dataset.college || ''),
+            team1_gender: document.getElementById('team1-gender')?.value || 'Men',
             team2_name: document.getElementById('team2-name')?.value || 
                 (team2Select.selectedOptions[0]?.dataset.name || ''),
             team2_college: document.getElementById('team2-college')?.value || 
                 (team2Select.selectedOptions[0]?.dataset.college || ''),
+            team2_gender: document.getElementById('team2-gender')?.value || 'Men',
             venue: document.getElementById('venue').value,
             round: document.getElementById('round').value
         };

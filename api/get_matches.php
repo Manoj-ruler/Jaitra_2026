@@ -25,6 +25,7 @@ try {
             t1.id as team1_id,
             t1.name as team1_name,
             t1.college_name as team1_college,
+            t1.gender as gender,
             t2.id as team2_id,
             t2.name as team2_name,
             t2.college_name as team2_college,
@@ -47,6 +48,13 @@ try {
     if ($status) {
         $query .= " AND m.status = :status";
         $params['status'] = $status;
+    }
+
+    $gender = $_GET['gender'] ?? null;
+    if ($gender) {
+        // Filter by gender column in teams table (using t1 as representative)
+        $query .= " AND t1.gender = :gender";
+        $params['gender'] = $gender;
     }
     
     $query .= " ORDER BY 

@@ -35,6 +35,21 @@ include 'includes/header.php';
                         </button>
                     </div>
                 </div>
+                <!-- Gender Filter -->
+                <div class="filter-group">
+                    <span class="filter-label">Gender Category</span>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-gender="all">
+                            All
+                        </button>
+                        <button class="filter-btn" data-gender="Men">
+                            Men
+                        </button>
+                        <button class="filter-btn" data-gender="Women">
+                            Women
+                        </button>
+                    </div>
+                </div>
                 <div class="filter-group">
                     <span class="filter-label">Sport Category</span>
                     <div class="filter-buttons">

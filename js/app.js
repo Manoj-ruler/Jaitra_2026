@@ -195,7 +195,8 @@ function createHomeMatchCard(match) {
 // Current filter state
 const filterState = {
     status: 'all',
-    sport: 'all'
+    sport: 'all',
+    gender: 'all'
 };
 
 // Hash for scoreboard data comparison
@@ -238,7 +239,8 @@ function renderScorecards(matches) {
     const filteredMatches = matches.filter(match => {
         const statusMatch = filterState.status === 'all' || match.status === filterState.status;
         const sportMatch = filterState.sport === 'all' || match.sport === filterState.sport;
-        return statusMatch && sportMatch;
+        const genderMatch = filterState.gender === 'all' || (match.gender && match.gender === filterState.gender);
+        return statusMatch && sportMatch && genderMatch;
     });
 
     if (filteredMatches.length === 0) {
@@ -380,6 +382,12 @@ function initializeFilters() {
     sportButtons.forEach(button => {
         button.addEventListener('click', () => handleSportFilter(button));
     });
+
+    // Gender filter buttons
+    const genderButtons = document.querySelectorAll('.filter-btn[data-gender]');
+    genderButtons.forEach(button => {
+        button.addEventListener('click', () => handleGenderFilter(button));
+    });
 }
 
 /**
@@ -394,6 +402,21 @@ function handleStatusFilter(button) {
     button.classList.add('active');
 
     filterState.status = status;
+    renderScorecards(matchesData);
+}
+
+/**
+ * Handle gender filter button click
+ */
+function handleGenderFilter(button) {
+    const gender = button.dataset.gender;
+
+    document.querySelectorAll('.filter-btn[data-gender]').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+
+    filterState.gender = gender;
     renderScorecards(matchesData);
 }
 
