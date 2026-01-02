@@ -1653,7 +1653,7 @@ img {
 .matches-scroll {
   display: flex;
   gap: 1.5rem;
-  overflow-x: auto;
+  overflow-x: hidden;
   padding: 1.5rem 0.5rem;
   scroll-behavior: smooth;
   scrollbar-width: thin;
@@ -1667,7 +1667,10 @@ img {
 }
 
 .matches-scroll::-webkit-scrollbar {
-  height: 10px;
+  display: none;
+  /* Hide scrollbar for auto-scroll look */
+  height: 0;
+  width: 0;
 }
 
 .matches-scroll::-webkit-scrollbar-track {
