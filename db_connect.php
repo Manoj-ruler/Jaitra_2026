@@ -4,8 +4,8 @@
  * Uses PDO with prepared statements for SQL injection prevention
  */
 
-$db_host = '127.0.0.1:4306';
-$db_port = '4306';
+$db_host = '127.0.0.1';
+$db_port = '3306';
 $db_name = 'jaitra_scores';
 $db_user = 'root';
 $db_pass = 'password';
