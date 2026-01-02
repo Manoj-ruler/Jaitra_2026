@@ -1996,3 +1996,105 @@ img {
     padding: 0.15rem 0.4rem;
   }
 }
+
+/* ============================================
+   Scorecard Branding Styles
+   ============================================ */
+.scorecard-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-light);
+}
+
+.branding-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
+.branding-text {
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Match Page Branding */
+.match-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-light);
+}
+
+.match-branding-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.match-branding-text {
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Hero Branding (inside match card) */
+.hero-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.hero-branding-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.hero-branding-text {
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Hero Match Status (inside card) */
+.hero-match-status {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.hero-status-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-completed);
+}
+
+/* Hide sets breakdown when empty */
+.match-sets-breakdown:empty {
+  display: none;
+}

@@ -182,6 +182,10 @@ function createHomeMatchCard(match) {
                 <div class="match-time">
                     ${dateStr} • ${timeStr}
                 </div>
+                <div class="scorecard-branding">
+                    <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                    <span class="branding-text">JAITRA 2026</span>
+                </div>
             </div>
         </article>
     `;
@@ -351,6 +355,10 @@ function createScorecardHTML(match) {
                 </div>
                 <div class="match-result${isCompleted ? ' winner' : ''}">
                     ${escapeHtml(resultText)}
+                </div>
+                <div class="scorecard-branding">
+                    <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                    <span class="branding-text">JAITRA 2026</span>
                 </div>
             </div>
         </article>

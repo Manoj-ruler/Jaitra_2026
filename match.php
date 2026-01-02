@@ -160,8 +160,17 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="match-sets-breakdown" id="sets-breakdown">
-                <!-- Sets/Games breakdown will be inserted here -->
+            <div class="match-sets-breakdown" id="sets-breakdown"></div>
+
+            <!-- Match Status (inside card) -->
+            <div class="hero-match-status">
+                <p class="hero-status-text" id="info-status">Loading...</p>
+            </div>
+
+            <!-- JAITRA Branding -->
+            <div class="hero-branding">
+                <img src="assets/favicon.png" alt="JAITRA" class="hero-branding-logo">
+                <span class="hero-branding-text">JAITRA 2026</span>
             </div>
 
             <div class="match-actions">
@@ -192,11 +201,6 @@ include 'includes/header.php';
 
         <!-- Floating emojis container -->
         <div class="floating-emojis-container" id="floating-emojis"></div>
-
-        <!-- Match Status -->
-        <section class="match-status-section">
-            <p class="match-status-text" id="info-status">Loading...</p>
-        </section>
 
         <!-- Similar Matches Section -->
         <section class="similar-matches-section">

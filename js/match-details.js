@@ -419,6 +419,10 @@ function renderSimilarMatches(containerId, matches) {
                     <div class="match-time">
                         ${dateStr} • ${timeStr}
                     </div>
+                    <div class="scorecard-branding">
+                        <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                        <span class="branding-text">JAITRA 2026</span>
+                    </div>
                 </div>
             </article>
         `;
