@@ -463,22 +463,88 @@ function renderSimilarMatches(containerId, matches) {
         const scores = match.scores || {};
         const score1 = scores.team1_score ?? '-';
         const score2 = scores.team2_score ?? '-';
+        const isLive = match.status === 'live';
+        const isCompleted = match.status === 'completed';
+        const winnerClass1 = isCompleted && match.winner_team === 1 ? ' winner' : '';
+        const winnerClass2 = isCompleted && match.winner_team === 2 ? ' winner' : '';
+
+        // Generate result text - same logic as scoreboard
+        let resultText = '';
+        if (isLive) {
+            resultText = 'Match in progress';
+        } else if (isCompleted && match.win_description) {
+            resultText = match.win_description;
+        } else if (isCompleted) {
+            const s1 = parseInt(score1) || 0;
+            const s2 = parseInt(score2) || 0;
+            const pointDiff = Math.abs(s1 - s2);
+
+            if (match.winner_team === 1) {
+                resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+            } else if (match.winner_team === 2) {
+                resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+            } else if (match.winner_team === 0) {
+                resultText = 'Match Drawn';
+            } else {
+                if (s1 > s2) {
+                    resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+                } else if (s2 > s1) {
+                    resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+                } else {
+                    resultText = 'Match Drawn';
+                }
+            }
+        } else {
+            resultText = match.round || 'Upcoming';
+        }
+
+        // Format date
+        const matchDate = new Date(match.match_time);
+        const dateStr = matchDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = matchDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
         html += `
-            <article class="similar-match-card" onclick="window.location.href='match.php?id=${match.id}'">
-                <div class="similar-card-header">
+            <article class="scorecard ${isLive ? 'live' : ''}" 
+                     data-status="${match.status}" 
+                     data-sport="${match.sport}" 
+                     data-match-id="${match.id}"
+                     onclick="window.location.href='match.php?id=${match.id}'"
+                     style="cursor: pointer;">
+                <div class="scorecard-header">
                     <span class="sport-badge ${match.sport}">${capitalizeFirst(match.sport)}</span>
                     <span class="status-badge ${match.status}">${capitalizeFirst(match.status)}</span>
                 </div>
-                <div class="similar-card-body">
-                    <div class="similar-team">
-                        <span class="similar-team-name">${escapeHtml(match.team1_name)}</span>
-                        <span class="similar-team-score">${score1}</span>
+                <div class="scorecard-body">
+                    <div class="teams-container">
+                        <div class="team-row${winnerClass1}">
+                            <div class="team-info">
+                                <span class="team-name">${escapeHtml(match.team1_name)}</span>
+                            </div>
+                            <div class="team-score">
+                                <span class="score-main">${score1}</span>
+                            </div>
+                        </div>
+                        <div class="vs-divider">VS</div>
+                        <div class="team-row${winnerClass2}">
+                            <div class="team-info">
+                                <span class="team-name">${escapeHtml(match.team2_name)}</span>
+                            </div>
+                            <div class="team-score">
+                                <span class="score-main">${score2}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="similar-vs">VS</div>
-                    <div class="similar-team">
-                        <span class="similar-team-name">${escapeHtml(match.team2_name)}</span>
-                        <span class="similar-team-score">${score2}</span>
+                </div>
+                <div class="scorecard-footer">
+                    <div class="match-result${isCompleted ? ' winner' : ''}">
+                        ${escapeHtml(resultText)}
+                    </div>
+                    <div class="match-time">
+                        ${dateStr} • ${timeStr}
+                    </div>
+                    <div class="scorecard-branding">
+                        <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                        <span class="branding-text">JAITRA 2026</span>
                     </div>
                 </div>
             </article>

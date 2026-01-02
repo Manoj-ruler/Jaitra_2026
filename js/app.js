@@ -148,7 +148,8 @@ function createHomeMatchCard(match) {
                  data-status="${match.status}" 
                  data-sport="${match.sport}" 
                  data-match-id="${match.id}"
-                 onclick="window.location.href='match.php?id=${match.id}'">
+                 onclick="window.location.href='match.php?id=${match.id}'"
+                 style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
@@ -180,6 +181,10 @@ function createHomeMatchCard(match) {
                 </div>
                 <div class="match-time">
                     ${dateStr} • ${timeStr}
+                </div>
+                <div class="scorecard-branding">
+                    <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                    <span class="branding-text">JAITRA 2026</span>
                 </div>
             </div>
         </article>
@@ -316,7 +321,9 @@ function createScorecardHTML(match) {
         <article class="scorecard ${isLive ? 'live' : ''}" 
                  data-status="${match.status}" 
                  data-sport="${match.sport}" 
-                 data-match-id="${match.id}">
+                 data-match-id="${match.id}"
+                 onclick="window.location.href='match.php?id=${match.id}'"
+                 style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
@@ -348,6 +355,10 @@ function createScorecardHTML(match) {
                 </div>
                 <div class="match-result${isCompleted ? ' winner' : ''}">
                     ${escapeHtml(resultText)}
+                </div>
+                <div class="scorecard-branding">
+                    <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                    <span class="branding-text">JAITRA 2026</span>
                 </div>
             </div>
         </article>
