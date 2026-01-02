@@ -544,13 +544,79 @@ function initializeScrollNavigation() {
     const prevBtn = document.querySelector('.matches-nav.prev');
     const nextBtn = document.querySelector('.matches-nav.next');
 
-    if (scrollContainer && prevBtn && nextBtn) {
+    // Remove buttons if no scroll container
+    if (!scrollContainer) {
+        if (prevBtn) prevBtn.remove();
+        if (nextBtn) nextBtn.remove();
+        return;
+    }
+
+    if (prevBtn && nextBtn) {
+        // Scroll amount
+        const scrollAmount = 350;
+
+        // Button click handlers
         prevBtn.addEventListener('click', () => {
-            scrollContainer.scrollBy({ left: -320, behavior: 'smooth' });
+            scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
         });
 
         nextBtn.addEventListener('click', () => {
-            scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         });
+
+        // Function to update button states
+        const updateButtonStates = () => {
+            // Round values to avoid floating point issues
+            const scrollLeft = Math.ceil(scrollContainer.scrollLeft);
+            const scrollWidth = Math.floor(scrollContainer.scrollWidth);
+            const clientWidth = Math.floor(scrollContainer.clientWidth);
+            const maxScroll = scrollWidth - clientWidth;
+
+            // Tolerance for calculations
+            const tolerance = 5;
+
+            // Check if scrolling is needed at all
+            // If content fits within container (with small tolerance)
+            if (maxScroll <= tolerance) {
+                prevBtn.classList.add('disabled');
+                nextBtn.classList.add('disabled');
+                prevBtn.style.opacity = '0'; // Hide completely if not needed
+                nextBtn.style.opacity = '0';
+                return;
+            } else {
+                prevBtn.style.opacity = '1'; // Ensure visible if needed
+                nextBtn.style.opacity = '1';
+            }
+
+            // Disable Prev button if at start
+            if (scrollLeft <= tolerance) {
+                prevBtn.classList.add('disabled');
+                prevBtn.setAttribute('disabled', 'true');
+            } else {
+                prevBtn.classList.remove('disabled');
+                prevBtn.removeAttribute('disabled');
+            }
+
+            // Disable Next button if at end
+            if (scrollLeft >= maxScroll - tolerance) {
+                nextBtn.classList.add('disabled');
+                nextBtn.setAttribute('disabled', 'true');
+            } else {
+                nextBtn.classList.remove('disabled');
+                nextBtn.removeAttribute('disabled');
+            }
+        };
+
+        // Attach listeners for state updates
+        scrollContainer.addEventListener('scroll', updateButtonStates);
+        window.addEventListener('resize', updateButtonStates);
+
+        // Use MutationObserver to detect content changes (loading matches)
+        const observer = new MutationObserver(updateButtonStates);
+        observer.observe(scrollContainer, { childList: true, subtree: true });
+
+        // Initial check and periodic check for image loads
+        setTimeout(updateButtonStates, 100);
+        setTimeout(updateButtonStates, 1000);
     }
 }
