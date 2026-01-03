@@ -15,6 +15,7 @@ let refreshInterval = null;
 document.addEventListener('DOMContentLoaded', function () {
     initializeFilters();
     initializeNavigation();
+    initializeScrollNavigation();
 
     // Check if we're on the scoreboard page
     if (document.querySelector('.scorecards-grid')) {
@@ -195,7 +196,8 @@ function createHomeMatchCard(match) {
 // Current filter state
 const filterState = {
     status: 'all',
-    sport: 'all'
+    sport: 'all',
+    gender: 'all'
 };
 
 // Hash for scoreboard data comparison
@@ -238,7 +240,8 @@ function renderScorecards(matches) {
     const filteredMatches = matches.filter(match => {
         const statusMatch = filterState.status === 'all' || match.status === filterState.status;
         const sportMatch = filterState.sport === 'all' || match.sport === filterState.sport;
-        return statusMatch && sportMatch;
+        const genderMatch = filterState.gender === 'all' || (match.gender && match.gender === filterState.gender);
+        return statusMatch && sportMatch && genderMatch;
     });
 
     if (filteredMatches.length === 0) {
@@ -380,6 +383,12 @@ function initializeFilters() {
     sportButtons.forEach(button => {
         button.addEventListener('click', () => handleSportFilter(button));
     });
+
+    // Gender filter buttons
+    const genderButtons = document.querySelectorAll('.filter-btn[data-gender]');
+    genderButtons.forEach(button => {
+        button.addEventListener('click', () => handleGenderFilter(button));
+    });
 }
 
 /**
@@ -394,6 +403,21 @@ function handleStatusFilter(button) {
     button.classList.add('active');
 
     filterState.status = status;
+    renderScorecards(matchesData);
+}
+
+/**
+ * Handle gender filter button click
+ */
+function handleGenderFilter(button) {
+    const gender = button.dataset.gender;
+
+    document.querySelectorAll('.filter-btn[data-gender]').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+
+    filterState.gender = gender;
     renderScorecards(matchesData);
 }
 
@@ -511,3 +535,88 @@ style.textContent = `
     .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
 `;
 document.head.appendChild(style);
+
+/**
+ * Initialize Scroll Navigation for Index Page
+ */
+function initializeScrollNavigation() {
+    const scrollContainer = document.querySelector('.matches-scroll');
+    const prevBtn = document.querySelector('.matches-nav.prev');
+    const nextBtn = document.querySelector('.matches-nav.next');
+
+    // Remove buttons if no scroll container
+    if (!scrollContainer) {
+        if (prevBtn) prevBtn.remove();
+        if (nextBtn) nextBtn.remove();
+        return;
+    }
+
+    if (prevBtn && nextBtn) {
+        // Scroll amount
+        const scrollAmount = 350;
+
+        // Button click handlers
+        prevBtn.addEventListener('click', () => {
+            scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+
+        // Function to update button states
+        const updateButtonStates = () => {
+            // Round values to avoid floating point issues
+            const scrollLeft = Math.ceil(scrollContainer.scrollLeft);
+            const scrollWidth = Math.floor(scrollContainer.scrollWidth);
+            const clientWidth = Math.floor(scrollContainer.clientWidth);
+            const maxScroll = scrollWidth - clientWidth;
+
+            // Tolerance for calculations
+            const tolerance = 5;
+
+            // Check if scrolling is needed at all
+            // If content fits within container (with small tolerance)
+            if (maxScroll <= tolerance) {
+                prevBtn.classList.add('disabled');
+                nextBtn.classList.add('disabled');
+                prevBtn.style.opacity = '0'; // Hide completely if not needed
+                nextBtn.style.opacity = '0';
+                return;
+            } else {
+                prevBtn.style.opacity = '1'; // Ensure visible if needed
+                nextBtn.style.opacity = '1';
+            }
+
+            // Disable Prev button if at start
+            if (scrollLeft <= tolerance) {
+                prevBtn.classList.add('disabled');
+                prevBtn.setAttribute('disabled', 'true');
+            } else {
+                prevBtn.classList.remove('disabled');
+                prevBtn.removeAttribute('disabled');
+            }
+
+            // Disable Next button if at end
+            if (scrollLeft >= maxScroll - tolerance) {
+                nextBtn.classList.add('disabled');
+                nextBtn.setAttribute('disabled', 'true');
+            } else {
+                nextBtn.classList.remove('disabled');
+                nextBtn.removeAttribute('disabled');
+            }
+        };
+
+        // Attach listeners for state updates
+        scrollContainer.addEventListener('scroll', updateButtonStates);
+        window.addEventListener('resize', updateButtonStates);
+
+        // Use MutationObserver to detect content changes (loading matches)
+        const observer = new MutationObserver(updateButtonStates);
+        observer.observe(scrollContainer, { childList: true, subtree: true });
+
+        // Initial check and periodic check for image loads
+        setTimeout(updateButtonStates, 100);
+        setTimeout(updateButtonStates, 1000);
+    }
+}

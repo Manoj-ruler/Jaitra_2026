@@ -42,12 +42,14 @@ try {
                 // Create new team
                 $team1_name = trim($data['team1_name'] ?? '');
                 $team1_college = trim($data['team1_college'] ?? '');
+                $team1_gender = $data['team1_gender'] ?? 'Men'; // Default to Men
+
                 if (empty($team1_name) || empty($team1_college)) {
                     echo json_encode(['success' => false, 'error' => 'Team 1 name and college required']);
                     exit;
                 }
-                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, sport_id) VALUES (:name, :college, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
-                $stmt->execute(['name' => $team1_name, 'college' => $team1_college, 'sport' => $sport_id]);
+                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, gender, sport_id) VALUES (:name, :college, :gender, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
+                $stmt->execute(['name' => $team1_name, 'college' => $team1_college, 'gender' => $team1_gender, 'sport' => $sport_id]);
                 $team1_id = $conn->lastInsertId();
             }
             
@@ -62,12 +64,14 @@ try {
             } else {
                 $team2_name = trim($data['team2_name'] ?? '');
                 $team2_college = trim($data['team2_college'] ?? '');
+                $team2_gender = $data['team2_gender'] ?? 'Men'; // Default to Men
+
                 if (empty($team2_name) || empty($team2_college)) {
                     echo json_encode(['success' => false, 'error' => 'Team 2 name and college required']);
                     exit;
                 }
-                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, sport_id) VALUES (:name, :college, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
-                $stmt->execute(['name' => $team2_name, 'college' => $team2_college, 'sport' => $sport_id]);
+                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, gender, sport_id) VALUES (:name, :college, :gender, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
+                $stmt->execute(['name' => $team2_name, 'college' => $team2_college, 'gender' => $team2_gender, 'sport' => $sport_id]);
                 $team2_id = $conn->lastInsertId();
             }
             

@@ -69,23 +69,26 @@ if ($match_id) {
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Outfit', sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
+            background: #f8f9fa;
+            color: #1a2332;
             min-height: 100vh;
         }
-        .navbar-custom { background-color: #002147 !important; }
+        .navbar-custom { 
+            background-color: #1a2332 !important; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .glass-card {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .control-btn { height: 70px; font-size: 1.1rem; font-weight: bold; }
-        .score-display { font-size: 5rem; font-weight: 800; }
+        .score-display { font-size: 5rem; font-weight: 800; color: #1a2332; }
         .active-raider-btn { 
-            box-shadow: 0 0 20px #facc15; 
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.5); 
             border-color: #facc15 !important; 
-            background: rgba(250, 204, 21, 0.2) !important;
+            background: rgba(250, 204, 21, 0.1) !important;
         }
         .btn-timeout-active {
             animation: pulse 1s infinite;
@@ -98,11 +101,21 @@ if ($match_id) {
             .score-display { font-size: 3rem; }
             .control-btn { height: 50px; font-size: 0.9rem; }
         }
-        ::placeholder {
-            color: rgba(255, 255, 255, 0.5) !important;
+        /* Form Overrides for Light Theme */
+        input, select, .form-control, .form-select {
+            background-color: #ffffff !important;
+            color: #1a2332 !important;
+            border-color: #d1d5db !important;
         }
-        input, select {
-            color: white !important;
+        input:focus, select:focus, .form-control:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+        }
+        ::placeholder {
+            color: #9ca3af !important;
+        }
+        .text-secondary {
+            color: #64748b !important; /* Blue-gray for better contrast on white */
         }
     </style>
 </head>
@@ -131,7 +144,11 @@ if ($match_id) {
                 </select>
                 <div id="new-team1" class="mt-2 d-none">
                     <input type="text" id="team1-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Thunders FC">
-                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Madras">
+                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Madras">
+                    <select id="team1-gender" class="form-select bg-dark text-white border-secondary">
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
                 </div>
             </div>
             <div class="mb-3">
@@ -147,7 +164,11 @@ if ($match_id) {
                 </select>
                 <div id="new-team2" class="mt-2 d-none">
                     <input type="text" id="team2-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Paws United">
-                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary" placeholder="e.g. IIT Bombay">
+                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Bombay">
+                    <select id="team2-gender" class="form-select bg-dark text-white border-secondary">
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
                 </div>
             </div>
             <div class="row mb-3">
@@ -175,11 +196,11 @@ if ($match_id) {
             <div id="edit-names-panel" class="glass-card p-3 mb-4 d-none">
                 <div class="row g-2 align-items-center">
                     <div class="col-md-5">
-                         <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
+                        <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
                     </div>
                     <div class="col-md-2 text-center text-secondary">vs</div>
                     <div class="col-md-5">
-                         <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
+                        <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
                     </div>
                     <div class="col-12 mt-2 text-center">
                         <button onclick="saveTeamNames()" class="btn btn-success btn-sm px-4">Save Changes</button>
@@ -372,10 +393,12 @@ if ($match_id) {
                 (team1Select.selectedOptions[0]?.dataset.name || ''),
             team1_college: document.getElementById('team1-college')?.value || 
                 (team1Select.selectedOptions[0]?.dataset.college || ''),
+            team1_gender: document.getElementById('team1-gender')?.value || 'Men',
             team2_name: document.getElementById('team2-name')?.value || 
                 (team2Select.selectedOptions[0]?.dataset.name || ''),
             team2_college: document.getElementById('team2-college')?.value || 
                 (team2Select.selectedOptions[0]?.dataset.college || ''),
+            team2_gender: document.getElementById('team2-gender')?.value || 'Men',
             venue: document.getElementById('venue').value,
             round: document.getElementById('round').value
         };

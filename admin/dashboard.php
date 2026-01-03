@@ -66,11 +66,11 @@ $sportEmojis = [
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Outfit', sans-serif;
-            background: #f3f4f6;
+            background: #f8f9fa;
             min-height: 100vh;
         }
         .header {
-            background: linear-gradient(135deg, #1a2332 0%, #2563eb 100%);
+            background: #1a2332;
             color: white;
             padding: 1rem 2rem;
             display: flex;
