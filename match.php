@@ -139,6 +139,32 @@ $pageStyles = '
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
+    
+    /* Kabaddi Specific Styles */
+    .raiding-indicator {
+        font-size: 0.9rem;
+        color: #fbbf24;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0.5rem;
+        animation: pulse 1s infinite;
+        display: none; /* Hidden by default */
+    }
+    .player-icons-container {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        margin-top: 0.5rem;
+        height: 20px;
+    }
+    .player-icon {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    .player-icon.active {
+        color: #fbbf24;
+    }
 ';
 
 // Include the common header
@@ -174,6 +200,8 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-a-winner"></div>
                     <h2 class="team-display-name" id="team-a-name">Team A</h2>
                     <div class="team-display-score" id="team-a-score">0</div>
+                    <div class="raiding-indicator" id="team-a-raid"><i class="fas fa-running me-1"></i> Raiding</div>
+                    <div class="player-icons-container" id="team-a-players-container"></div>
                 </div>
                 
                 <div class="vs-large">VS</div>
@@ -182,6 +210,8 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-b-winner"></div>
                     <h2 class="team-display-name" id="team-b-name">Team B</h2>
                     <div class="team-display-score" id="team-b-score">0</div>
+                    <div class="raiding-indicator" id="team-b-raid"><i class="fas fa-running me-1"></i> Raiding</div>
+                    <div class="player-icons-container" id="team-b-players-container"></div>
                 </div>
             </div>
 
