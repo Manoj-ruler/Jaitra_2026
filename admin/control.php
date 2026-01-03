@@ -117,6 +117,42 @@ if ($match_id) {
         .text-secondary {
             color: #64748b !important; /* Blue-gray for better contrast on white */
         }
+        .text-secondary {
+            color: #64748b !important; /* Blue-gray for better contrast on white */
+        }
+        /* Badminton Specific Styles */
+        .service-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: #e5e7eb;
+            margin: 0 5px;
+        }
+        .serving .service-indicator {
+            background-color: #facc15; /* Gold for server */
+            box-shadow: 0 0 5px #facc15;
+            animation: pulse-serve 1.5s infinite;
+        }
+        @keyframes pulse-serve {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .set-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            min-width: 40px;
+        }
+        .set-active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
     </style>
 </head>
 <body>
@@ -211,18 +247,36 @@ if ($match_id) {
             <!-- Scoreboard Display -->
             <div class="row mb-4">
                 <div class="col-5">
-                    <div class="glass-card p-3 text-center">
-                        <h4 id="lbl-t1" class="text-primary mb-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t1_name']) : 'Team 1' ?></h4>
+                    <div class="glass-card p-3 text-center position-relative" id="card-t1">
+                        <?php if ($sportName === 'badminton'): ?>
+                        <div class="position-absolute top-0 start-50 translate-middle-x mt-2">
+                             <div id="serve-t1" class="service-indicator"></div>
+                        </div>
+                        <?php endif; ?>
+                        <h4 id="lbl-t1" class="text-primary mb-2 mt-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t1_name']) : 'Team 1' ?></h4>
                         <div class="score-display text-primary" id="val-t1">0</div>
+                        <!-- Sets Display Removed -->
                     </div>
                 </div>
-                <div class="col-2 d-flex align-items-center justify-content-center">
-                    <span class="text-secondary h2">VS</span>
+                <div class="col-2 d-flex flex-column align-items-center justify-content-center">
+                    <span class="text-secondary h2 mb-0">VS</span>
+                    <?php if ($sportName === 'badminton'): ?>
+                    <div class="mt-2 text-center">
+                        <small class="text-uppercase text-secondary fw-bold" style="font-size: 0.7rem; letter-spacing: 1px;">SET</small>
+                        <div id="current-set-display" class="h4 text-primary fw-bold">1</div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-5">
-                    <div class="glass-card p-3 text-center">
-                        <h4 id="lbl-t2" class="text-danger mb-2">Team 2</h4>
+                    <div class="glass-card p-3 text-center position-relative" id="card-t2">
+                        <?php if ($sportName === 'badminton'): ?>
+                        <div class="position-absolute top-0 start-50 translate-middle-x mt-2">
+                             <div id="serve-t2" class="service-indicator"></div>
+                        </div>
+                        <?php endif; ?>
+                        <h4 id="lbl-t2" class="text-danger mb-2 mt-2">Team 2</h4>
                         <div class="score-display text-primary" id="val-t2">0</div>
+                         <!-- Sets Display Removed -->
                     </div>
                 </div>
             </div>
@@ -242,6 +296,30 @@ if ($match_id) {
                     <!-- TEAM 1 -->
                     <div class="col-md-6 border-end border-secondary">
                         <h5 class="text-primary text-center mb-3">TEAM 1 SCORING</h5>
+                        
+                        <?php if ($sportName === 'badminton'): ?>
+                        <!-- Badminton Controls -->
+                        <div class="mb-3">
+                             <button onclick="setServer('t1')" id="btn-serve-t1" class="btn btn-outline-warning w-100 mb-3">
+                                <i class="fas fa-shuttlecock me-1"></i> Serving
+                            </button>
+                             <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <button onclick="addPoints('t1', 1)" class="btn btn-primary w-100 control-btn">+1</button>
+                                </div>
+                                <div class="col-6">
+                                    <button onclick="addPoints('t1', -1)" class="btn btn-outline-danger w-100 control-btn">-1</button>
+                                </div>
+                            </div>
+                            <!-- Manual Set Control Removed -->
+                             <div class="input-group">
+                                <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                                <input type="number" id="manual-score-t1" class="form-control text-center" value="0">
+                                <button onclick="updateManualScore('t1')" class="btn btn-secondary">SET</button>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                        <!-- Standard/Kabaddi Controls -->
                         <div class="row g-2 mb-3">
                             <div class="col-4">
                                 <button onclick="addPoints('t1', 1)" class="btn btn-outline-primary w-100 control-btn">+1</button>
@@ -283,11 +361,36 @@ if ($match_id) {
                             </div>
                         </div>
                         <?php endif; ?>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- TEAM 2 -->
                     <div class="col-md-6">
                         <h5 class="text-danger text-center mb-3">TEAM 2 SCORING</h5>
+                        
+                        <?php if ($sportName === 'badminton'): ?>
+                        <!-- Badminton Controls -->
+                        <div class="mb-3">
+                            <button onclick="setServer('t2')" id="btn-serve-t2" class="btn btn-outline-warning w-100 mb-3">
+                                <i class="fas fa-shuttlecock me-1"></i> Serving
+                            </button>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <button onclick="addPoints('t2', 1)" class="btn btn-danger w-100 control-btn">+1</button>
+                                </div>
+                                <div class="col-6">
+                                    <button onclick="addPoints('t2', -1)" class="btn btn-outline-danger w-100 control-btn">-1</button>
+                                </div>
+                            </div>
+                             <!-- Manual Set Control Removed -->
+                             <div class="input-group">
+                                <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                                <input type="number" id="manual-score-t2" class="form-control text-center" value="0">
+                                <button onclick="updateManualScore('t2')" class="btn btn-secondary">SET</button>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                        <!-- Standard/Kabaddi Controls -->
                         <div class="row g-2 mb-3">
                             <div class="col-4">
                                 <button onclick="addPoints('t2', 1)" class="btn btn-outline-danger w-100 control-btn">+1</button>
@@ -329,11 +432,28 @@ if ($match_id) {
                             </div>
                         </div>
                         <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php if ($sportName === 'badminton'): ?>
+            <!-- Set Controls for Badminton -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-5 text-center">
+                    <div class="bg-white border border-secondary p-2 rounded">
+                        <small class="text-secondary fw-bold">CURRENT SET</small>
+                        <div class="d-flex align-items-center justify-content-center gap-3 mt-1 mb-2">
+                            <span id="pcount-set" class="h3 mb-0 text-primary">1</span>
+                        </div>
+                        <button onclick="endSet()" class="btn btn-outline-primary w-100 btn-sm fw-bold">
+                            CHECK / END SET
+                        </button>
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
+        </div>
 
-            <!-- End Match -->
+        <!-- End Match -->
             <button onclick="endMatch()" class="btn btn-danger w-100 py-3 fw-bold">END MATCH</button>
         </div>
     </div>
@@ -342,36 +462,73 @@ if ($match_id) {
     const SPORT_ID = <?= $sport_id ?>;
     let matchId = <?= $activeMatch ? $activeMatch['id'] : 'null' ?>;
     
-    // Score state - matches reference repo structure
-    let state = <?= $activeMatch && $initialState ? $initialState : json_encode([
-        'team1_score' => 0,
-        'team2_score' => 0,
-        't1_players' => 7,
-        't2_players' => 7,
-        'current_raider' => 'team1',
-        'is_timeout' => false,
-        'last_animation' => null,
-        'history' => []
-    ]) ?>;
+    // Score state - sport-specific defaults
+    <?php
+    // Generate sport-specific default state to match backend schema
+    $sportLower = strtolower($sportName);
+    if ($sportLower === 'kabaddi') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'current_raider' => 'team1',
+            't1_players' => 7,
+            't2_players' => 7,
+            'is_timeout' => false,
+            'last_animation' => null
+        ];
+    } elseif ($sportLower === 'badminton') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'server' => null,
+            't1_sets' => 0,
+            't2_sets' => 0,
+            'current_set' => 1,
+            'is_timeout' => false
+        ];
+    } elseif ($sportLower === 'volleyball' || $sportLower === 'pickleball') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            't1_sets' => 0,
+            't2_sets' => 0,
+            'current_set' => 1,
+            'server' => null,
+            'is_timeout' => false
+        ];
+    } else {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'is_timeout' => false
+        ];
+    }
+    ?>
+    let state = <?= $activeMatch && $initialState ? $initialState : json_encode($defaultState) ?>;
     
-    // Ensure defaults if state was partial
+    // Merge with defaults to ensure all expected fields exist
     state = {
-        team1_score: 0,
-        team2_score: 0,
-        t1_players: 7,
-        t2_players: 7,
-        current_raider: 'team1',
-        is_timeout: false,
-        last_animation: null,
-        history: [],
+        ...<?= json_encode($defaultState) ?>,
         ...state
     };
+    
+    // Debug: Log sport-specific state structure
+    console.log('🏅 Sport:', '<?= $sportName ?>');
+    console.log('📊 Initial State Schema:', state);
+    console.log('🔑 State Keys:', Object.keys(state));
     
     // Initial Render
     if (matchId) {
         document.addEventListener('DOMContentLoaded', () => {
             render();
-            setRaider(state.current_raider || 'team1');
+            if (state.current_raider) setRaider(state.current_raider);
+            if (state.server) setServer(state.server);
+            
+            // Populate manual inputs
+            const manT1 = document.getElementById('manual-score-t1');
+            const manT2 = document.getElementById('manual-score-t2');
+            if(manT1) manT1.value = state.team1_score;
+            if(manT2) manT2.value = state.team2_score;
         });
     }
 
@@ -421,6 +578,17 @@ if ($match_id) {
                 document.getElementById('lbl-t2').innerText = result.team2_name || data.team2_name;
                 document.getElementById('setup-panel').classList.add('d-none');
                 document.getElementById('live-panel').classList.remove('d-none');
+                
+                // Fetch and log the backend-generated state
+                fetch(`../api/get_score.php?id=${matchId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.match) {
+                            console.log('✅ Match Started - Backend State:', data.match.scores);
+                            console.log('🔍 Verify sport-specific fields are present');
+                        }
+                    });
+                
                 render();
             } else {
                 alert('Error: ' + (result.error || 'Failed to start'));
@@ -468,6 +636,91 @@ if ($match_id) {
         state[key] = Math.max(0, Math.min(7, val));
         sync();
     }
+
+    // Badminton Specific Functions
+    function setServer(team) {
+        state.server = team;
+        const btnT1 = document.getElementById('btn-serve-t1');
+        const btnT2 = document.getElementById('btn-serve-t2');
+        if (btnT1) btnT1.classList.toggle('active-raider-btn', team === 't1');
+        if (btnT2) btnT2.classList.toggle('active-raider-btn', team === 't2');
+        sync();
+    }
+
+    function updateSets(team, change) {
+        const key = team === 't1' ? 't1_sets' : 't2_sets';
+        let val = (state[key] || 0) + change;
+        state[key] = Math.max(0, val);
+        sync();
+    }
+
+    function updateCurrentSet(change) {
+        let val = (state.current_set || 1) + change;
+        state.current_set = Math.max(1, val);
+        sync();
+    }
+
+    async function endSet() {
+        const s1 = state.team1_score || 0;
+        const s2 = state.team2_score || 0;
+        const set = state.current_set || 1;
+        
+        // Determine winner (or null if tied)
+        let winnerCode = null;
+        if (s1 > s2) {
+            winnerCode = 't1';
+        } else if (s2 > s1) {
+            winnerCode = 't2';
+        }
+        
+        const winnerName = winnerCode === 't1' ? document.getElementById('lbl-t1').innerText : 
+                          winnerCode === 't2' ? document.getElementById('lbl-t2').innerText : 
+                          'Tied';
+        
+        if (!confirm(`End Set ${set}?\nScore: ${s1}-${s2}\nWinner: ${winnerName}\n\nScores will be reset to 0-0 for next set.`)) return;
+        
+        // Initialize set_history if it doesn't exist
+        if (!state.set_history) state.set_history = [];
+        
+        // Store this set's result
+        state.set_history.push({
+            set_number: set,
+            team1_score: s1,
+            team2_score: s2,
+            winner: winnerCode
+        });
+        
+        // Update sets won (only if there's a winner)
+        if (winnerCode === 't1') {
+            state.t1_sets = (state.t1_sets || 0) + 1;
+        } else if (winnerCode === 't2') {
+            state.t2_sets = (state.t2_sets || 0) + 1;
+        }
+        
+        console.log('📋 Set History:', state.set_history);
+        console.log('🏆 Sets Won - T1:', state.t1_sets, 'T2:', state.t2_sets);
+        
+        // Check for Match Win (Best of 3)
+        if (state.t1_sets >= 2 || state.t2_sets >= 2) {
+             const matchWinner = state.t1_sets > state.t2_sets ? document.getElementById('lbl-t1').innerText : document.getElementById('lbl-t2').innerText;
+             alert(`MATCH OVER!\n${matchWinner} wins the match (${state.t1_sets}-${state.t2_sets}).\n\nPlease click 'END MATCH' to finalize.`);
+        } else {
+             // Match continues, start next set
+             state.team1_score = 0;
+             state.team2_score = 0;
+             state.current_set += 1;
+        }
+        
+        sync();
+    }
+
+    function updateManualScore(team) {
+        const inputId = team === 't1' ? 'manual-score-t1' : 'manual-score-t2';
+        const val = parseInt(document.getElementById(inputId).value) || 0;
+        const key = team === 't1' ? 'team1_score' : 'team2_score';
+        state[key] = Math.max(0, val);
+        sync();
+    }
     
     function sync() {
         render();
@@ -489,12 +742,40 @@ if ($match_id) {
         document.getElementById('val-t1').innerText = state.team1_score || 0;
         document.getElementById('val-t2').innerText = state.team2_score || 0;
         
+        // Update manual inputs if they exist and aren't focused
+        const manT1 = document.getElementById('manual-score-t1');
+        const manT2 = document.getElementById('manual-score-t2');
+        if(manT1 && document.activeElement !== manT1) manT1.value = state.team1_score || 0;
+        if(manT2 && document.activeElement !== manT2) manT2.value = state.team2_score || 0;
+        
         // Kabaddi specific
         const pT1 = document.getElementById('pcount-t1');
         const pT2 = document.getElementById('pcount-t2');
         if (pT1) pT1.innerText = state.t1_players ?? 7;
         if (pT2) pT2.innerText = state.t2_players ?? 7;
         
+        // Badminton specific
+        const setsT1 = document.getElementById('sets-t1');
+        const setsT2 = document.getElementById('sets-t2');
+        const ctrlSetsT1 = document.getElementById('ctrl-sets-t1');
+        const ctrlSetsT2 = document.getElementById('ctrl-sets-t2');
+        const currSet = document.getElementById('current-set-display');
+        const currSetCtrl = document.getElementById('pcount-set');
+        const serveT1 = document.getElementById('card-t1');
+        const serveT2 = document.getElementById('card-t2');
+        
+        if (setsT1) setsT1.innerText = state.t1_sets || 0;
+        if (setsT2) setsT2.innerText = state.t2_sets || 0;
+        if (ctrlSetsT1) ctrlSetsT1.innerText = state.t1_sets || 0;
+        if (ctrlSetsT2) ctrlSetsT2.innerText = state.t2_sets || 0;
+        if (currSet) currSet.innerText = state.current_set || 1;
+        if (currSetCtrl) currSetCtrl.innerText = state.current_set || 1;
+        
+        if (serveT1 && serveT2) {
+             serveT1.classList.toggle('serving', state.server === 't1');
+             serveT2.classList.toggle('serving', state.server === 't2');
+        }
+
         // Timeout button state
         const btnTimeout = document.getElementById('btn-timeout');
         if (btnTimeout) {

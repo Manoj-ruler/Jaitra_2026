@@ -167,6 +167,80 @@ $pageStyles = '
         color: #22c55e; /* Green for present players */
         opacity: 1;
     }
+    
+    /* Badminton Set Scores Display - Minimal Professional Design */
+    #sets-breakdown {
+        margin-top: 1rem;
+    }
+    
+    #set-scores-container {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .set-score-card {
+        background: #ffffff;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        min-width: 90px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .set-score-card:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
+    }
+    
+    .set-score-card.winner-t1 {
+        background: #fffbf5;
+        border-color: #fb923c;
+        box-shadow: 0 1px 3px rgba(251, 146, 60, 0.15);
+    }
+    
+    .set-score-card.winner-t2 {
+        background: #f7f9ff;
+        border-color: #60a5fa;
+        box-shadow: 0 1px 3px rgba(96, 165, 250, 0.15);
+    }
+    
+    .set-score-card .set-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #9ca3af;
+        margin-bottom: 0.15rem;
+        text-align: center;
+    }
+    
+    .set-score-card.winner-t1 .set-label {
+        color: #ea580c;
+    }
+    
+    .set-score-card.winner-t2 .set-label {
+        color: #3b82f6;
+    }
+    
+    .set-score-card .set-score {
+        font-size: 1.1rem;
+        color: #374151;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: -0.3px;
+    }
+    
+    .set-score-card.winner-t1 .set-score {
+        color: #ea580c;
+    }
+    
+    .set-score-card.winner-t2 .set-score {
+        color: #3b82f6;
+    }
 ';
 
 // Include the common header
@@ -202,22 +276,46 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-a-winner"></div>
                     <h2 class="team-display-name" id="team-a-name">Team A</h2>
                     <div class="team-display-score" id="team-a-score">0</div>
+                    
+                    <!-- Kabaddi Specific -->
                     <div class="raiding-indicator" id="team-a-raid"><i class="fas fa-running me-1"></i> Raiding</div>
                     <div class="player-icons-container" id="team-a-players-container"></div>
+                    
+                    <!-- Badminton Specific -->
+                    <div class="serving-indicator" id="team-a-serve" style="display: none; color: #fbbf24; font-weight: bold; text-transform: uppercase; margin-top: 5px; animation: pulse 1s infinite;">
+                        <i class="fas fa-shuttlecock me-1"></i> Serving
+                    </div>
+                    <!-- Sets Display Removed -->
                 </div>
                 
-                <div class="vs-large">VS</div>
+                <div class="d-flex flex-column align-items-center justify-content-center" style="align-self: center;">
+                    <div id="current-set-badge" class="badge bg-secondary mb-2" style="font-size: 0.8rem; display: none;">SET 1</div>
+                    <div class="vs-large">VS</div>
+                </div>
                 
                 <div class="team-display team-b">
                     <div class="team-winner-indicator" id="team-b-winner"></div>
                     <h2 class="team-display-name" id="team-b-name">Team B</h2>
                     <div class="team-display-score" id="team-b-score">0</div>
+                    
+                    <!-- Kabaddi Specific -->
                     <div class="raiding-indicator" id="team-b-raid"><i class="fas fa-running me-1"></i> Raiding</div>
                     <div class="player-icons-container" id="team-b-players-container"></div>
+                    
+                    <!-- Badminton Specific -->
+                    <div class="serving-indicator" id="team-b-serve" style="display: none; color: #fbbf24; font-weight: bold; text-transform: uppercase; margin-top: 5px; animation: pulse 1s infinite;">
+                        <i class="fas fa-shuttlecock me-1"></i> Serving
+                    </div>
+                    <!-- Sets Display Removed -->
                 </div>
             </div>
 
-            <div class="match-sets-breakdown" id="sets-breakdown"></div>
+            <!-- Individual Set Scores Display (Outside Grid) -->
+            <div id="sets-breakdown" style="display: none; text-align: center; margin-bottom: var(--spacing-lg);">
+                <div class="d-flex gap-3 justify-content-center flex-wrap" id="set-scores-container">
+                    <!-- Set scores will be inserted here dynamically -->
+                </div>
+            </div>
 
             <!-- Match Status (inside card) -->
             <div class="hero-match-status">

@@ -147,46 +147,113 @@ function updateScoreDisplay() {
     document.getElementById('team-a-score').textContent = score1;
     document.getElementById('team-b-score').textContent = score2;
 
-    // Live Match Specific Details (Kabaddi Only)
     const isLive = currentMatch.status === 'live';
+    const sportName = (currentMatch.sport || '').toLowerCase();
+    const isBadminton = sportName === 'badminton';
+    const isKabaddi = sportName === 'kabaddi';
+
+    // Elements
     const raidA = document.getElementById('team-a-raid');
     const raidB = document.getElementById('team-b-raid');
     const containerA = document.getElementById('team-a-players-container');
     const containerB = document.getElementById('team-b-players-container');
 
+    // Badminton Elements
+    const serveA = document.getElementById('team-a-serve');
+    const serveB = document.getElementById('team-b-serve');
+    const currentSetBadge = document.getElementById('current-set-badge');
+    const setsBreakdown = document.getElementById('sets-breakdown');
+    const setScoresContainer = document.getElementById('set-scores-container');
+
     if (isLive) {
-        // Update Player Counts (Render Icons)
-        const p1 = scores.t1_players ?? 7;
-        const p2 = scores.t2_players ?? 7;
-        renderPlayerIcons('team-a-players-container', p1);
-        renderPlayerIcons('team-b-players-container', p2);
-        if (containerA) containerA.style.display = 'flex';
-        if (containerB) containerB.style.display = 'flex';
+        if (isKabaddi) {
+            // Show Kabaddi, Hide Badminton
+            if (serveA) serveA.style.display = 'none';
+            if (serveB) serveB.style.display = 'none';
+            if (setsA) setsA.style.display = 'none';
+            if (setsB) setsB.style.display = 'none';
+            if (currentSetBadge) currentSetBadge.style.display = 'none';
 
-        // Update Raiding Indicator
-        const raider = scores.current_raider || 'team1';
+            // Update Player Counts (Render Icons)
+            const p1 = scores.t1_players ?? 7;
+            const p2 = scores.t2_players ?? 7;
+            renderPlayerIcons('team-a-players-container', p1);
+            renderPlayerIcons('team-b-players-container', p2);
+            if (containerA) containerA.style.display = 'flex';
+            if (containerB) containerB.style.display = 'flex';
 
-        if (raidA && raidB) {
-            if (raider === 'team1') {
-                raidA.style.display = 'block';
-                raidB.style.display = 'none';
-                // highlight team name
-                document.getElementById('team-a-name').style.color = '#fbbf24';
-                document.getElementById('team-b-name').style.color = '';
+            // Update Raiding Indicator
+            const raider = scores.current_raider || 'team1';
+            updateActiveIndicator(raidA, raidB, raider);
+        } else if (isBadminton) {
+            // Show Badminton, Hide Kabaddi
+            if (raidA) raidA.style.display = 'none';
+            if (raidB) raidB.style.display = 'none';
+            if (containerA) containerA.style.display = 'none';
+            if (containerB) containerB.style.display = 'none';
+
+            // Update Service
+            const server = scores.server || null;
+            updateActiveIndicator(serveA, serveB, server);
+
+            // Render Individual Set Scores with enhanced styling
+            const setHistory = scores.set_history || [];
+            if (setScoresContainer && setHistory.length > 0) {
+                setScoresContainer.innerHTML = '';
+                setHistory.forEach(set => {
+                    const setDiv = document.createElement('div');
+                    // Add winner class for styling
+                    const winnerClass = set.winner ? `winner-${set.winner}` : '';
+                    setDiv.className = `set-score-card ${winnerClass}`;
+                    setDiv.innerHTML = `
+                        <div class="set-label">Set ${set.set_number}</div>
+                        <div class="set-score">${set.team1_score} - ${set.team2_score}</div>
+                    `;
+                    setScoresContainer.appendChild(setDiv);
+                });
+                if (setsBreakdown) setsBreakdown.style.display = 'block';
             } else {
-                raidA.style.display = 'none';
-                raidB.style.display = 'block';
-                // highlight team name
-                document.getElementById('team-b-name').style.color = '#fbbf24';
-                document.getElementById('team-a-name').style.color = '';
+                if (setsBreakdown) setsBreakdown.style.display = 'none';
+            }
+
+            // Update Current Set Badge
+            if (currentSetBadge) {
+                if (currentMatch.status === 'completed') {
+                    currentSetBadge.style.display = 'none';
+                } else {
+                    currentSetBadge.textContent = 'SET ' + (scores.current_set || 1);
+                    currentSetBadge.style.display = 'block';
+                }
             }
         }
     } else {
-        // Hide details if not live
-        if (raidA) raidA.style.display = 'none';
-        if (raidB) raidB.style.display = 'none';
-        if (containerA) containerA.style.display = 'none';
-        if (containerB) containerB.style.display = 'none';
+        // Hide all indicators if not live (except sets for completed Badminton)
+        const allIndicators = [raidA, raidB, containerA, containerB, serveA, serveB, currentSetBadge];
+        allIndicators.forEach(el => { if (el) el.style.display = 'none'; });
+
+        // Show Final Set Scores if completed Badminton
+        if (isBadminton && currentMatch.status === 'completed') {
+            const setHistory = scores.set_history || [];
+            if (setScoresContainer && setHistory.length > 0) {
+                setScoresContainer.innerHTML = '';
+                setHistory.forEach(set => {
+                    const setDiv = document.createElement('div');
+                    const winnerClass = set.winner ? `winner-${set.winner}` : '';
+                    setDiv.className = `set-score-card ${winnerClass}`;
+                    setDiv.innerHTML = `
+                        <div class="set-label">Set ${set.set_number}</div>
+                        <div class="set-score">${set.team1_score} - ${set.team2_score}</div>
+                    `;
+                    setScoresContainer.appendChild(setDiv);
+                });
+                if (setsBreakdown) setsBreakdown.style.display = 'block';
+            } else {
+                if (setsBreakdown) setsBreakdown.style.display = 'none';
+            }
+        } else {
+            // Hide sets breakdown for non-Badminton or non-completed matches
+            if (setsBreakdown) setsBreakdown.style.display = 'none';
+        }
 
         // Reset team name colors
         document.getElementById('team-a-name').style.color = '';
@@ -198,6 +265,30 @@ function updateScoreDisplay() {
     const toT2Score = document.getElementById('to-t2-score');
     if (toT1Score) toT1Score.textContent = score1;
     if (toT2Score) toT2Score.textContent = score2;
+}
+
+/**
+ * Helper to update active indicator (Raider or Server)
+ */
+function updateActiveIndicator(elA, elB, activeTeam) {
+    if (!elA || !elB) return;
+
+    if (activeTeam === 't1' || activeTeam === 'team1') {
+        elA.style.display = 'block';
+        elB.style.display = 'none';
+        document.getElementById('team-a-name').style.color = '#fbbf24';
+        document.getElementById('team-b-name').style.color = '';
+    } else if (activeTeam === 't2' || activeTeam === 'team2') {
+        elA.style.display = 'none';
+        elB.style.display = 'block';
+        document.getElementById('team-b-name').style.color = '#fbbf24';
+        document.getElementById('team-a-name').style.color = '';
+    } else {
+        elA.style.display = 'none';
+        elB.style.display = 'none';
+        document.getElementById('team-a-name').style.color = '';
+        document.getElementById('team-b-name').style.color = '';
+    }
 }
 
 /**
@@ -355,11 +446,24 @@ function triggerWinnerAnimation(winnerName) {
     if (typeof currentMatch !== 'undefined' && currentMatch.scores) {
         const s1 = parseInt(currentMatch.scores.team1_score || 0);
         const s2 = parseInt(currentMatch.scores.team2_score || 0);
+        const sportName = (currentMatch.sport || '').toLowerCase();
 
-        if (winnerName === currentMatch.team1_name && s1 > s2) {
-            resultText = `${winnerName} won by ${s1 - s2} points`;
-        } else if (winnerName === currentMatch.team2_name && s2 > s1) {
-            resultText = `${winnerName} won by ${s2 - s1} points`;
+        if (sportName === 'badminton') {
+            // For Badminton, show Sets Score (e.g. "Won by 2-1")
+            const sets1 = currentMatch.scores.t1_sets || 0;
+            const sets2 = currentMatch.scores.t2_sets || 0;
+            if (winnerName === currentMatch.team1_name) {
+                resultText = `${winnerName} won ${sets1}-${sets2}`;
+            } else {
+                resultText = `${winnerName} won ${sets2}-${sets1}`;
+            }
+        } else {
+            // Standard point difference (Kabaddi)
+            if (winnerName === currentMatch.team1_name && s1 > s2) {
+                resultText = `${winnerName} won by ${s1 - s2} points`;
+            } else if (winnerName === currentMatch.team2_name && s2 > s1) {
+                resultText = `${winnerName} won by ${s2 - s1} points`;
+            }
         }
     }
 
@@ -489,6 +593,9 @@ function loadMatchDetails(match) {
     }
 
     document.title = `${match.team1_name} vs ${match.team2_name} | JAITRA 2026`;
+
+    // Update score display to render sets and sport-specific elements
+    updateScoreDisplay();
 }
 
 /**
