@@ -58,23 +58,78 @@ async function refreshScores(matchId) {
         const data = await response.json();
 
         if (data.success && data.match) {
+            // Check for status change
+            const prevStatus = currentMatch.status;
             currentMatch = data.match;
+
             updateScoreDisplay();
             checkAnimations();
+
+            // Explicitly update status elements if status changed or just to be safe
+            updateStatusElements();
 
             // Check if match completed - show winner
             if (currentMatch.status === 'completed' && !winnerShown) {
                 const scores = currentMatch.scores || {};
+
+                // Show winner animation
                 if (scores.last_animation && scores.last_animation.type === 'WINNER') {
                     const winner = scores.last_animation.team === 't1' ?
                         currentMatch.team1_name : currentMatch.team2_name;
                     triggerWinnerAnimation(winner);
                     winnerShown = true;
+                } else {
+                    // Fallback if no animation but completed (e.g. manual status update)
+                    // Check who won and trigger
+                    let winnerName = '';
+                    if (currentMatch.winner_team == 1) winnerName = currentMatch.team1_name;
+                    else if (currentMatch.winner_team == 2) winnerName = currentMatch.team2_name;
+
+                    if (winnerName && prevStatus === 'live') {
+                        triggerWinnerAnimation(winnerName);
+                        winnerShown = true;
+                    }
                 }
+
+                // Stop refreshing if completed
+                // setTimeout(() => location.reload(), 5000); // Optional: reload to finalize state
             }
         }
     } catch (error) {
         console.error('Error refreshing scores:', error);
+    }
+}
+
+/**
+ * Update Status UI Elements dynamically
+ */
+function updateStatusElements() {
+    // Update Badge
+    const statusBadge = document.getElementById('hero-status-badge');
+    if (statusBadge) {
+        statusBadge.textContent = capitalizeFirst(currentMatch.status);
+        statusBadge.className = `status-badge ${currentMatch.status}`;
+    }
+
+    // Update Banner/Info Text
+    const infoStatus = document.getElementById('info-status');
+    if (infoStatus) {
+        if (currentMatch.status === 'live') {
+            infoStatus.textContent = 'Match in progress';
+        } else if (currentMatch.status === 'completed' && currentMatch.win_description) {
+            infoStatus.textContent = currentMatch.win_description;
+        } else {
+            infoStatus.textContent = currentMatch.round || capitalizeFirst(currentMatch.status);
+        }
+    }
+
+    // Update Winner Trophies
+    if (currentMatch.winner_team === 1) {
+        const el = document.getElementById('team-a-winner');
+        if (el) { el.innerHTML = '🏆'; el.style.display = 'block'; }
+    } else if (currentMatch.winner_team === 2) {
+        const el = document.getElementById('team-b-winner');
+        if (el) { el.innerHTML = '🏆'; el.style.display = 'block'; }
     }
 }
 
