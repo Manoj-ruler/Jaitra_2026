@@ -160,10 +160,10 @@ $pageStyles = '
     }
     .player-icon {
         font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.2);
+        color: #d1d5db; /* Visible gray for inactive */
     }
     .player-icon.active {
-        color: #fbbf24;
+        color: #fbbf24; /* Gold for active */
     }
 ';
 
