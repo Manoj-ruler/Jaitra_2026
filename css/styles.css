@@ -2379,3 +2379,18 @@ img {
     right: -5px;
   }
 }
+
+/* Category Badge */
+.category-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--color-secondary);
+  color: var(--color-white);
+}

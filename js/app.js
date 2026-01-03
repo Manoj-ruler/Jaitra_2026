@@ -153,6 +153,7 @@ function createHomeMatchCard(match) {
                  style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
             </div>
             <div class="scorecard-body">
@@ -329,6 +330,7 @@ function createScorecardHTML(match) {
                  style="cursor: pointer;">
             <div class="scorecard-header">
                 <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
             </div>
             <div class="scorecard-body">
