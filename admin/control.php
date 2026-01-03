@@ -665,21 +665,19 @@ if ($match_id) {
         const s2 = state.team2_score || 0;
         const set = state.current_set || 1;
         
-        let winnerName = '';
-        let winnerCode = '';
-        
+        // Determine winner (or null if tied)
+        let winnerCode = null;
         if (s1 > s2) {
-            winnerName = document.getElementById('lbl-t1').innerText;
             winnerCode = 't1';
         } else if (s2 > s1) {
-            winnerName = document.getElementById('lbl-t2').innerText;
             winnerCode = 't2';
-        } else {
-            alert("Scores are level. Cannot end set.");
-            return;
         }
         
-        if (!confirm(`End Set ${set}?\nWinner: ${winnerName}\nScores will be reset to 0-0.`)) return;
+        const winnerName = winnerCode === 't1' ? document.getElementById('lbl-t1').innerText : 
+                          winnerCode === 't2' ? document.getElementById('lbl-t2').innerText : 
+                          'Tied';
+        
+        if (!confirm(`End Set ${set}?\nScore: ${s1}-${s2}\nWinner: ${winnerName}\n\nScores will be reset to 0-0 for next set.`)) return;
         
         // Initialize set_history if it doesn't exist
         if (!state.set_history) state.set_history = [];
@@ -692,25 +690,20 @@ if ($match_id) {
             winner: winnerCode
         });
         
-        // Update sets won
+        // Update sets won (only if there's a winner)
         if (winnerCode === 't1') {
             state.t1_sets = (state.t1_sets || 0) + 1;
-        } else {
+        } else if (winnerCode === 't2') {
             state.t2_sets = (state.t2_sets || 0) + 1;
         }
         
         console.log('📋 Set History:', state.set_history);
+        console.log('🏆 Sets Won - T1:', state.t1_sets, 'T2:', state.t2_sets);
         
         // Check for Match Win (Best of 3)
-        // If anyone reached 2 sets, they won (2-0 or 2-1)
         if (state.t1_sets >= 2 || state.t2_sets >= 2) {
              const matchWinner = state.t1_sets > state.t2_sets ? document.getElementById('lbl-t1').innerText : document.getElementById('lbl-t2').innerText;
              alert(`MATCH OVER!\n${matchWinner} wins the match (${state.t1_sets}-${state.t2_sets}).\n\nPlease click 'END MATCH' to finalize.`);
-             // We don't increment current_set or reset scores if match is over, to keep context?
-             // Actually user might want to see the final board.
-             // But requirement says "after completion of winner set ... match final".
-             // Let's increment set and reset match scores to 0-0 as requested "for second set scores start fresh".
-             // But if match is over, we don't start a new set.
         } else {
              // Match continues, start next set
              state.team1_score = 0;
