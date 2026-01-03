@@ -202,18 +202,40 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-a-winner"></div>
                     <h2 class="team-display-name" id="team-a-name">Team A</h2>
                     <div class="team-display-score" id="team-a-score">0</div>
+                    
+                    <!-- Kabaddi Specific -->
                     <div class="raiding-indicator" id="team-a-raid"><i class="fas fa-running me-1"></i> Raiding</div>
                     <div class="player-icons-container" id="team-a-players-container"></div>
+                    
+                    <!-- Badminton Specific -->
+                    <div class="serving-indicator" id="team-a-serve" style="display: none; color: #fbbf24; font-weight: bold; text-transform: uppercase; margin-top: 5px; animation: pulse 1s infinite;">
+                        <i class="fas fa-shuttlecock me-1"></i> Serving
+                    </div>
+                    <!-- Sets Display Removed -->
                 </div>
                 
-                <div class="vs-large">VS</div>
+                <div class="d-flex flex-column align-items-center">
+                    <div id="current-set-badge" class="badge bg-secondary mb-2" style="font-size: 0.8rem; display: none;">SET 1</div>
+                    <div class="vs-large">VS</div>
+                    <div id="sets-score-display" class="mt-2 fw-bold text-secondary" style="font-size: 1rem; display: none;">
+                        Sets: <span id="sets-score-val">0 - 0</span>
+                    </div>
+                </div>
                 
                 <div class="team-display team-b">
                     <div class="team-winner-indicator" id="team-b-winner"></div>
                     <h2 class="team-display-name" id="team-b-name">Team B</h2>
                     <div class="team-display-score" id="team-b-score">0</div>
+                    
+                    <!-- Kabaddi Specific -->
                     <div class="raiding-indicator" id="team-b-raid"><i class="fas fa-running me-1"></i> Raiding</div>
                     <div class="player-icons-container" id="team-b-players-container"></div>
+                    
+                    <!-- Badminton Specific -->
+                    <div class="serving-indicator" id="team-b-serve" style="display: none; color: #fbbf24; font-weight: bold; text-transform: uppercase; margin-top: 5px; animation: pulse 1s infinite;">
+                        <i class="fas fa-shuttlecock me-1"></i> Serving
+                    </div>
+                    <!-- Sets Display Removed -->
                 </div>
             </div>
 
