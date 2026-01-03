@@ -161,11 +161,9 @@ function updateScoreDisplay() {
     // Badminton Elements
     const serveA = document.getElementById('team-a-serve');
     const serveB = document.getElementById('team-b-serve');
-    // const setsA = ... removed from HTML
-    // const setsB = ... removed from HTML
     const currentSetBadge = document.getElementById('current-set-badge');
-    const setsScoreDisplay = document.getElementById('sets-score-display');
-    const setsScoreVal = document.getElementById('sets-score-val');
+    const setsBreakdown = document.getElementById('sets-breakdown');
+    const setScoresContainer = document.getElementById('set-scores-container');
 
     if (isLive) {
         if (isKabaddi) {
@@ -198,24 +196,26 @@ function updateScoreDisplay() {
             const server = scores.server || null;
             updateActiveIndicator(serveA, serveB, server);
 
-            // Update Sets Score (Central)
-            // Show only if we are past Set 1 (i.e. currently in Set 2 or 3)
-            const currentSet = scores.current_set || 1;
-            const s1Sets = scores.t1_sets || 0;
-            const s2Sets = scores.t2_sets || 0;
-
-            if (setsScoreDisplay && setsScoreVal) {
-                if (currentSet > 1 || currentMatch.status === 'completed') {
-                    setsScoreVal.textContent = `${s1Sets} - ${s2Sets}`;
-                    setsScoreDisplay.style.display = 'block';
-                } else {
-                    setsScoreDisplay.style.display = 'none';
-                }
+            // Render Individual Set Scores
+            const setHistory = scores.set_history || [];
+            if (setScoresContainer && setHistory.length > 0) {
+                setScoresContainer.innerHTML = '';
+                setHistory.forEach(set => {
+                    const setDiv = document.createElement('div');
+                    setDiv.className = 'text-center';
+                    setDiv.innerHTML = `
+                        <div class="small text-muted">Set ${set.set_number}</div>
+                        <div class="fw-bold" style="font-size: 0.9rem;">${set.team1_score} - ${set.team2_score}</div>
+                    `;
+                    setScoresContainer.appendChild(setDiv);
+                });
+                if (setsBreakdown) setsBreakdown.style.display = 'block';
+            } else {
+                if (setsBreakdown) setsBreakdown.style.display = 'none';
             }
 
             // Update Current Set Badge
             if (currentSetBadge) {
-                // If completed, maybe hide "SET X"
                 if (currentMatch.status === 'completed') {
                     currentSetBadge.style.display = 'none';
                 } else {
@@ -226,17 +226,24 @@ function updateScoreDisplay() {
         }
     } else {
         // Hide all indicators if not live
-        const allIndicators = [raidA, raidB, containerA, containerB, serveA, serveB, currentSetBadge, setsScoreDisplay];
+        const allIndicators = [raidA, raidB, containerA, containerB, serveA, serveB, currentSetBadge, setsBreakdown];
         allIndicators.forEach(el => { if (el) el.style.display = 'none'; });
 
-        // Show Final Set Scores if completed? 
-        // For now, let's keep it clean as per request.
+        // Show Final Set Scores if completed
         if (isBadminton && currentMatch.status === 'completed') {
-            if (setsScoreDisplay && setsScoreVal) {
-                const s1Sets = scores.t1_sets || 0;
-                const s2Sets = scores.t2_sets || 0;
-                setsScoreVal.textContent = `${s1Sets} - ${s2Sets}`;
-                setsScoreDisplay.style.display = 'block';
+            const setHistory = scores.set_history || [];
+            if (setScoresContainer && setHistory.length > 0) {
+                setScoresContainer.innerHTML = '';
+                setHistory.forEach(set => {
+                    const setDiv = document.createElement('div');
+                    setDiv.className = 'text-center';
+                    setDiv.innerHTML = `
+                        <div class="small text-muted">Set ${set.set_number}</div>
+                        <div class="fw-bold" style="font-size: 0.9rem;">${set.team1_score} - ${set.team2_score}</div>
+                    `;
+                    setScoresContainer.appendChild(setDiv);
+                });
+                if (setsBreakdown) setsBreakdown.style.display = 'block';
             }
         }
 

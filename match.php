@@ -217,8 +217,11 @@ include 'includes/header.php';
                 <div class="d-flex flex-column align-items-center">
                     <div id="current-set-badge" class="badge bg-secondary mb-2" style="font-size: 0.8rem; display: none;">SET 1</div>
                     <div class="vs-large">VS</div>
-                    <div id="sets-score-display" class="mt-2 fw-bold text-secondary" style="font-size: 1rem; display: none;">
-                        Sets: <span id="sets-score-val">0 - 0</span>
+                    <!-- Individual Set Scores Display -->
+                    <div id="sets-breakdown" class="mt-3" style="display: none;">
+                        <div class="d-flex gap-3 justify-content-center" id="set-scores-container">
+                            <!-- Set scores will be inserted here dynamically -->
+                        </div>
                     </div>
                 </div>
                 

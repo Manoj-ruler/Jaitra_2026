@@ -681,12 +681,25 @@ if ($match_id) {
         
         if (!confirm(`End Set ${set}?\nWinner: ${winnerName}\nScores will be reset to 0-0.`)) return;
         
-        // Update sets
+        // Initialize set_history if it doesn't exist
+        if (!state.set_history) state.set_history = [];
+        
+        // Store this set's result
+        state.set_history.push({
+            set_number: set,
+            team1_score: s1,
+            team2_score: s2,
+            winner: winnerCode
+        });
+        
+        // Update sets won
         if (winnerCode === 't1') {
             state.t1_sets = (state.t1_sets || 0) + 1;
         } else {
             state.t2_sets = (state.t2_sets || 0) + 1;
         }
+        
+        console.log('📋 Set History:', state.set_history);
         
         // Check for Match Win (Best of 3)
         // If anyone reached 2 sets, they won (2-0 or 2-1)
