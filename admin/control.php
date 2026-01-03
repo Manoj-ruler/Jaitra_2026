@@ -315,12 +315,7 @@ if ($match_id) {
                                     <button onclick="addPoints('t1', -1)" class="btn btn-outline-danger w-100 control-btn">-1</button>
                                 </div>
                             </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-light text-secondary small">SETS</span>
-                                <button onclick="updateSets('t1', -1)" class="btn btn-outline-secondary">-</button>
-                                <span id="ctrl-sets-t1" class="input-group-text bg-white fw-bold">0</span>
-                                <button onclick="updateSets('t1', 1)" class="btn btn-outline-secondary">+</button>
-                            </div>
+                            <!-- Manual Set Control Removed -->
                              <div class="input-group">
                                 <span class="input-group-text bg-light text-secondary small">MANUAL</span>
                                 <input type="number" id="manual-score-t1" class="form-control text-center" value="0">
@@ -391,12 +386,7 @@ if ($match_id) {
                                     <button onclick="addPoints('t2', -1)" class="btn btn-outline-danger w-100 control-btn">-1</button>
                                 </div>
                             </div>
-                             <div class="input-group mb-3">
-                                <span class="input-group-text bg-light text-secondary small">SETS</span>
-                                <button onclick="updateSets('t2', -1)" class="btn btn-outline-secondary">-</button>
-                                <span id="ctrl-sets-t2" class="input-group-text bg-white fw-bold">0</span>
-                                <button onclick="updateSets('t2', 1)" class="btn btn-outline-secondary">+</button>
-                            </div>
+                             <!-- Manual Set Control Removed -->
                              <div class="input-group">
                                 <span class="input-group-text bg-light text-secondary small">MANUAL</span>
                                 <input type="number" id="manual-score-t2" class="form-control text-center" value="0">
