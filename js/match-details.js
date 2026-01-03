@@ -378,6 +378,14 @@ function loadMatchDetails(match) {
     sportBadge.textContent = capitalizeFirst(match.sport);
     sportBadge.className = `sport-badge ${match.sport}`;
 
+    if (match.gender) {
+        const categoryBadge = document.getElementById('hero-category-badge');
+        if (categoryBadge) {
+            categoryBadge.textContent = capitalizeFirst(match.gender);
+            categoryBadge.style.display = 'inline-flex';
+        }
+    }
+
     const statusBadge = document.getElementById('hero-status-badge');
     statusBadge.textContent = capitalizeFirst(match.status);
     statusBadge.className = `status-badge ${match.status}`;
@@ -511,9 +519,12 @@ function renderSimilarMatches(containerId, matches) {
                      onclick="window.location.href='match.php?id=${match.id}'"
                      style="cursor: pointer;">
                 <div class="scorecard-header">
+                <div class="badge-group">
                     <span class="sport-badge ${match.sport}">${capitalizeFirst(match.sport)}</span>
-                    <span class="status-badge ${match.status}">${capitalizeFirst(match.status)}</span>
+                    ${match.gender ? `<span class="category-badge">${capitalizeFirst(match.gender)}</span>` : ''}
                 </div>
+                <span class="status-badge ${match.status}">${capitalizeFirst(match.status)}</span>
+            </div>
                 <div class="scorecard-body">
                     <div class="teams-container">
                         <div class="team-row${winnerClass1}">
