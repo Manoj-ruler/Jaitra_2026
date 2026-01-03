@@ -575,7 +575,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: 4px var(--spacing-md);
+  padding: 4px 8px;
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
   font-weight: var(--font-weight-semibold);
@@ -604,7 +604,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: 4px var(--spacing-md);
+  padding: 4px 8px;
   border-radius: var(--radius-sm);
   font-size: 0.7rem;
   font-weight: var(--font-weight-bold);
@@ -2385,12 +2385,19 @@ img {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: 4px var(--spacing-md);
+  padding: 2px 8px;
   border-radius: var(--radius-sm);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: var(--color-secondary);
-  color: var(--color-white);
+  background: var(--color-light);
+  color: var(--color-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.badge-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }

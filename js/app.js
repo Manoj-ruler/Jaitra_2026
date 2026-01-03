@@ -152,8 +152,10 @@ function createHomeMatchCard(match) {
                  onclick="window.location.href='match.php?id=${match.id}'"
                  style="cursor: pointer;">
             <div class="scorecard-header">
-                <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
-                ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
+                <div class="badge-group">
+                    <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                    ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
+                </div>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
             </div>
             <div class="scorecard-body">
@@ -329,8 +331,10 @@ function createScorecardHTML(match) {
                  onclick="window.location.href='match.php?id=${match.id}'"
                  style="cursor: pointer;">
             <div class="scorecard-header">
-                <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
-                ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
+                <div class="badge-group">
+                    <span class="sport-badge ${match.sport}">${capitalizeFirstLetter(match.sport)}</span>
+                    ${match.gender ? `<span class="category-badge">${capitalizeFirstLetter(match.gender)}</span>` : ''}
+                </div>
                 <span class="status-badge ${match.status}">${capitalizeFirstLetter(match.status)}</span>
             </div>
             <div class="scorecard-body">
