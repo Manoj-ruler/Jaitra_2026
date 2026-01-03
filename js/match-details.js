@@ -196,16 +196,18 @@ function updateScoreDisplay() {
             const server = scores.server || null;
             updateActiveIndicator(serveA, serveB, server);
 
-            // Render Individual Set Scores
+            // Render Individual Set Scores with enhanced styling
             const setHistory = scores.set_history || [];
             if (setScoresContainer && setHistory.length > 0) {
                 setScoresContainer.innerHTML = '';
                 setHistory.forEach(set => {
                     const setDiv = document.createElement('div');
-                    setDiv.className = 'text-center';
+                    // Add winner class for styling
+                    const winnerClass = set.winner ? `winner-${set.winner}` : '';
+                    setDiv.className = `set-score-card ${winnerClass}`;
                     setDiv.innerHTML = `
-                        <div class="small text-muted">Set ${set.set_number}</div>
-                        <div class="fw-bold" style="font-size: 0.9rem;">${set.team1_score} - ${set.team2_score}</div>
+                        <div class="set-label">Set ${set.set_number}</div>
+                        <div class="set-score">${set.team1_score} - ${set.team2_score}</div>
                     `;
                     setScoresContainer.appendChild(setDiv);
                 });
@@ -225,26 +227,32 @@ function updateScoreDisplay() {
             }
         }
     } else {
-        // Hide all indicators if not live
-        const allIndicators = [raidA, raidB, containerA, containerB, serveA, serveB, currentSetBadge, setsBreakdown];
+        // Hide all indicators if not live (except sets for completed Badminton)
+        const allIndicators = [raidA, raidB, containerA, containerB, serveA, serveB, currentSetBadge];
         allIndicators.forEach(el => { if (el) el.style.display = 'none'; });
 
-        // Show Final Set Scores if completed
+        // Show Final Set Scores if completed Badminton
         if (isBadminton && currentMatch.status === 'completed') {
             const setHistory = scores.set_history || [];
             if (setScoresContainer && setHistory.length > 0) {
                 setScoresContainer.innerHTML = '';
                 setHistory.forEach(set => {
                     const setDiv = document.createElement('div');
-                    setDiv.className = 'text-center';
+                    const winnerClass = set.winner ? `winner-${set.winner}` : '';
+                    setDiv.className = `set-score-card ${winnerClass}`;
                     setDiv.innerHTML = `
-                        <div class="small text-muted">Set ${set.set_number}</div>
-                        <div class="fw-bold" style="font-size: 0.9rem;">${set.team1_score} - ${set.team2_score}</div>
+                        <div class="set-label">Set ${set.set_number}</div>
+                        <div class="set-score">${set.team1_score} - ${set.team2_score}</div>
                     `;
                     setScoresContainer.appendChild(setDiv);
                 });
                 if (setsBreakdown) setsBreakdown.style.display = 'block';
+            } else {
+                if (setsBreakdown) setsBreakdown.style.display = 'none';
             }
+        } else {
+            // Hide sets breakdown for non-Badminton or non-completed matches
+            if (setsBreakdown) setsBreakdown.style.display = 'none';
         }
 
         // Reset team name colors
@@ -585,6 +593,9 @@ function loadMatchDetails(match) {
     }
 
     document.title = `${match.team1_name} vs ${match.team2_name} | JAITRA 2026`;
+
+    // Update score display to render sets and sport-specific elements
+    updateScoreDisplay();
 }
 
 /**

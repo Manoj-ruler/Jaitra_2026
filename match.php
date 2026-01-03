@@ -167,6 +167,52 @@ $pageStyles = '
         color: #22c55e; /* Green for present players */
         opacity: 1;
     }
+    
+    /* Badminton Set Scores Display */
+    .set-score-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 12px 20px;
+        min-width: 100px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .set-score-card::before {
+        content: \'\';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        pointer-events: none;
+    }
+    .set-score-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .set-score-card.winner-t1 {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .set-score-card.winner-t2 {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+    .set-score-card .set-label {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    .set-score-card .set-score {
+        font-size: 1.25rem;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 ';
 
 // Include the common header
