@@ -11,6 +11,7 @@ $currentPage = 'home';
 $additionalCss = ['css/home-styles.css']; // Home page specific styles
 $showNav = false; // Home page uses carousel instead of nav
 
+
 // Include the common header
 include 'includes/header.php';
 ?>
