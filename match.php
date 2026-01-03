@@ -160,10 +160,12 @@ $pageStyles = '
     }
     .player-icon {
         font-size: 0.8rem;
-        color: #d1d5db; /* Visible gray for inactive */
+        color: #ef4444; /* Red for out players */
+        opacity: 0.7;
     }
     .player-icon.active {
-        color: #fbbf24; /* Gold for active */
+        color: #22c55e; /* Green for present players */
+        opacity: 1;
     }
 ';
 
