@@ -168,50 +168,78 @@ $pageStyles = '
         opacity: 1;
     }
     
-    /* Badminton Set Scores Display */
+    /* Badminton Set Scores Display - Minimal Professional Design */
+    #sets-breakdown {
+        margin-top: 1rem;
+    }
+    
+    #set-scores-container {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
     .set-score-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
-        padding: 12px 20px;
-        min-width: 100px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        background: #ffffff;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        min-width: 90px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
     }
-    .set-score-card::before {
-        content: \'\';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
-        pointer-events: none;
-    }
+    
     .set-score-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
     }
+    
     .set-score-card.winner-t1 {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: #fffbf5;
+        border-color: #fb923c;
+        box-shadow: 0 1px 3px rgba(251, 146, 60, 0.15);
     }
+    
     .set-score-card.winner-t2 {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        background: #f7f9ff;
+        border-color: #60a5fa;
+        box-shadow: 0 1px 3px rgba(96, 165, 250, 0.15);
     }
+    
     .set-score-card .set-label {
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.65rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 4px;
+        color: #9ca3af;
+        margin-bottom: 0.15rem;
+        text-align: center;
     }
+    
+    .set-score-card.winner-t1 .set-label {
+        color: #ea580c;
+    }
+    
+    .set-score-card.winner-t2 .set-label {
+        color: #3b82f6;
+    }
+    
     .set-score-card .set-score {
-        font-size: 1.25rem;
-        color: white;
-        font-weight: bold;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        font-size: 1.1rem;
+        color: #374151;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: -0.3px;
+    }
+    
+    .set-score-card.winner-t1 .set-score {
+        color: #ea580c;
+    }
+    
+    .set-score-card.winner-t2 .set-score {
+        color: #3b82f6;
     }
 ';
 
@@ -260,15 +288,9 @@ include 'includes/header.php';
                     <!-- Sets Display Removed -->
                 </div>
                 
-                <div class="d-flex flex-column align-items-center">
+                <div class="d-flex flex-column align-items-center justify-content-center" style="align-self: center;">
                     <div id="current-set-badge" class="badge bg-secondary mb-2" style="font-size: 0.8rem; display: none;">SET 1</div>
                     <div class="vs-large">VS</div>
-                    <!-- Individual Set Scores Display -->
-                    <div id="sets-breakdown" class="mt-3" style="display: none;">
-                        <div class="d-flex gap-3 justify-content-center" id="set-scores-container">
-                            <!-- Set scores will be inserted here dynamically -->
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="team-display team-b">
@@ -288,7 +310,12 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="match-sets-breakdown" id="sets-breakdown"></div>
+            <!-- Individual Set Scores Display (Outside Grid) -->
+            <div id="sets-breakdown" style="display: none; text-align: center; margin-bottom: var(--spacing-lg);">
+                <div class="d-flex gap-3 justify-content-center flex-wrap" id="set-scores-container">
+                    <!-- Set scores will be inserted here dynamically -->
+                </div>
+            </div>
 
             <!-- Match Status (inside card) -->
             <div class="hero-match-status">
