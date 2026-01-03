@@ -255,9 +255,7 @@ if ($match_id) {
                         <?php endif; ?>
                         <h4 id="lbl-t1" class="text-primary mb-2 mt-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t1_name']) : 'Team 1' ?></h4>
                         <div class="score-display text-primary" id="val-t1">0</div>
-                        <?php if ($sportName === 'badminton'): ?>
-                        <div class="mt-2 text-secondary fw-bold small">SETS: <span id="sets-t1">0</span></div>
-                        <?php endif; ?>
+                        <!-- Sets Display Removed -->
                     </div>
                 </div>
                 <div class="col-2 d-flex flex-column align-items-center justify-content-center">
@@ -278,9 +276,7 @@ if ($match_id) {
                         <?php endif; ?>
                         <h4 id="lbl-t2" class="text-danger mb-2 mt-2">Team 2</h4>
                         <div class="score-display text-primary" id="val-t2">0</div>
-                         <?php if ($sportName === 'badminton'): ?>
-                        <div class="mt-2 text-secondary fw-bold small">SETS: <span id="sets-t2">0</span></div>
-                        <?php endif; ?>
+                         <!-- Sets Display Removed -->
                     </div>
                 </div>
             </div>
