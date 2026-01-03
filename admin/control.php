@@ -138,7 +138,7 @@ if ($match_id) {
                     <option value="new">+ Add New Team</option>
                     <?php foreach ($teams as $t): ?>
                         <option value="<?= $t['id'] ?>" data-name="<?= htmlspecialchars($t['name']) ?>" data-college="<?= htmlspecialchars($t['college_name']) ?>">
-                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>)
+                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>) - <?= htmlspecialchars($t['gender'] ?? 'N/A') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -158,7 +158,7 @@ if ($match_id) {
                     <option value="new">+ Add New Team</option>
                     <?php foreach ($teams as $t): ?>
                         <option value="<?= $t['id'] ?>" data-name="<?= htmlspecialchars($t['name']) ?>" data-college="<?= htmlspecialchars($t['college_name']) ?>">
-                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>)
+                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>) - <?= htmlspecialchars($t['gender'] ?? 'N/A') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
