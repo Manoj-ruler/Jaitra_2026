@@ -140,7 +140,10 @@ include 'includes/header.php';
         <!-- Match Hero Section -->
         <section class="match-hero">
             <div class="match-hero-header">
-                <span class="sport-badge" id="hero-sport-badge">Loading...</span>
+                <div class="badge-group">
+                    <span class="sport-badge" id="hero-sport-badge">Loading...</span>
+                    <span class="category-badge" id="hero-category-badge" style="display: none;"></span>
+                </div>
                 <span class="status-badge" id="hero-status-badge">Loading...</span>
             </div>
             
