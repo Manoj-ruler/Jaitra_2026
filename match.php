@@ -117,6 +117,28 @@ $pageStyles = '
         .anim-text { font-size: 2.5rem; }
         .anim-team { font-size: 1.2rem; }
     }
+    
+    .timeout-btn {
+        margin-top: 3rem;
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .timeout-btn:hover {
+        background: white;
+        color: #000;
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
 ';
 
 // Include the common header
@@ -251,6 +273,10 @@ include 'includes/header.php';
                 <div class="timeout-team-score" id="to-t2-score">0</div>
             </div>
         </div>
+        
+        <a href="scoreboard.php" class="timeout-btn">
+            <i class="fas fa-th-large me-2"></i> View Other Matches
+        </a>
     </div>
 
     <!-- SUPER RAID / ANIMATION OVERLAY -->
