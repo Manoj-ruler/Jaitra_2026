@@ -462,35 +462,60 @@ if ($match_id) {
     const SPORT_ID = <?= $sport_id ?>;
     let matchId = <?= $activeMatch ? $activeMatch['id'] : 'null' ?>;
     
-    // Score state - matches reference repo structure
-    let state = <?= $activeMatch && $initialState ? $initialState : json_encode([
-        'team1_score' => 0,
-        'team2_score' => 0,
-        't1_players' => 7,
-        't2_players' => 7,
-        'current_raider' => 'team1',
-        'is_timeout' => false,
-        'last_animation' => null,
-        'history' => []
-    ]) ?>;
+    // Score state - sport-specific defaults
+    <?php
+    // Generate sport-specific default state to match backend schema
+    $sportLower = strtolower($sportName);
+    if ($sportLower === 'kabaddi') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'current_raider' => 'team1',
+            't1_players' => 7,
+            't2_players' => 7,
+            'is_timeout' => false,
+            'last_animation' => null
+        ];
+    } elseif ($sportLower === 'badminton') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'server' => null,
+            't1_sets' => 0,
+            't2_sets' => 0,
+            'current_set' => 1,
+            'is_timeout' => false
+        ];
+    } elseif ($sportLower === 'volleyball' || $sportLower === 'pickleball') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            't1_sets' => 0,
+            't2_sets' => 0,
+            'current_set' => 1,
+            'server' => null,
+            'is_timeout' => false
+        ];
+    } else {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
+            'is_timeout' => false
+        ];
+    }
+    ?>
+    let state = <?= $activeMatch && $initialState ? $initialState : json_encode($defaultState) ?>;
     
-    // Ensure defaults if state was partial
+    // Merge with defaults to ensure all expected fields exist
     state = {
-        team1_score: 0,
-        team2_score: 0,
-        t1_players: 7,
-        t2_players: 7,
-        current_raider: 'team1',
-        is_timeout: false,
-        last_animation: null,
-        history: [],
-        // Badminton specific defaults
-        t1_sets: 0,
-        t1_sets: 0,
-        current_set: 1,
-        server: null,
+        ...<?= json_encode($defaultState) ?>,
         ...state
     };
+    
+    // Debug: Log sport-specific state structure
+    console.log('🏅 Sport:', '<?= $sportName ?>');
+    console.log('📊 Initial State Schema:', state);
+    console.log('🔑 State Keys:', Object.keys(state));
     
     // Initial Render
     if (matchId) {
@@ -553,6 +578,17 @@ if ($match_id) {
                 document.getElementById('lbl-t2').innerText = result.team2_name || data.team2_name;
                 document.getElementById('setup-panel').classList.add('d-none');
                 document.getElementById('live-panel').classList.remove('d-none');
+                
+                // Fetch and log the backend-generated state
+                fetch(`../api/get_score.php?id=${matchId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.match) {
+                            console.log('✅ Match Started - Backend State:', data.match.scores);
+                            console.log('🔍 Verify sport-specific fields are present');
+                        }
+                    });
+                
                 render();
             } else {
                 alert('Error: ' + (result.error || 'Failed to start'));

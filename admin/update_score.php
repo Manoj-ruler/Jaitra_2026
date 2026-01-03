@@ -14,6 +14,58 @@ if (!isset($_SESSION['admin_id'])) {
 
 require_once '../db_connect.php';
 
+/**
+ * Get initial score schema based on sport type
+ * All sports include 'is_timeout' as a common field
+ */
+function getInitialScoreSchema($sport_name) {
+    $sport = strtolower(trim($sport_name));
+    
+    switch ($sport) {
+        case 'kabaddi':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'current_raider' => 'team1',
+                't1_players' => 7,
+                't2_players' => 7,
+                'is_timeout' => false,
+                'last_animation' => null
+            ];
+            
+        case 'badminton':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'server' => null,
+                't1_sets' => 0,
+                't2_sets' => 0,
+                'current_set' => 1,
+                'is_timeout' => false
+            ];
+            
+        case 'volleyball':
+        case 'pickleball':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                't1_sets' => 0,
+                't2_sets' => 0,
+                'current_set' => 1,
+                'server' => null,
+                'is_timeout' => false
+            ];
+            
+        default:
+            // Generic fallback
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'is_timeout' => false
+            ];
+    }
+}
+
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data || !isset($data['action'])) {
@@ -89,8 +141,14 @@ try {
             ]);
             $match_id = $conn->lastInsertId();
             
-            // Initialize scores
-            $initial_scores = json_encode(['team1_score' => 0, 'team2_score' => 0]);
+            // Get sport name to initialize proper schema
+            $stmt = $conn->prepare("SELECT name FROM sports WHERE id = :id");
+            $stmt->execute(['id' => $sport_id]);
+            $sport = $stmt->fetch();
+            $sport_name = $sport ? $sport['name'] : 'generic';
+            
+            // Initialize scores with sport-specific schema
+            $initial_scores = json_encode(getInitialScoreSchema($sport_name));
             $stmt = $conn->prepare("INSERT INTO live_scores (match_id, score_json) VALUES (:id, :scores)");
             $stmt->execute(['id' => $match_id, 'scores' => $initial_scores]);
             
