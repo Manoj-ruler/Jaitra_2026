@@ -130,22 +130,22 @@ if ($match_id) {
     <div class="container py-4">
         <!-- SETUP SECTION -->
         <div id="setup-panel" class="glass-card p-4 mx-auto <?= $activeMatch ? 'd-none' : '' ?>" style="max-width: 600px;">
-            <h3 class="text-white mb-3">Start New Match</h3>
+            <h3 class="text-primary mb-3">Start New Match</h3>
             <div class="mb-3">
                 <label class="text-secondary">Team 1</label>
-                <select id="team1-select" class="form-select bg-dark text-white border-secondary" onchange="toggleNewTeam(1)">
+                <select id="team1-select" class="form-select border-secondary" onchange="toggleNewTeam(1)">
                     <option value="">-- Select Existing --</option>
                     <option value="new">+ Add New Team</option>
                     <?php foreach ($teams as $t): ?>
                         <option value="<?= $t['id'] ?>" data-name="<?= htmlspecialchars($t['name']) ?>" data-college="<?= htmlspecialchars($t['college_name']) ?>">
-                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>)
+                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>) - <?= htmlspecialchars($t['gender'] ?? 'N/A') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <div id="new-team1" class="mt-2 d-none">
-                    <input type="text" id="team1-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Thunders FC">
-                    <input type="text" id="team1-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Madras">
-                    <select id="team1-gender" class="form-select bg-dark text-white border-secondary">
+                    <input type="text" id="team1-name" class="form-control border-secondary mb-2" placeholder="e.g. Thunders FC">
+                    <input type="text" id="team1-college" class="form-control border-secondary mb-2" placeholder="e.g. IIT Madras">
+                    <select id="team1-gender" class="form-select border-secondary">
                         <option value="Men">Men</option>
                         <option value="Women">Women</option>
                     </select>
@@ -153,19 +153,19 @@ if ($match_id) {
             </div>
             <div class="mb-3">
                 <label class="text-secondary">Team 2</label>
-                <select id="team2-select" class="form-select bg-dark text-white border-secondary" onchange="toggleNewTeam(2)">
+                <select id="team2-select" class="form-select border-secondary" onchange="toggleNewTeam(2)">
                     <option value="">-- Select Existing --</option>
                     <option value="new">+ Add New Team</option>
                     <?php foreach ($teams as $t): ?>
                         <option value="<?= $t['id'] ?>" data-name="<?= htmlspecialchars($t['name']) ?>" data-college="<?= htmlspecialchars($t['college_name']) ?>">
-                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>)
+                            <?= htmlspecialchars($t['name']) ?> (<?= htmlspecialchars($t['college_name']) ?>) - <?= htmlspecialchars($t['gender'] ?? 'N/A') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <div id="new-team2" class="mt-2 d-none">
-                    <input type="text" id="team2-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. Paws United">
-                    <input type="text" id="team2-college" class="form-control bg-dark text-white border-secondary mb-2" placeholder="e.g. IIT Bombay">
-                    <select id="team2-gender" class="form-select bg-dark text-white border-secondary">
+                    <input type="text" id="team2-name" class="form-control border-secondary mb-2" placeholder="e.g. Paws United">
+                    <input type="text" id="team2-college" class="form-control border-secondary mb-2" placeholder="e.g. IIT Bombay">
+                    <select id="team2-gender" class="form-select border-secondary">
                         <option value="Men">Men</option>
                         <option value="Women">Women</option>
                     </select>
@@ -173,10 +173,10 @@ if ($match_id) {
             </div>
             <div class="row mb-3">
                 <div class="col-6">
-                    <input type="text" id="venue" class="form-control bg-dark text-white border-secondary" placeholder="e.g. Court 1">
+                    <input type="text" id="venue" class="form-control border-secondary" placeholder="e.g. Court 1">
                 </div>
                 <div class="col-6">
-                    <input type="text" id="round" class="form-control bg-dark text-white border-secondary" placeholder="e.g. Semi Final">
+                    <input type="text" id="round" class="form-control border-secondary" placeholder="e.g. Semi Final">
                 </div>
             </div>
             <button onclick="startMatch()" class="btn btn-primary w-100 py-3 fw-bold">START MATCH</button>
@@ -187,7 +187,7 @@ if ($match_id) {
             
             <!-- Edit Names Toggle -->
             <div class="text-end mb-2">
-                <button onclick="toggleEditNames()" class="btn btn-sm btn-outline-secondary text-white-50">
+                <button onclick="toggleEditNames()" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-edit me-1"></i> Edit Teams
                 </button>
             </div>
@@ -196,11 +196,11 @@ if ($match_id) {
             <div id="edit-names-panel" class="glass-card p-3 mb-4 d-none">
                 <div class="row g-2 align-items-center">
                     <div class="col-md-5">
-                        <input type="text" id="edit-t1" class="form-control bg-dark text-white text-center" placeholder="Team 1 Name">
+                        <input type="text" id="edit-t1" class="form-control text-center placeholder-gray" placeholder="Team 1 Name">
                     </div>
                     <div class="col-md-2 text-center text-secondary">vs</div>
                     <div class="col-md-5">
-                        <input type="text" id="edit-t2" class="form-control bg-dark text-white text-center" placeholder="Team 2 Name">
+                        <input type="text" id="edit-t2" class="form-control text-center placeholder-gray" placeholder="Team 2 Name">
                     </div>
                     <div class="col-12 mt-2 text-center">
                         <button onclick="saveTeamNames()" class="btn btn-success btn-sm px-4">Save Changes</button>
@@ -213,7 +213,7 @@ if ($match_id) {
                 <div class="col-5">
                     <div class="glass-card p-3 text-center">
                         <h4 id="lbl-t1" class="text-primary mb-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t1_name']) : 'Team 1' ?></h4>
-                        <div class="score-display text-white" id="val-t1">0</div>
+                        <div class="score-display text-primary" id="val-t1">0</div>
                     </div>
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-center">
@@ -222,7 +222,7 @@ if ($match_id) {
                 <div class="col-5">
                     <div class="glass-card p-3 text-center">
                         <h4 id="lbl-t2" class="text-danger mb-2">Team 2</h4>
-                        <div class="score-display text-white" id="val-t2">0</div>
+                        <div class="score-display text-primary" id="val-t2">0</div>
                     </div>
                 </div>
             </div>
@@ -274,12 +274,12 @@ if ($match_id) {
                             <i class="fas fa-running me-1"></i> Set Raiding
                         </button>
                         
-                        <div class="bg-dark p-2 rounded text-center">
-                            <small class="text-secondary">Players on Court</small>
+                        <div class="bg-white border border-secondary p-2 rounded text-center">
+                            <small class="text-primary fw-bold">Players on Court</small>
                             <div class="d-flex align-items-center justify-content-center gap-3 mt-1">
-                                <button onclick="updatePlayers('t1', -1)" class="btn btn-sm btn-secondary">-</button>
-                                <span id="pcount-t1" class="h4 mb-0 text-white">7</span>
-                                <button onclick="updatePlayers('t1', 1)" class="btn btn-sm btn-secondary">+</button>
+                                <button onclick="updatePlayers('t1', -1)" class="btn btn-sm btn-outline-secondary">-</button>
+                                <span id="pcount-t1" class="h4 mb-0 text-primary">7</span>
+                                <button onclick="updatePlayers('t1', 1)" class="btn btn-sm btn-outline-secondary">+</button>
                             </div>
                         </div>
                         <?php endif; ?>
@@ -320,12 +320,12 @@ if ($match_id) {
                             <i class="fas fa-running me-1"></i> Set Raiding
                         </button>
                         
-                        <div class="bg-dark p-2 rounded text-center">
-                            <small class="text-secondary">Players on Court</small>
+                        <div class="bg-white border border-secondary p-2 rounded text-center">
+                            <small class="text-primary fw-bold">Players on Court</small>
                             <div class="d-flex align-items-center justify-content-center gap-3 mt-1">
-                                <button onclick="updatePlayers('t2', -1)" class="btn btn-sm btn-secondary">-</button>
-                                <span id="pcount-t2" class="h4 mb-0 text-white">7</span>
-                                <button onclick="updatePlayers('t2', 1)" class="btn btn-sm btn-secondary">+</button>
+                                <button onclick="updatePlayers('t2', -1)" class="btn btn-sm btn-outline-secondary">-</button>
+                                <span id="pcount-t2" class="h4 mb-0 text-primary">7</span>
+                                <button onclick="updatePlayers('t2', 1)" class="btn btn-sm btn-outline-secondary">+</button>
                             </div>
                         </div>
                         <?php endif; ?>

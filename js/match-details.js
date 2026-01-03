@@ -147,31 +147,50 @@ function updateScoreDisplay() {
     document.getElementById('team-a-score').textContent = score1;
     document.getElementById('team-b-score').textContent = score2;
 
-    // Update Player Counts (Render Icons)
-    const p1 = scores.t1_players ?? 7;
-    const p2 = scores.t2_players ?? 7;
-    renderPlayerIcons('team-a-players-container', p1);
-    renderPlayerIcons('team-b-players-container', p2);
-
-    // Update Raiding Indicator
-    const raider = scores.current_raider || 'team1';
+    // Live Match Specific Details (Kabaddi Only)
+    const isLive = currentMatch.status === 'live';
     const raidA = document.getElementById('team-a-raid');
     const raidB = document.getElementById('team-b-raid');
+    const containerA = document.getElementById('team-a-players-container');
+    const containerB = document.getElementById('team-b-players-container');
 
-    if (raidA && raidB) {
-        if (raider === 'team1') {
-            raidA.style.display = 'block';
-            raidB.style.display = 'none';
-            // highlight team name
-            document.getElementById('team-a-name').style.color = '#fbbf24';
-            document.getElementById('team-b-name').style.color = '';
-        } else {
-            raidA.style.display = 'none';
-            raidB.style.display = 'block';
-            // highlight team name
-            document.getElementById('team-b-name').style.color = '#fbbf24';
-            document.getElementById('team-a-name').style.color = '';
+    if (isLive) {
+        // Update Player Counts (Render Icons)
+        const p1 = scores.t1_players ?? 7;
+        const p2 = scores.t2_players ?? 7;
+        renderPlayerIcons('team-a-players-container', p1);
+        renderPlayerIcons('team-b-players-container', p2);
+        if (containerA) containerA.style.display = 'flex';
+        if (containerB) containerB.style.display = 'flex';
+
+        // Update Raiding Indicator
+        const raider = scores.current_raider || 'team1';
+
+        if (raidA && raidB) {
+            if (raider === 'team1') {
+                raidA.style.display = 'block';
+                raidB.style.display = 'none';
+                // highlight team name
+                document.getElementById('team-a-name').style.color = '#fbbf24';
+                document.getElementById('team-b-name').style.color = '';
+            } else {
+                raidA.style.display = 'none';
+                raidB.style.display = 'block';
+                // highlight team name
+                document.getElementById('team-b-name').style.color = '#fbbf24';
+                document.getElementById('team-a-name').style.color = '';
+            }
         }
+    } else {
+        // Hide details if not live
+        if (raidA) raidA.style.display = 'none';
+        if (raidB) raidB.style.display = 'none';
+        if (containerA) containerA.style.display = 'none';
+        if (containerB) containerB.style.display = 'none';
+
+        // Reset team name colors
+        document.getElementById('team-a-name').style.color = '';
+        document.getElementById('team-b-name').style.color = '';
     }
 
     // Update timeout overlay if exists

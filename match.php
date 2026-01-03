@@ -117,6 +117,56 @@ $pageStyles = '
         .anim-text { font-size: 2.5rem; }
         .anim-team { font-size: 1.2rem; }
     }
+    
+    .timeout-btn {
+        margin-top: 3rem;
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .timeout-btn:hover {
+        background: white;
+        color: #000;
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* Kabaddi Specific Styles */
+    .raiding-indicator {
+        font-size: 0.9rem;
+        color: #fbbf24;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0.5rem;
+        animation: pulse 1s infinite;
+        display: none; /* Hidden by default */
+    }
+    .player-icons-container {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        margin-top: 0.5rem;
+        height: 20px;
+    }
+    .player-icon {
+        font-size: 0.8rem;
+        color: #ef4444; /* Red for out players */
+        opacity: 0.7;
+    }
+    .player-icon.active {
+        color: #22c55e; /* Green for present players */
+        opacity: 1;
+    }
 ';
 
 // Include the common header
@@ -152,6 +202,8 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-a-winner"></div>
                     <h2 class="team-display-name" id="team-a-name">Team A</h2>
                     <div class="team-display-score" id="team-a-score">0</div>
+                    <div class="raiding-indicator" id="team-a-raid"><i class="fas fa-running me-1"></i> Raiding</div>
+                    <div class="player-icons-container" id="team-a-players-container"></div>
                 </div>
                 
                 <div class="vs-large">VS</div>
@@ -160,6 +212,8 @@ include 'includes/header.php';
                     <div class="team-winner-indicator" id="team-b-winner"></div>
                     <h2 class="team-display-name" id="team-b-name">Team B</h2>
                     <div class="team-display-score" id="team-b-score">0</div>
+                    <div class="raiding-indicator" id="team-b-raid"><i class="fas fa-running me-1"></i> Raiding</div>
+                    <div class="player-icons-container" id="team-b-players-container"></div>
                 </div>
             </div>
 
@@ -251,6 +305,10 @@ include 'includes/header.php';
                 <div class="timeout-team-score" id="to-t2-score">0</div>
             </div>
         </div>
+        
+        <a href="scoreboard.php" class="timeout-btn">
+            <i class="fas fa-th-large me-2"></i> View Other Matches
+        </a>
     </div>
 
     <!-- SUPER RAID / ANIMATION OVERLAY -->
