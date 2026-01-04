@@ -654,9 +654,9 @@ img {
   color: var(--color-completed);
 }
 
-.team-row.winner::before {
+.team-row.winner .team-info::before {
   content: '⭐';
-  margin-right: var(--spacing-sm);
+  margin-right: 1px;
 }
 
 .team-info {
