@@ -13,6 +13,24 @@ let refreshInterval = null;
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
+    // Check for sport parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sportParam = urlParams.get('sport');
+
+    // If sport parameter exists, set it in filter state
+    if (sportParam) {
+        filterState.sport = sportParam;
+
+        // Update nav link active state to match the sport parameter
+        const navLinks = document.querySelectorAll('.nav-link[data-sport]');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.sport === sportParam) {
+                link.classList.add('active');
+            }
+        });
+    }
+
     initializeFilters();
     initializeNavigation();
     initializeScrollNavigation();
@@ -472,14 +490,20 @@ function initializeNavigation() {
             if (this.dataset.sport) {
                 e.preventDefault();
 
+                // Update nav link active states
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
 
-                const sportButton = document.querySelector(`.filter-btn[data-sport="${this.dataset.sport}"]`);
-                if (sportButton) {
-                    sportButton.click();
-                }
+                // Get the sport value from the clicked link
+                const sport = this.dataset.sport;
 
+                // Update filter state directly
+                filterState.sport = sport;
+
+                // Re-render the scorecards with the new filter
+                renderScorecards(matchesData);
+
+                // Scroll to scorecards section
                 const scorecardsSection = document.querySelector('.scorecards-section');
                 if (scorecardsSection) {
                     scorecardsSection.scrollIntoView({
