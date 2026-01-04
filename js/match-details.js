@@ -706,23 +706,44 @@ function renderSimilarMatches(containerId, matches) {
         } else if (isCompleted && match.win_description) {
             resultText = match.win_description;
         } else if (isCompleted) {
-            const s1 = parseInt(score1) || 0;
-            const s2 = parseInt(score2) || 0;
-            const pointDiff = Math.abs(s1 - s2);
+            // Check if this is a set-based sport
+            const sportName = (match.sport || '').toLowerCase();
+            const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
 
-            if (match.winner_team === 1) {
-                resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
-            } else if (match.winner_team === 2) {
-                resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
-            } else if (match.winner_team === 0) {
-                resultText = 'Match Drawn';
-            } else {
-                if (s1 > s2) {
-                    resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
-                } else if (s2 > s1) {
-                    resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
-                } else {
+            if (isSetBasedSport) {
+                // For set-based sports, show set scores
+                const sets1 = scores.t1_sets || 0;
+                const sets2 = scores.t2_sets || 0;
+
+                if (match.winner_team === 1) {
+                    resultText = (sets1 > 0 || sets2 > 0) ? `${match.team1_name} won ${sets1}-${sets2}` : `${match.team1_name} won`;
+                } else if (match.winner_team === 2) {
+                    resultText = (sets1 > 0 || sets2 > 0) ? `${match.team2_name} won ${sets2}-${sets1}` : `${match.team2_name} won`;
+                } else if (match.winner_team === 0) {
                     resultText = 'Match Drawn';
+                } else {
+                    resultText = 'Match Completed';
+                }
+            } else {
+                // For kabaddi and other sports, show point difference
+                const s1 = parseInt(score1) || 0;
+                const s2 = parseInt(score2) || 0;
+                const pointDiff = Math.abs(s1 - s2);
+
+                if (match.winner_team === 1) {
+                    resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+                } else if (match.winner_team === 2) {
+                    resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+                } else if (match.winner_team === 0) {
+                    resultText = 'Match Drawn';
+                } else {
+                    if (s1 > s2) {
+                        resultText = pointDiff > 0 ? `${match.team1_name} won by ${pointDiff} points` : `${match.team1_name} won`;
+                    } else if (s2 > s1) {
+                        resultText = pointDiff > 0 ? `${match.team2_name} won by ${pointDiff} points` : `${match.team2_name} won`;
+                    } else {
+                        resultText = 'Match Drawn';
+                    }
                 }
             }
         } else {
