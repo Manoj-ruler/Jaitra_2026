@@ -189,7 +189,7 @@ function updateScoreDisplay() {
 
     const isLive = currentMatch.status === 'live';
     const sportName = (currentMatch.sport || '').toLowerCase();
-    const isBadminton = sportName === 'badminton';
+    const isBadminton = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
     const isKabaddi = sportName === 'kabaddi';
 
     // Elements
@@ -486,8 +486,8 @@ function triggerWinnerAnimation(winnerName) {
         const s2 = parseInt(currentMatch.scores.team2_score || 0);
         const sportName = (currentMatch.sport || '').toLowerCase();
 
-        if (sportName === 'badminton') {
-            // For Badminton, show Sets Score (e.g. "Won by 2-1")
+        if (sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball') {
+            // For Badminton/Volleyball/Pickleball, show Sets Score (e.g. "Won by 2-1")
             const sets1 = currentMatch.scores.t1_sets || 0;
             const sets2 = currentMatch.scores.t2_sets || 0;
             if (winnerName === currentMatch.team1_name) {

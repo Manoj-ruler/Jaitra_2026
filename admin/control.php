@@ -248,7 +248,7 @@ if ($match_id) {
             <div class="row mb-4">
                 <div class="col-5">
                     <div class="glass-card p-3 text-center position-relative" id="card-t1">
-                        <?php if ($sportName === 'badminton'): ?>
+                        <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
                         <div class="position-absolute top-0 start-50 translate-middle-x mt-2">
                              <div id="serve-t1" class="service-indicator"></div>
                         </div>
@@ -260,7 +260,7 @@ if ($match_id) {
                 </div>
                 <div class="col-2 d-flex flex-column align-items-center justify-content-center">
                     <span class="text-secondary h2 mb-0">VS</span>
-                    <?php if ($sportName === 'badminton'): ?>
+                    <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
                     <div class="mt-2 text-center">
                         <small class="text-uppercase text-secondary fw-bold" style="font-size: 0.7rem; letter-spacing: 1px;">SET</small>
                         <div id="current-set-display" class="h4 text-primary fw-bold">1</div>
@@ -269,7 +269,7 @@ if ($match_id) {
                 </div>
                 <div class="col-5">
                     <div class="glass-card p-3 text-center position-relative" id="card-t2">
-                        <?php if ($sportName === 'badminton'): ?>
+                        <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
                         <div class="position-absolute top-0 start-50 translate-middle-x mt-2">
                              <div id="serve-t2" class="service-indicator"></div>
                         </div>
@@ -297,8 +297,8 @@ if ($match_id) {
                     <div class="col-md-6 border-end border-secondary">
                         <h5 class="text-primary text-center mb-3">TEAM 1 SCORING</h5>
                         
-                        <?php if ($sportName === 'badminton'): ?>
-                        <!-- Badminton Controls -->
+                        <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
+                        <!-- Badminton/Volleyball/Pickleball Controls -->
                         <div class="mb-3">
                              <button onclick="setServer('t1')" id="btn-serve-t1" class="btn btn-outline-warning w-100 mb-3">
                                 <i class="fas fa-shuttlecock me-1"></i> Serving
@@ -368,8 +368,8 @@ if ($match_id) {
                     <div class="col-md-6">
                         <h5 class="text-danger text-center mb-3">TEAM 2 SCORING</h5>
                         
-                        <?php if ($sportName === 'badminton'): ?>
-                        <!-- Badminton Controls -->
+                        <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
+                        <!-- Badminton/Volleyball/Pickleball Controls -->
                         <div class="mb-3">
                             <button onclick="setServer('t2')" id="btn-serve-t2" class="btn btn-outline-warning w-100 mb-3">
                                 <i class="fas fa-shuttlecock me-1"></i> Serving
@@ -435,8 +435,8 @@ if ($match_id) {
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php if ($sportName === 'badminton'): ?>
-            <!-- Set Controls for Badminton -->
+            <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
+            <!-- Set Controls for Badminton/Volleyball/Pickleball -->
             <div class="row justify-content-center mb-4">
                 <div class="col-md-5 text-center">
                     <div class="bg-white border border-secondary p-2 rounded">
