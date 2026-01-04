@@ -18,28 +18,68 @@ document.addEventListener('DOMContentLoaded', async function () {
     const matchId = urlParams.get('id');
 
     if (!matchId) {
+        console.error('No match ID provided in URL');
         showError();
         return;
     }
 
+    console.log('Loading match with ID:', matchId);
+
     try {
-        const response = await fetch(`${API_BASE}/get_score.php?id=${matchId}`);
-        const data = await response.json();
+        const apiUrl = `${API_BASE}/get_score.php?id=${matchId}`;
+        console.log('Fetching from API:', apiUrl);
 
-        if (data.success && data.match) {
-            currentMatch = data.match;
-            loadMatchDetails(currentMatch);
-            loadSimilarMatches();
+        const response = await fetch(apiUrl);
+        console.log('API Response Status:', response.status, response.statusText);
 
-            // Setup auto-refresh for live matches
-            if (currentMatch.status === 'live') {
-                setInterval(() => refreshScores(matchId), 2000);
-            }
-        } else {
+        if (!response.ok) {
+            console.error('API returned error status:', response.status);
             showError();
+            return;
+        }
+
+        const data = await response.json();
+        console.log('API Response Data:', data);
+
+        if (!data) {
+            console.error('No data received from API');
+            showError();
+            return;
+        }
+
+        if (!data.success) {
+            console.error('API returned success=false:', data.error || 'Unknown error');
+            showError();
+            return;
+        }
+
+        if (!data.match) {
+            console.error('API response missing match data:', data);
+            showError();
+            return;
+        }
+
+        console.log('Match data loaded successfully:', data.match);
+        currentMatch = data.match;
+
+        console.log('Loading match details...');
+        loadMatchDetails(currentMatch);
+
+        console.log('Loading similar matches...');
+        loadSimilarMatches();
+
+        // Setup auto-refresh for live matches
+        if (currentMatch.status === 'live') {
+            console.log('Match is live, setting up auto-refresh');
+            setInterval(() => refreshScores(matchId), 2000);
         }
     } catch (error) {
         console.error('Error loading match:', error);
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
         showError();
     }
 
@@ -170,8 +210,6 @@ function updateScoreDisplay() {
             // Show Kabaddi, Hide Badminton
             if (serveA) serveA.style.display = 'none';
             if (serveB) serveB.style.display = 'none';
-            if (setsA) setsA.style.display = 'none';
-            if (setsB) setsB.style.display = 'none';
             if (currentSetBadge) currentSetBadge.style.display = 'none';
 
             // Update Player Counts (Render Icons)
@@ -545,9 +583,13 @@ function triggerWinnerAnimation(winnerName) {
  * Load match details into page
  */
 function loadMatchDetails(match) {
+    console.log('loadMatchDetails called with match:', match);
+
     const scores = match.scores || {};
     const score1 = scores.team1_score ?? '-';
     const score2 = scores.team2_score ?? '-';
+
+    console.log('Scores extracted:', { score1, score2, scores });
 
     document.getElementById('breadcrumb-sport').textContent = capitalizeFirst(match.sport);
     document.getElementById('breadcrumb-match').textContent = `${match.team1_name} vs ${match.team2_name}`;
@@ -762,7 +804,12 @@ function shareMatch() {
 }
 
 function showError() {
+    console.error('showError() called - displaying Match Not Found message');
+    console.trace('showError call stack');
+
     const mainEl = document.querySelector('.match-detail-page');
+    console.log('Main element found:', !!mainEl);
+
     if (mainEl) {
         mainEl.innerHTML = `
             <div class="error-state" style="text-align: center; padding: 4rem 2rem;">
