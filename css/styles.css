@@ -656,7 +656,7 @@ img {
 
 .team-row.winner::before {
   content: '⭐';
-  margin-right: var(--spacing-sm);
+  margin-left: 2px;
 }
 
 .team-info {
