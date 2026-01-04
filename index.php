@@ -25,7 +25,7 @@ include 'includes/header.php';
                     <div class="hero-content">
                         <div class="hero-badge">
                             <span class="live-dot"></span>
-                            <span id="live-count">3</span> Matches Live Now
+                            <span id="live-count">0</span> Matches Live Now
                         </div>
                         
                         <h2 class="hero-title">

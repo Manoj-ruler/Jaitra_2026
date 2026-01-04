@@ -79,6 +79,10 @@ async function loadHomeMatches(forceRender = false) {
                 homeMatchesData = data.matches;
                 container.innerHTML = data.matches.map(match => createHomeMatchCard(match)).join('');
             }
+
+            // Update live match count
+            updateLiveMatchCount(data.matches);
+
             // If data hasn't changed, do nothing - seamless refresh!
         } else if (forceRender || homeMatchesData.length > 0) {
             // Only show "no matches" if it's initial load or we previously had matches
@@ -89,6 +93,8 @@ async function loadHomeMatches(forceRender = false) {
                     <p>No matches scheduled yet. Check back soon!</p>
                 </div>
             `;
+            // Update count to 0 if no matches
+            updateLiveMatchCount([]);
         }
     } catch (error) {
         console.error('Failed to load matches for home page:', error);
@@ -102,6 +108,21 @@ async function loadHomeMatches(forceRender = false) {
         }
         // On refresh failure, keep existing content - silent fail
     }
+}
+
+/**
+ * Update the live match count badge
+ */
+function updateLiveMatchCount(matches) {
+    const liveCountElement = document.getElementById('live-count');
+    if (!liveCountElement) return;
+
+    // Count live matches
+    const liveMatches = matches.filter(match => match.status === 'live');
+    const count = liveMatches.length;
+
+    // Update the count
+    liveCountElement.textContent = count;
 }
 
 /**
