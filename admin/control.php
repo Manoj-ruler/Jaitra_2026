@@ -850,12 +850,31 @@ if ($match_id) {
         let winner = null;
         let desc = 'Match Drawn';
         
-        if (s1 > s2) {
-            winner = t1;
-            desc = `${t1} won by ${s1 - s2} points`;
-        } else if (s2 > s1) {
-            winner = t2;
-            desc = `${t2} won by ${s2 - s1} points`;
+        // Check if this is a set-based sport
+        const sportName = '<?= strtolower($sportName) ?>';
+        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+        
+        if (isSetBasedSport) {
+            // For set-based sports, use set scores
+            const sets1 = state.t1_sets || 0;
+            const sets2 = state.t2_sets || 0;
+            
+            if (sets1 > sets2) {
+                winner = t1;
+                desc = (sets1 > 0 || sets2 > 0) ? `${t1} won ${sets1}-${sets2}` : `${t1} won`;
+            } else if (sets2 > sets1) {
+                winner = t2;
+                desc = (sets1 > 0 || sets2 > 0) ? `${t2} won ${sets2}-${sets1}` : `${t2} won`;
+            }
+        } else {
+            // For kabaddi, use point difference
+            if (s1 > s2) {
+                winner = t1;
+                desc = `${t1} won by ${s1 - s2} points`;
+            } else if (s2 > s1) {
+                winner = t2;
+                desc = `${t2} won by ${s2 - s1} points`;
+            }
         }
         
         if (!confirm(`End Match?\n\nResult: ${desc}`)) return;
@@ -864,7 +883,7 @@ if ($match_id) {
         if (winner) {
             state.last_animation = {
                 id: Date.now(),
-                team: s1 > s2 ? 't1' : 't2',
+                team: (isSetBasedSport ? (state.t1_sets > state.t2_sets) : (s1 > s2)) ? 't1' : 't2',
                 type: 'WINNER'
             };
             await fetch('update_score.php', {
@@ -885,7 +904,7 @@ if ($match_id) {
             body: JSON.stringify({
                 action: 'end_match',
                 match_id: matchId,
-                winner_team: s1 > s2 ? 1 : (s2 > s1 ? 2 : 0),
+                winner_team: (isSetBasedSport ? (state.t1_sets > state.t2_sets ? 1 : (state.t2_sets > state.t1_sets ? 2 : 0)) : (s1 > s2 ? 1 : (s2 > s1 ? 2 : 0))),
                 win_description: desc
             })
         });
