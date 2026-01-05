@@ -341,22 +341,6 @@ include 'includes/header.php';
             </div>
         </section>
 
-        <!-- Bottom Reaction Popup -->
-        <div class="reaction-popup">
-            <button class="reaction-btn" data-emoji="🔥">
-                <span class="emoji">🔥</span>
-            </button>
-            <button class="reaction-btn" data-emoji="❤️">
-                <span class="emoji">❤️</span>
-            </button>
-            <button class="reaction-btn" data-emoji="👏">
-                <span class="emoji">👏</span>
-            </button>
-        </div>
-
-        <!-- Floating emojis container -->
-        <div class="floating-emojis-container" id="floating-emojis"></div>
-
         <!-- Similar Matches Section -->
         <section class="similar-matches-section">
             <h3 class="section-subtitle">More Matches You Might Like</h3>
