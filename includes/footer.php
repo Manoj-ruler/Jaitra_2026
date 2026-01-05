@@ -59,7 +59,7 @@ $customScripts = $customScripts ?? '';
         <div class="footer-bottom">
             <p>JAITRA 2026 - SRKR Engineering College (A), Bhimavaram</p>
             <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
-                Website Designed by <strong>Bhimavaram Digitals</strong> | CSD & CSIT Department, SRKREC
+                Website Designed by <strong><a href="https://bhimavaramdigitals.com/" style="color: yellow;" target="_blank" rel="noopener noreferrer">Bhimavaram Digitals</a></strong> | CSD & CSIT Department, SRKREC
             </p>
         </div>
     </footer>
