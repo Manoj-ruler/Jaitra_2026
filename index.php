@@ -681,6 +681,168 @@ $customScripts = '
         })();
     </script>
 
+    <!-- Scroll to Top Button with Progress -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <svg class="progress-ring" width="50" height="50">
+            <circle class="progress-ring-bg" cx="25" cy="25" r="22" />
+            <circle class="progress-ring-circle" id="progressCircle" cx="25" cy="25" r="22" />
+        </svg>
+        <div class="scroll-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <style>
+        /* Scroll to Top Button Styles */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+        }
+        
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-bg {
+            fill: rgba(37, 99, 235, 0.15);
+            stroke: rgba(37, 99, 235, 0.2);
+            stroke-width: 3;
+        }
+        
+        .progress-ring-circle {
+            fill: none;
+            stroke: #2563eb;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 138.23;
+            stroke-dashoffset: 138.23;
+            transition: stroke-dashoffset 0.1s ease;
+        }
+        
+        .scroll-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .scroll-to-top:hover .scroll-icon {
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .progress-ring {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .progress-ring-bg,
+            .progress-ring-circle {
+                cx: 22.5;
+                cy: 22.5;
+                r: 20;
+            }
+            
+            .progress-ring-circle {
+                stroke-dasharray: 125.66;
+                stroke-dashoffset: 125.66;
+            }
+            
+            .scroll-icon {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .scroll-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top with Progress Indicator
+        (function() {
+            const scrollBtn = document.getElementById('scrollToTop');
+            const progressCircle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 22; // 2πr where r=22
+            
+            // Update progress and visibility on scroll
+            function updateScrollProgress() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercent = scrollTop / scrollHeight;
+                
+                // Update progress ring
+                const offset = circumference - (scrollPercent * circumference);
+                progressCircle.style.strokeDashoffset = offset;
+                
+                // Show/hide button based on scroll position
+                if (scrollTop > 300) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+            }
+            
+            // Scroll to top on click
+            scrollBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Listen to scroll events
+            window.addEventListener('scroll', updateScrollProgress);
+            
+            // Initial check
+            updateScrollProgress();
+        })();
+    </script>
+
 <?php
 // Include the common footer
 include 'includes/footer.php';
