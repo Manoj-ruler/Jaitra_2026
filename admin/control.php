@@ -1007,6 +1007,25 @@ function getInitialScoreSchema($sport_name) {
         alert('Match Ended!');
         window.location.href = 'dashboard.php';
     }
+    
+    // Toggle Timeout
+    function toggleTimeout() {
+        state.is_timeout = !state.is_timeout;
+        const btn = document.getElementById('timeout-btn');
+        const text = document.getElementById('timeout-text');
+        
+        if (state.is_timeout) {
+            btn.classList.remove('btn-warning');
+            btn.classList.add('btn-success');
+            text.textContent = 'END TIMEOUT';
+        } else {
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-warning');
+            text.textContent = 'START TIMEOUT';
+        }
+        
+        sync();
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
