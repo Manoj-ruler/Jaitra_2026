@@ -107,27 +107,65 @@ $sportEmojis = [
         .sport-card {
             background: white;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 2rem 1.5rem 1.5rem;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             transition: all 0.3s;
-            cursor: pointer;
             text-decoration: none;
             color: inherit;
             border-top: 4px solid var(--sport-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
         .sport-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
-        .sport-emoji { font-size: 3rem; margin-bottom: 1rem; }
-        .sport-name { font-size: 1.25rem; font-weight: 600; color: #1a2332; }
-        .sport-action {
-            margin-top: 1rem;
-            color: var(--sport-color);
-            font-weight: 500;
-            font-size: 0.875rem;
+        .sport-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+        .sport-name { font-size: 1.25rem; font-weight: 600; color: #1a2332; margin-bottom: auto; }
+        .sport-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: auto;
         }
+        .sport-btn {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .sport-btn-primary {
+            background: var(--sport-color);
+            color: white;
+        }
+        .sport-btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .sport-btn-secondary {
+            background: white;
+            color: var(--sport-color);
+            border: 2px solid var(--sport-color);
+        }
+        .sport-btn-secondary:hover {
+            background: var(--sport-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-icon { font-size: 1.25rem; }
+        .btn-text { font-size: 0.75rem; font-weight: 600; }
         .matches-list { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
         .match-item {
             padding: 1rem 1.5rem;
@@ -149,8 +187,6 @@ $sportEmojis = [
         .btn-primary:hover { background: #1d4ed8; }
         .empty-state { padding: 3rem; text-align: center; color: #6b7280; }
         .empty-state p { margin-top: 0.5rem; }
-        .sport-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-        .sport-btn-secondary:hover { background: var(--sport-color) !important; color: white !important; }
     </style>
 </head>
 <body>
@@ -167,18 +203,20 @@ $sportEmojis = [
         <h2 class="section-title">Select Sport to Manage</h2>
         <div class="sports-grid">
             <?php foreach ($sports as $sport): ?>
-                <a href="control.php?sport=<?= $sport['id'] ?>" class="sport-card" style="--sport-color: <?= $sportColors[$sport['name']] ?>">
+                <div class="sport-card" style="--sport-color: <?= $sportColors[$sport['name']] ?>">
                     <div class="sport-emoji"><?= $sportEmojis[$sport['name']] ?></div>
                     <div class="sport-name"><?= ucfirst($sport['name']) ?></div>
-                    <div class="sport-actions" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <a href="control.php?sport=<?= $sport['id'] ?>" class="sport-btn sport-btn-primary" style="flex: 1; text-align: center; padding: 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.875rem; background: var(--sport-color); color: white; transition: all 0.2s;">
-                            ⚡ Start Match
+                    <div class="sport-actions">
+                        <a href="control.php?sport=<?= $sport['id'] ?>" class="sport-btn sport-btn-primary">
+                            <span class="btn-icon">⚡</span>
+                            <span class="btn-text">Start Match</span>
                         </a>
-                        <button onclick="openScheduleModal(<?= $sport['id'] ?>, '<?= $sport['name'] ?>')" class="sport-btn sport-btn-secondary" style="flex: 1; padding: 0.5rem; border-radius: 6px; font-weight: 500; font-size: 0.875rem; background: rgba(0,0,0,0.05); color: var(--sport-color); border: 1px solid var(--sport-color); cursor: pointer; transition: all 0.2s;">
-                            📅 Schedule Match
+                        <button onclick="openScheduleModal(<?= $sport['id'] ?>, '<?= $sport['name'] ?>')" class="sport-btn sport-btn-secondary">
+                            <span class="btn-icon">📅</span>
+                            <span class="btn-text">Schedule</span>
                         </button>
                     </div>
-                </a>
+                </div>
             <?php endforeach; ?>
         </div>
         
