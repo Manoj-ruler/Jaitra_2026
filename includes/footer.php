@@ -27,9 +27,6 @@ $customScripts = $customScripts ?? '';
                 <ul>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="scoreboard.php">Live Scoreboard</a></li>
-                    <li><a href="#">Schedule</a></li>
-                    <li><a href="#">Results</a></li>
-                    <li><a href="#">Gallery</a></li>
                 </ul>
             </div>
             
