@@ -49,10 +49,75 @@ if ($match_id) {
     $activeMatch = $stmt->fetch();
 
     if ($activeMatch) {
+        // If match is upcoming, convert it to live
+        if ($activeMatch['status'] === 'upcoming') {
+            $stmt = $conn->prepare("UPDATE matches SET status = 'live' WHERE id = :id");
+            $stmt->execute(['id' => $match_id]);
+            $activeMatch['status'] = 'live';
+            
+            // Create initial live_scores entry
+            $stmt = $conn->prepare("SELECT name FROM sports WHERE id = :id");
+            $stmt->execute(['id' => $sport_id]);
+            $sport_info = $stmt->fetch();
+            $sport_name = $sport_info ? $sport_info['name'] : 'generic';
+            
+            $initial_scores = json_encode(getInitialScoreSchema($sport_name));
+            $stmt = $conn->prepare("INSERT INTO live_scores (match_id, score_json) VALUES (:id, :scores) ON DUPLICATE KEY UPDATE score_json = VALUES(score_json)");
+            $stmt->execute(['id' => $match_id, 'scores' => $initial_scores]);
+        }
+        
         $stmt = $conn->prepare("SELECT score_json FROM live_scores WHERE match_id = :id");
         $stmt->execute(['id' => $match_id]);
         $scoreRow = $stmt->fetch();
         $initialState = $scoreRow ? $scoreRow['score_json'] : null;
+    }
+}
+
+// Helper function to get initial score schema
+function getInitialScoreSchema($sport_name) {
+    $sport = strtolower(trim($sport_name));
+    
+    switch ($sport) {
+        case 'kabaddi':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'current_raider' => 'team1',
+                't1_players' => 7,
+                't2_players' => 7,
+                'is_timeout' => false,
+                'last_animation' => null
+            ];
+            
+        case 'badminton':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'server' => null,
+                't1_sets' => 0,
+                't2_sets' => 0,
+                'current_set' => 1,
+                'is_timeout' => false
+            ];
+            
+        case 'volleyball':
+        case 'pickleball':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                't1_sets' => 0,
+                't2_sets' => 0,
+                'current_set' => 1,
+                'server' => null,
+                'is_timeout' => false
+            ];
+            
+        default:
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
+                'is_timeout' => false
+            ];
     }
 }
 ?>
@@ -506,9 +571,15 @@ if ($match_id) {
     ?>
     let state = <?= $activeMatch && $initialState ? $initialState : json_encode($defaultState) ?>;
     
+    // Parse state if it's a string (shouldn't happen, but safety check)
+    if (typeof state === 'string') {
+        state = JSON.parse(state);
+    }
+    
     // Merge with defaults to ensure all expected fields exist
+    const defaultState = <?= json_encode($defaultState) ?>;
     state = {
-        ...<?= json_encode($defaultState) ?>,
+        ...defaultState,
         ...state
     };
     
@@ -725,7 +796,12 @@ if ($match_id) {
     function sync() {
         render();
         
-        if (!matchId) return;
+        if (!matchId) {
+            console.warn('⚠️ No matchId - cannot sync');
+            return;
+        }
+        
+        console.log('🔄 Syncing scores...', { matchId, state });
         
         fetch('update_score.php', {
             method: 'POST',
@@ -735,7 +811,16 @@ if ($match_id) {
                 match_id: matchId,
                 scores: state
             })
-        }).catch(err => console.error('Sync failed:', err));
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('✅ Sync successful', data.rows_affected !== undefined ? `(${data.rows_affected} rows affected)` : '');
+            } else {
+                console.error('❌ Sync failed:', data.error);
+            }
+        })
+        .catch(err => console.error('❌ Sync network error:', err));
     }
     
     function render() {

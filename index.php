@@ -93,6 +93,91 @@ include 'includes/header.php';
     <!-- Live Scoreboard Section -->
     <section class="scoreboard-section">
         <div class="scoreboard-container">
+            <!-- Upcoming Matches Section -->
+            <?php
+            // Fetch upcoming matches
+            $upcomingQuery = "SELECT m.*, s.name as sport_name, 
+                           t1.name as team1_name, t1.college_name as team1_college,
+                           t2.name as team2_name, t2.college_name as team2_college
+                           FROM matches m
+                           JOIN sports s ON m.sport_id = s.id
+                           JOIN teams t1 ON m.team1_id = t1.id
+                           JOIN teams t2 ON m.team2_id = t2.id
+                           WHERE m.status = 'upcoming'
+                           ORDER BY m.match_time ASC
+                           LIMIT 10";
+            $upcomingStmt = $conn->query($upcomingQuery);
+            $upcomingMatches = $upcomingStmt->fetchAll();
+            
+            if (!empty($upcomingMatches)):
+            ?>
+            <div class="scoreboard-header" style="margin-bottom: 1.5rem;">
+                <h2>📅 Upcoming Matches</h2>
+                <p class="scoreboard-subtitle">Scheduled matches - stay tuned!</p>
+            </div>
+            
+            <div class="matches-carousel-container" style="margin-bottom: 3rem;">
+                <button class="matches-nav prev upcoming-prev" aria-label="Previous upcoming matches">‹</button>
+                <div class="matches-scroll upcoming-matches-scroll">
+                    <?php foreach ($upcomingMatches as $match): 
+                        $matchDate = new DateTime($match['match_time']);
+                        $dateStr = $matchDate->format('M j, Y');
+                        $timeStr = $matchDate->format('g:i A');
+                    ?>
+                        <article class="scorecard" data-status="upcoming" data-sport="<?= strtolower($match['sport_name']) ?>">
+                            <div class="scorecard-header">
+                                <div class="badge-group">
+                                    <span class="sport-badge <?= strtolower($match['sport_name']) ?>"><?= ucfirst($match['sport_name']) ?></span>
+                                </div>
+                                <span class="status-badge upcoming">Upcoming</span>
+                            </div>
+                            <div class="scorecard-body">
+                                <div class="teams-container">
+                                    <div class="team-row">
+                                        <div class="team-info">
+                                            <span class="team-name"><?= htmlspecialchars($match['team1_name']) ?></span>
+                                            <span class="team-college"><?= htmlspecialchars($match['team1_college']) ?></span>
+                                        </div>
+                                        <div class="team-score">
+                                            <span class="score-main">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="vs-divider">VS</div>
+                                    <div class="team-row">
+                                        <div class="team-info">
+                                            <span class="team-name"><?= htmlspecialchars($match['team2_name']) ?></span>
+                                            <span class="team-college"><?= htmlspecialchars($match['team2_college']) ?></span>
+                                        </div>
+                                        <div class="team-score">
+                                            <span class="score-main">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="scorecard-footer">
+                                <div class="match-result">
+                                    <?= htmlspecialchars($match['round'] ?: 'Match') ?>
+                                </div>
+                                <div class="match-time" style="font-weight: 600; color: #2563eb;">
+                                    📅 <?= $dateStr ?> • <?= $timeStr ?>
+                                </div>
+                                <?php if ($match['venue']): ?>
+                                <div class="match-venue" style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">
+                                    📍 <?= htmlspecialchars($match['venue']) ?>
+                                </div>
+                                <?php endif; ?>
+                                <div class="scorecard-branding">
+                                    <img src="assets/favicon.png" alt="JAITRA" class="branding-logo">
+                                    <span class="branding-text">JAITRA 2026</span>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+                <button class="matches-nav next upcoming-next" aria-label="Next upcoming matches">›</button>
+            </div>
+            <?php endif; ?>
+            
             <div class="scoreboard-header">
                 <h2>🏆 Live Matches & Results</h2>
                 <p class="scoreboard-subtitle">Follow all the action in real-time</p>
@@ -367,6 +452,63 @@ $customScripts = '
 
         // Start auto-scroll carousel every 5 seconds
         resetAutoScroll();
+
+        // ===== UPCOMING MATCHES SCROLL NAVIGATION =====
+        const upcomingScrollContainer = document.querySelector('.upcoming-matches-scroll');
+        const upcomingPrevBtn = document.querySelector('.upcoming-prev');
+        const upcomingNextBtn = document.querySelector('.upcoming-next');
+
+        if (upcomingScrollContainer && upcomingPrevBtn && upcomingNextBtn) {
+            const scrollAmount = 350;
+
+            upcomingPrevBtn.addEventListener('click', () => {
+                upcomingScrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            upcomingNextBtn.addEventListener('click', () => {
+                upcomingScrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            const updateUpcomingButtonStates = () => {
+                const scrollLeft = Math.ceil(upcomingScrollContainer.scrollLeft);
+                const scrollWidth = Math.floor(upcomingScrollContainer.scrollWidth);
+                const clientWidth = Math.floor(upcomingScrollContainer.clientWidth);
+                const maxScroll = scrollWidth - clientWidth;
+                const tolerance = 5;
+
+                if (maxScroll <= tolerance) {
+                    upcomingPrevBtn.classList.add('disabled');
+                    upcomingNextBtn.classList.add('disabled');
+                    upcomingPrevBtn.style.opacity = '0';
+                    upcomingNextBtn.style.opacity = '0';
+                    return;
+                } else {
+                    upcomingPrevBtn.style.opacity = '1';
+                    upcomingNextBtn.style.opacity = '1';
+                }
+
+                if (scrollLeft <= tolerance) {
+                    upcomingPrevBtn.classList.add('disabled');
+                    upcomingPrevBtn.setAttribute('disabled', 'true');
+                } else {
+                    upcomingPrevBtn.classList.remove('disabled');
+                    upcomingPrevBtn.removeAttribute('disabled');
+                }
+
+                if (scrollLeft >= maxScroll - tolerance) {
+                    upcomingNextBtn.classList.add('disabled');
+                    upcomingNextBtn.setAttribute('disabled', 'true');
+                } else {
+                    upcomingNextBtn.classList.remove('disabled');
+                    upcomingNextBtn.removeAttribute('disabled');
+                }
+            };
+
+            upcomingScrollContainer.addEventListener('scroll', updateUpcomingButtonStates);
+            window.addEventListener('resize', updateUpcomingButtonStates);
+            setTimeout(updateUpcomingButtonStates, 100);
+            setTimeout(updateUpcomingButtonStates, 1000);
+        }
     </script>
 ';
 
