@@ -396,6 +396,12 @@ function getInitialScoreSchema($sport_name) {
                                 <button onclick="addPoints('t1', 3)" class="btn btn-primary w-100 control-btn">+3</button>
                             </div>
                         </div>
+                        <!-- Manual Score Input for Kabaddi -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                            <input type="number" id="manual-score-t1" class="form-control text-center" value="0">
+                            <button onclick="updateManualScore('t1')" class="btn btn-secondary">SET</button>
+                        </div>
                         <button onclick="addPoints('t1', -1)" class="btn btn-outline-danger w-100 mb-3">-1</button>
                         
                         <?php if ($sportName === 'kabaddi'): ?>
@@ -466,6 +472,12 @@ function getInitialScoreSchema($sport_name) {
                             <div class="col-4">
                                 <button onclick="addPoints('t2', 3)" class="btn btn-danger w-100 control-btn">+3</button>
                             </div>
+                        </div>
+                        <!-- Manual Score Input for Kabaddi -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                            <input type="number" id="manual-score-t2" class="form-control text-center" value="0">
+                            <button onclick="updateManualScore('t2')" class="btn btn-secondary">SET</button>
                         </div>
                         <button onclick="addPoints('t2', -1)" class="btn btn-outline-danger w-100 mb-3">-1</button>
                         
