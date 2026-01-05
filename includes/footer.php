@@ -63,6 +63,8 @@ $customScripts = $customScripts ?? '';
     
 
     <?php if ($includeAppJs): ?>
+    <!-- Pagination JavaScript -->
+    <script src="js/pagination.js"></script>
     <!-- App JavaScript -->
     <script src="js/app.js"></script>
     <?php endif; ?>
