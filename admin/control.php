@@ -346,15 +346,6 @@ function getInitialScoreSchema($sport_name) {
                 </div>
             </div>
 
-            <?php if ($sportName === 'kabaddi'): ?>
-            <!-- KABADDI TIMEOUT -->
-            <div class="text-center mb-4">
-                <button onclick="toggleTimeout()" id="btn-timeout" class="btn btn-warning fw-bold px-5 py-2">
-                    ⏱️ START TIMEOUT
-                </button>
-            </div>
-            <?php endif; ?>
-
             <!-- Score Controls -->
             <div class="glass-card p-4 mb-4">
                 <div class="row g-3">
