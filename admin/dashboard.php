@@ -149,6 +149,8 @@ $sportEmojis = [
         .btn-primary:hover { background: #1d4ed8; }
         .empty-state { padding: 3rem; text-align: center; color: #6b7280; }
         .empty-state p { margin-top: 0.5rem; }
+        .sport-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .sport-btn-secondary:hover { background: var(--sport-color) !important; color: white !important; }
     </style>
 </head>
 <body>
@@ -168,7 +170,14 @@ $sportEmojis = [
                 <a href="control.php?sport=<?= $sport['id'] ?>" class="sport-card" style="--sport-color: <?= $sportColors[$sport['name']] ?>">
                     <div class="sport-emoji"><?= $sportEmojis[$sport['name']] ?></div>
                     <div class="sport-name"><?= ucfirst($sport['name']) ?></div>
-                    <div class="sport-action">Manage Scores →</div>
+                    <div class="sport-actions" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <a href="control.php?sport=<?= $sport['id'] ?>" class="sport-btn sport-btn-primary" style="flex: 1; text-align: center; padding: 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.875rem; background: var(--sport-color); color: white; transition: all 0.2s;">
+                            ⚡ Start Match
+                        </a>
+                        <button onclick="openScheduleModal(<?= $sport['id'] ?>, '<?= $sport['name'] ?>')" class="sport-btn sport-btn-secondary" style="flex: 1; padding: 0.5rem; border-radius: 6px; font-weight: 500; font-size: 0.875rem; background: rgba(0,0,0,0.05); color: var(--sport-color); border: 1px solid var(--sport-color); cursor: pointer; transition: all 0.2s;">
+                            📅 Schedule Match
+                        </button>
+                    </div>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -203,5 +212,185 @@ $sportEmojis = [
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Schedule Match Modal -->
+    <div id="scheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: #1a2332;">Schedule Match - <span id="modalSportName"></span></h3>
+                <button onclick="closeScheduleModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+            </div>
+            
+            <form id="scheduleForm" onsubmit="submitSchedule(event)">
+                <input type="hidden" id="scheduleSportId" name="sport_id">
+                
+                <!-- Team 1 -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Team 1</label>
+                    <select id="scheduleTeam1Select" class="form-select" onchange="toggleNewTeamSchedule(1)" style="margin-bottom: 0.5rem;">
+                        <option value="">-- Select Existing --</option>
+                        <option value="new">+ Add New Team</option>
+                    </select>
+                    <div id="scheduleNewTeam1" style="display: none;">
+                        <input type="text" id="scheduleTeam1Name" placeholder="Team Name" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <input type="text" id="scheduleTeam1College" placeholder="College Name" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <select id="scheduleTeam1Gender" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Team 2 -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Team 2</label>
+                    <select id="scheduleTeam2Select" class="form-select" onchange="toggleNewTeamSchedule(2)" style="margin-bottom: 0.5rem;">
+                        <option value="">-- Select Existing --</option>
+                        <option value="new">+ Add New Team</option>
+                    </select>
+                    <div id="scheduleNewTeam2" style="display: none;">
+                        <input type="text" id="scheduleTeam2Name" placeholder="Team Name" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <input type="text" id="scheduleTeam2College" placeholder="College Name" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <select id="scheduleTeam2Gender" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Date and Time -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Match Date</label>
+                        <input type="date" id="scheduleDate" required style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Match Time</label>
+                        <input type="time" id="scheduleTime" required style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                </div>
+                
+                <!-- Venue and Round -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Venue</label>
+                        <input type="text" id="scheduleVenue" placeholder="e.g., Court 1" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #1a2332;">Round/Category</label>
+                        <input type="text" id="scheduleRound" placeholder="e.g., Semi Final" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 0.75rem; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                    Schedule Match
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentSportTeams = [];
+        
+        function openScheduleModal(sportId, sportName) {
+            document.getElementById('scheduleSportId').value = sportId;
+            document.getElementById('modalSportName').textContent = sportName.charAt(0).toUpperCase() + sportName.slice(1);
+            document.getElementById('scheduleModal').style.display = 'flex';
+            
+            // Fetch teams for this sport
+            fetch(`../api/get_teams.php?sport_id=${sportId}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        currentSportTeams = data.teams || [];
+                        populateTeamSelects();
+                    }
+                })
+                .catch(err => console.error('Failed to load teams:', err));
+        }
+        
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+            document.getElementById('scheduleForm').reset();
+            document.getElementById('scheduleNewTeam1').style.display = 'none';
+            document.getElementById('scheduleNewTeam2').style.display = 'none';
+        }
+        
+        function populateTeamSelects() {
+            const team1Select = document.getElementById('scheduleTeam1Select');
+            const team2Select = document.getElementById('scheduleTeam2Select');
+            
+            // Clear existing options except first two
+            team1Select.innerHTML = '<option value="">-- Select Existing --</option><option value="new">+ Add New Team</option>';
+            team2Select.innerHTML = '<option value="">-- Select Existing --</option><option value="new">+ Add New Team</option>';
+            
+            currentSportTeams.forEach(team => {
+                const option1 = document.createElement('option');
+                option1.value = team.id;
+                option1.textContent = `${team.name} (${team.college_name}) - ${team.gender || 'N/A'}`;
+                option1.dataset.name = team.name;
+                option1.dataset.college = team.college_name;
+                team1Select.appendChild(option1);
+                
+                const option2 = option1.cloneNode(true);
+                option2.dataset.name = team.name;
+                option2.dataset.college = team.college_name;
+                team2Select.appendChild(option2);
+            });
+        }
+        
+        function toggleNewTeamSchedule(num) {
+            const select = document.getElementById(`scheduleTeam${num}Select`);
+            const newTeamDiv = document.getElementById(`scheduleNewTeam${num}`);
+            newTeamDiv.style.display = select.value === 'new' ? 'block' : 'none';
+        }
+        
+        async function submitSchedule(event) {
+            event.preventDefault();
+            
+            const team1Select = document.getElementById('scheduleTeam1Select');
+            const team2Select = document.getElementById('scheduleTeam2Select');
+            
+            const data = {
+                action: 'schedule_match',
+                sport_id: document.getElementById('scheduleSportId').value,
+                team1_id: team1Select.value !== 'new' && team1Select.value ? team1Select.value : null,
+                team2_id: team2Select.value !== 'new' && team2Select.value ? team2Select.value : null,
+                team1_name: document.getElementById('scheduleTeam1Name')?.value || 
+                    (team1Select.selectedOptions[0]?.dataset.name || ''),
+                team1_college: document.getElementById('scheduleTeam1College')?.value || 
+                    (team1Select.selectedOptions[0]?.dataset.college || ''),
+                team1_gender: document.getElementById('scheduleTeam1Gender')?.value || 'Men',
+                team2_name: document.getElementById('scheduleTeam2Name')?.value || 
+                    (team2Select.selectedOptions[0]?.dataset.name || ''),
+                team2_college: document.getElementById('scheduleTeam2College')?.value || 
+                    (team2Select.selectedOptions[0]?.dataset.college || ''),
+                team2_gender: document.getElementById('scheduleTeam2Gender')?.value || 'Men',
+                match_date: document.getElementById('scheduleDate').value,
+                match_time: document.getElementById('scheduleTime').value,
+                venue: document.getElementById('scheduleVenue').value,
+                round: document.getElementById('scheduleRound').value
+            };
+            
+            try {
+                const res = await fetch('update_score.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    alert('Match scheduled successfully!');
+                    closeScheduleModal();
+                    location.reload(); // Refresh to show new scheduled match
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to schedule match'));
+                }
+            } catch (err) {
+                alert('Network error: ' + err.message);
+            }
+        }
+    </script>
 </body>
 </html>

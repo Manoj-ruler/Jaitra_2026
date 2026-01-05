@@ -236,6 +236,93 @@ try {
             echo json_encode(['success' => true, 'anim_id' => $anim_id]);
             break;
             
+        case 'schedule_match':
+            $sport_id = (int)$data['sport_id'];
+            $venue = $data['venue'] ?? '';
+            $round = $data['round'] ?? '';
+            $match_date = $data['match_date'] ?? ''; // Format: YYYY-MM-DD
+            $match_time = $data['match_time'] ?? ''; // Format: HH:MM
+            
+            // Validate date and time
+            if (empty($match_date) || empty($match_time)) {
+                echo json_encode(['success' => false, 'error' => 'Match date and time are required']);
+                exit;
+            }
+            
+            // Combine date and time
+            $match_datetime = $match_date . ' ' . $match_time . ':00';
+            
+            // Handle Team 1
+            if (!empty($data['team1_id'])) {
+                $team1_id = (int)$data['team1_id'];
+                $stmt = $conn->prepare("SELECT name, college_name FROM teams WHERE id = :id");
+                $stmt->execute(['id' => $team1_id]);
+                $team1 = $stmt->fetch();
+                $team1_name = $team1['name'];
+                $team1_college = $team1['college_name'];
+            } else {
+                // Create new team
+                $team1_name = trim($data['team1_name'] ?? '');
+                $team1_college = trim($data['team1_college'] ?? '');
+                $team1_gender = $data['team1_gender'] ?? 'Men';
+
+                if (empty($team1_name) || empty($team1_college)) {
+                    echo json_encode(['success' => false, 'error' => 'Team 1 name and college required']);
+                    exit;
+                }
+                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, gender, sport_id) VALUES (:name, :college, :gender, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
+                $stmt->execute(['name' => $team1_name, 'college' => $team1_college, 'gender' => $team1_gender, 'sport' => $sport_id]);
+                $team1_id = $conn->lastInsertId();
+            }
+            
+            // Handle Team 2
+            if (!empty($data['team2_id'])) {
+                $team2_id = (int)$data['team2_id'];
+                $stmt = $conn->prepare("SELECT name, college_name FROM teams WHERE id = :id");
+                $stmt->execute(['id' => $team2_id]);
+                $team2 = $stmt->fetch();
+                $team2_name = $team2['name'];
+                $team2_college = $team2['college_name'];
+            } else {
+                $team2_name = trim($data['team2_name'] ?? '');
+                $team2_college = trim($data['team2_college'] ?? '');
+                $team2_gender = $data['team2_gender'] ?? 'Men';
+
+                if (empty($team2_name) || empty($team2_college)) {
+                    echo json_encode(['success' => false, 'error' => 'Team 2 name and college required']);
+                    exit;
+                }
+                $stmt = $conn->prepare("INSERT INTO teams (name, college_name, gender, sport_id) VALUES (:name, :college, :gender, :sport) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)");
+                $stmt->execute(['name' => $team2_name, 'college' => $team2_college, 'gender' => $team2_gender, 'sport' => $sport_id]);
+                $team2_id = $conn->lastInsertId();
+            }
+            
+            // Create scheduled match (status = 'upcoming', no live_scores entry)
+            $stmt = $conn->prepare("
+                INSERT INTO matches (sport_id, team1_id, team2_id, status, match_time, venue, round)
+                VALUES (:sport, :t1, :t2, 'upcoming', :match_time, :venue, :round)
+            ");
+            $stmt->execute([
+                'sport' => $sport_id,
+                't1' => $team1_id,
+                't2' => $team2_id,
+                'match_time' => $match_datetime,
+                'venue' => $venue,
+                'round' => $round
+            ]);
+            $match_id = $conn->lastInsertId();
+            
+            echo json_encode([
+                'success' => true,
+                'match_id' => $match_id,
+                'team1_name' => $team1_name,
+                'team1_college' => $team1_college,
+                'team2_name' => $team2_name,
+                'team2_college' => $team2_college,
+                'match_datetime' => $match_datetime
+            ]);
+            break;
+            
         case 'update_team_names':
             $match_id = (int)$data['match_id'];
             $t1_name = trim($data['team1_name']);
