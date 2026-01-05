@@ -815,7 +815,7 @@ function getInitialScoreSchema($sport_name) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('✅ Sync successful');
+                console.log('✅ Sync successful', data.rows_affected !== undefined ? `(${data.rows_affected} rows affected)` : '');
             } else {
                 console.error('❌ Sync failed:', data.error);
             }

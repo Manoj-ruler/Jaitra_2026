@@ -169,7 +169,16 @@ try {
             $stmt = $conn->prepare("UPDATE live_scores SET score_json = :scores WHERE match_id = :id");
             $stmt->execute(['scores' => json_encode($scores), 'id' => $match_id]);
             
-            echo json_encode(['success' => true]);
+            $rowCount = $stmt->rowCount();
+            
+            // If no rows were updated, the entry might not exist - create it
+            if ($rowCount === 0) {
+                error_log("No rows updated for match_id $match_id, attempting INSERT");
+                $insertStmt = $conn->prepare("INSERT INTO live_scores (match_id, score_json) VALUES (:id, :scores)");
+                $insertStmt->execute(['id' => $match_id, 'scores' => json_encode($scores)]);
+            }
+            
+            echo json_encode(['success' => true, 'rows_affected' => $rowCount]);
             break;
             
         case 'end_match':
