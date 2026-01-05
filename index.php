@@ -6,6 +6,22 @@
 
 require_once 'db_connect.php';
 
+// ==========================================
+// PAGE VIEW COUNTER - Read current count (File-based)
+// Incrementing is handled by JavaScript using sessionStorage
+// ==========================================
+$pageViewCount = 0;
+$viewCountFile = __DIR__ . '/assets/page_views.json';
+
+// Ensure the file exists
+if (!file_exists($viewCountFile)) {
+    file_put_contents($viewCountFile, json_encode(['index' => 0]));
+}
+
+// Read current count
+$viewData = json_decode(file_get_contents($viewCountFile), true) ?: ['index' => 0];
+$pageViewCount = $viewData['index'] ?? 0;
+
 // Page configuration for header include
 $pageTitle = 'JAITRA 2026 | Home - AP\'s Premier Engineering Sports Carnival';
 $pageDescription = 'JAITRA 2026 - The Ultimate Sports Carnival for All A.P. State Engineering Colleges. Experience thrilling competitions in Volleyball, Kabaddi, Badminton, and Pickleball with ₹5 Lakhs prize pool.';
@@ -513,7 +529,159 @@ $customScripts = '
         }
     </script>
 ';
+?>
 
+    <!-- Page View Counter Section -->
+    <section class="page-view-section">
+        <div class="view-counter-container">
+            <h3 class="visitors-title">Visitors</h3>
+            <div class="digit-badges" id="visitorDigits">
+                <?php
+                // Pad the count to at least 4 digits for display
+                $countStr = str_pad($pageViewCount, 4, '0', STR_PAD_LEFT);
+                for ($i = 0; $i < strlen($countStr); $i++):
+                ?>
+                <div class="digit-badge">
+                    <span class="digit"><?= $countStr[$i] ?></span>
+                </div>
+                <?php endfor; ?>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Page View Counter Styles - Starburst Badge Design */
+        .page-view-section {
+            background: #f5f5f5;
+            padding: 2rem 1rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        .view-counter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .visitors-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .digit-badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .digit-badge {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            clip-path: polygon(
+                50% 0%, 61% 10%, 75% 5%, 80% 20%, 95% 25%, 90% 40%,
+                100% 50%, 90% 60%, 95% 75%, 80% 80%, 75% 95%, 61% 90%,
+                50% 100%, 39% 90%, 25% 95%, 20% 80%, 5% 75%, 10% 60%,
+                0% 50%, 10% 40%, 5% 25%, 20% 20%, 25% 5%, 39% 10%
+            );
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .digit-badge:nth-child(odd) {
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .digit {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+        
+        @media (max-width: 768px) {
+            .page-view-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .visitors-title {
+                font-size: 1.25rem;
+            }
+            
+            .digit-badge {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .digit {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+
+    <script>
+        // ==========================================
+        // PAGE VIEW COUNTER - Tab-specific tracking using sessionStorage
+        // - Refresh: Same sessionStorage = NO increment
+        // - New Tab: New sessionStorage = INCREMENT
+        // - After closing browser: sessionStorage cleared = INCREMENT
+        // ==========================================
+        (function() {
+            // Check if this tab has already been counted
+            if (!sessionStorage.getItem('page_view_counted')) {
+                // Mark this tab as counted
+                sessionStorage.setItem('page_view_counted', 'true');
+                
+                // Call API to increment the view count
+                fetch('api/increment_view.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the digit badges with new count
+                        const container = document.getElementById('visitorDigits');
+                        if (container) {
+                            const countStr = String(data.count).padStart(4, '0');
+                            container.innerHTML = '';
+                            for (let i = 0; i < countStr.length; i++) {
+                                const badge = document.createElement('div');
+                                badge.className = 'digit-badge';
+                                badge.innerHTML = `<span class="digit">${countStr[i]}</span>`;
+                                container.appendChild(badge);
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log('View counter update failed:', error);
+                });
+            }
+        })();
+    </script>
+
+<?php
 // Include the common footer
 include 'includes/footer.php';
 ?>
