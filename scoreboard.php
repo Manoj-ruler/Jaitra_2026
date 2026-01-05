@@ -62,7 +62,16 @@ include 'includes/header.php';
                 <h2 class="section-title">
                     Match Scoreboard
                 </h2>
-                <span class="match-count">12 matches found</span>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="🔍 Search teams..."
+                        oninput="handleSearch()"
+                    >
+                    <span class="match-count">12 matches found</span>
+                </div>
             </div>
 
             <div class="scorecards-grid">
