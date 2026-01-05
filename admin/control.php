@@ -518,6 +518,16 @@ function getInitialScoreSchema($sport_name) {
             <?php endif; ?>
         </div>
 
+        <!-- Timeout Section -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <button onclick="toggleTimeout()" id="timeout-btn" class="btn btn-warning w-100 py-3 fw-bold">
+                    <i class="fas fa-pause-circle me-2"></i>
+                    <span id="timeout-text">START TIMEOUT</span>
+                </button>
+            </div>
+        </div>
+
         <!-- End Match -->
             <button onclick="endMatch()" class="btn btn-danger w-100 py-3 fw-bold">END MATCH</button>
         </div>
