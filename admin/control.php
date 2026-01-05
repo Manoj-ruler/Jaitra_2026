@@ -339,7 +339,7 @@ function getInitialScoreSchema($sport_name) {
                              <div id="serve-t2" class="service-indicator"></div>
                         </div>
                         <?php endif; ?>
-                        <h4 id="lbl-t2" class="text-danger mb-2 mt-2">Team 2</h4>
+                        <h4 id="lbl-t2" class="text-danger mb-2 mt-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t2_name']) : 'Team 2' ?></h4>
                         <div class="score-display text-primary" id="val-t2">0</div>
                          <!-- Sets Display Removed -->
                     </div>
