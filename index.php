@@ -92,11 +92,11 @@ include 'includes/header.php';
                         onerror="this.src='https://via.placeholder.com/1200x700/1a2332/ffffff?text=JAITRA+2026+-+Sports+Carnival'">
                 </div>
                 <div class="carousel-slide">
-                    <img src="assets/home2.jpeg" alt="JAITRA 2026 - Event Details"
+                    <img src="assets/home-2.jpeg" alt="JAITRA 2026 - Event Details"
                         onerror="this.src='https://via.placeholder.com/1200x700/2563eb/ffffff?text=₹5+Lakhs+Prize+Pool'">
                 </div>
                 <div class="carousel-slide">
-                    <img src="assets/home3.jpeg" alt="JAITRA 2026 - Registration"
+                    <img src="assets/home-3.jpeg" alt="JAITRA 2026 - Registration"
                         onerror="this.src='https://via.placeholder.com/1200x700/6366f1/ffffff?text=Register+Now+-+All+AP+Colleges'">
                 </div>
             </div>
