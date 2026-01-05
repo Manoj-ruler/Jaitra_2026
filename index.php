@@ -4,6 +4,8 @@
  * Main landing page for the sports carnival website
  */
 
+require_once 'db_connect.php';
+
 // Page configuration for header include
 $pageTitle = 'JAITRA 2026 | Home - AP\'s Premier Engineering Sports Carnival';
 $pageDescription = 'JAITRA 2026 - The Ultimate Sports Carnival for All A.P. State Engineering Colleges. Experience thrilling competitions in Volleyball, Kabaddi, Badminton, and Pickleball with ₹5 Lakhs prize pool.';
@@ -454,19 +456,19 @@ $customScripts = '
         resetAutoScroll();
 
         // ===== UPCOMING MATCHES SCROLL NAVIGATION =====
-        const upcomingScrollContainer = document.querySelector('.upcoming-matches-scroll');
-        const upcomingPrevBtn = document.querySelector('.upcoming-prev');
-        const upcomingNextBtn = document.querySelector('.upcoming-next');
+        const upcomingScrollContainer = document.querySelector(\'.upcoming-matches-scroll\');
+        const upcomingPrevBtn = document.querySelector(\'.upcoming-prev\');
+        const upcomingNextBtn = document.querySelector(\'.upcoming-next\');
 
         if (upcomingScrollContainer && upcomingPrevBtn && upcomingNextBtn) {
             const scrollAmount = 350;
 
-            upcomingPrevBtn.addEventListener('click', () => {
-                upcomingScrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            upcomingPrevBtn.addEventListener(\'click\', () => {
+                upcomingScrollContainer.scrollBy({ left: -scrollAmount, behavior: \'smooth\' });
             });
 
-            upcomingNextBtn.addEventListener('click', () => {
-                upcomingScrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            upcomingNextBtn.addEventListener(\'click\', () => {
+                upcomingScrollContainer.scrollBy({ left: scrollAmount, behavior: \'smooth\' });
             });
 
             const updateUpcomingButtonStates = () => {
@@ -477,35 +479,35 @@ $customScripts = '
                 const tolerance = 5;
 
                 if (maxScroll <= tolerance) {
-                    upcomingPrevBtn.classList.add('disabled');
-                    upcomingNextBtn.classList.add('disabled');
-                    upcomingPrevBtn.style.opacity = '0';
-                    upcomingNextBtn.style.opacity = '0';
+                    upcomingPrevBtn.classList.add(\'disabled\');
+                    upcomingNextBtn.classList.add(\'disabled\');
+                    upcomingPrevBtn.style.opacity = \'0\';
+                    upcomingNextBtn.style.opacity = \'0\';
                     return;
                 } else {
-                    upcomingPrevBtn.style.opacity = '1';
-                    upcomingNextBtn.style.opacity = '1';
+                    upcomingPrevBtn.style.opacity = \'1\';
+                    upcomingNextBtn.style.opacity = \'1\';
                 }
 
                 if (scrollLeft <= tolerance) {
-                    upcomingPrevBtn.classList.add('disabled');
-                    upcomingPrevBtn.setAttribute('disabled', 'true');
+                    upcomingPrevBtn.classList.add(\'disabled\');
+                    upcomingPrevBtn.setAttribute(\'disabled\', \'true\');
                 } else {
-                    upcomingPrevBtn.classList.remove('disabled');
-                    upcomingPrevBtn.removeAttribute('disabled');
+                    upcomingPrevBtn.classList.remove(\'disabled\');
+                    upcomingPrevBtn.removeAttribute(\'disabled\');
                 }
 
                 if (scrollLeft >= maxScroll - tolerance) {
-                    upcomingNextBtn.classList.add('disabled');
-                    upcomingNextBtn.setAttribute('disabled', 'true');
+                    upcomingNextBtn.classList.add(\'disabled\');
+                    upcomingNextBtn.setAttribute(\'disabled\', \'true\');
                 } else {
-                    upcomingNextBtn.classList.remove('disabled');
-                    upcomingNextBtn.removeAttribute('disabled');
+                    upcomingNextBtn.classList.remove(\'disabled\');
+                    upcomingNextBtn.removeAttribute(\'disabled\');
                 }
             };
 
-            upcomingScrollContainer.addEventListener('scroll', updateUpcomingButtonStates);
-            window.addEventListener('resize', updateUpcomingButtonStates);
+            upcomingScrollContainer.addEventListener(\'scroll\', updateUpcomingButtonStates);
+            window.addEventListener(\'resize\', updateUpcomingButtonStates);
             setTimeout(updateUpcomingButtonStates, 100);
             setTimeout(updateUpcomingButtonStates, 1000);
         }
