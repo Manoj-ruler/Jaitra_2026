@@ -11,6 +11,13 @@ let homeMatchesData = []; // Store home page matches data for comparison
 let homeMatchesDataHash = ''; // Hash to detect changes
 let refreshInterval = null;
 
+// Pagination state
+let currentPage = 1;
+let itemsPerPage = 20; // Desktop default
+let totalPages = 1;
+let allMatches = []; // Store all fetched matches for pagination
+
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     // Check for sport parameter in URL
@@ -259,7 +266,8 @@ function createHomeMatchCard(match) {
 const filterState = {
     status: 'all',
     sport: 'all',
-    gender: 'all'
+    gender: 'all',
+    searchQuery: '' // For live search
 };
 
 // Hash for scoreboard data comparison
@@ -303,8 +311,17 @@ function renderScorecards(matches) {
         const statusMatch = filterState.status === 'all' || match.status === filterState.status;
         const sportMatch = filterState.sport === 'all' || match.sport === filterState.sport;
         const genderMatch = filterState.gender === 'all' || (match.gender && match.gender === filterState.gender);
-        return statusMatch && sportMatch && genderMatch;
+
+        // Search filter - check team names
+        const searchMatch = !filterState.searchQuery ||
+            match.team1_name.toLowerCase().includes(filterState.searchQuery.toLowerCase()) ||
+            match.team2_name.toLowerCase().includes(filterState.searchQuery.toLowerCase());
+
+        return statusMatch && sportMatch && genderMatch && searchMatch;
     });
+
+    // Store all filtered matches for pagination
+    allMatches = filteredMatches;
 
     if (filteredMatches.length === 0) {
         grid.innerHTML = `
@@ -315,11 +332,23 @@ function renderScorecards(matches) {
             </div>
         `;
         updateMatchCount(0);
+
+        // Hide pagination
+        const paginationContainer = document.getElementById('pagination-controls');
+        if (paginationContainer) {
+            paginationContainer.style.display = 'none';
+        }
         return;
     }
 
-    grid.innerHTML = filteredMatches.map(match => createScorecardHTML(match)).join('');
+    // Apply pagination
+    const paginatedMatches = paginateMatches(filteredMatches);
+
+    grid.innerHTML = paginatedMatches.map(match => createScorecardHTML(match)).join('');
     updateMatchCount(filteredMatches.length);
+
+    // Render pagination controls
+    renderPaginationControls();
 
     // Re-initialize click handlers
     initializeScorecardClicks();
@@ -488,6 +517,7 @@ function handleStatusFilter(button) {
     button.classList.add('active');
 
     filterState.status = status;
+    currentPage = 1; // Reset to page 1
     renderScorecards(matchesData);
 }
 
@@ -503,6 +533,7 @@ function handleGenderFilter(button) {
     button.classList.add('active');
 
     filterState.gender = gender;
+    currentPage = 1; // Reset to page 1
     renderScorecards(matchesData);
 }
 
@@ -527,6 +558,7 @@ function handleSportFilter(button) {
     });
 
     filterState.sport = sport;
+    currentPage = 1; // Reset to page 1
     renderScorecards(matchesData);
 }
 
@@ -608,6 +640,19 @@ function escapeHtml(text) {
     div.textContent = text || '';
     return div.innerHTML;
 }
+
+/**
+ * Handle live search input
+ */
+function handleSearch() {
+    const searchInput = document.getElementById('search-input');
+    if (!searchInput) return;
+
+    filterState.searchQuery = searchInput.value.trim();
+    currentPage = 1; // Reset to page 1 when searching
+    renderScorecards(matchesData);
+}
+
 
 // Add fadeIn animation
 const style = document.createElement('style');

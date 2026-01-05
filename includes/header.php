@@ -107,42 +107,42 @@ $showNav = $showNav ?? true; // Set to false to hide navigation
             <!-- Scoreboard/Match Pages: Link to YouTube -->
             <div class="ticker-item">
                 🏐 Volleyball Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🤼 Kabaddi Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🏸 Badminton Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🎾 Pickleball Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <!-- Duplicate for seamless loop -->
             <div class="ticker-item">
                 🏐 Volleyball Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🤼 Kabaddi Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🏸 Badminton Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <span class="ticker-separator">•</span>
             <div class="ticker-item">
                 🎾 Pickleball Live -
-                <a href="https://youtube.com/@SRKRECLIVE8303" target="_blank">Watch on YouTube</a>
+                <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" target="_blank">Watch on YouTube</a>
             </div>
             <?php endif; ?>
         </div>

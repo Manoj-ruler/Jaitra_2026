@@ -8,6 +8,8 @@
 $pageTitle = 'JAITRA 2026 | SRKR Engineering College - Sports Scoreboard';
 $pageDescription = 'JAITRA 2026 - Sports Carnival for All A.P. State Engineering Colleges. Live scores for Volleyball, Kabaddi, Badminton, and Pickleball.';
 $currentPage = 'scoreboard';
+$additionalCss = ['css/pagination.css']; // Add pagination styles
+
 
 // Include the common header
 include 'includes/header.php';
@@ -60,7 +62,16 @@ include 'includes/header.php';
                 <h2 class="section-title">
                     Match Scoreboard
                 </h2>
-                <span class="match-count">12 matches found</span>
+                <div class="search-and-count">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="Search teams..."
+                        oninput="handleSearch()"
+                    >
+                    <span class="match-count">12 matches found</span>
+                </div>
             </div>
 
             <div class="scorecards-grid">
@@ -70,6 +81,11 @@ include 'includes/header.php';
                     <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
                     <p>Loading matches...</p>
                 </div>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div id="pagination-controls" class="pagination-controls" style="display: none;">
+                <!-- Pagination buttons rendered dynamically -->
             </div>
         </section>
     </main>

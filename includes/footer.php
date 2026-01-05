@@ -27,9 +27,6 @@ $customScripts = $customScripts ?? '';
                 <ul>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="scoreboard.php">Live Scoreboard</a></li>
-                    <li><a href="#">Schedule</a></li>
-                    <li><a href="#">Results</a></li>
-                    <li><a href="#">Gallery</a></li>
                 </ul>
             </div>
             
@@ -58,12 +55,16 @@ $customScripts = $customScripts ?? '';
         
         <div class="footer-bottom">
             <p>JAITRA 2026 - SRKR Engineering College (A), Bhimavaram</p>
-            <p>© 2026 SRKR Engineering College. All rights reserved. | Men & Women Categories</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+                Website Designed by <strong><a href="https://bhimavaramdigitals.com/" style="color: yellow;" target="_blank" rel="noopener noreferrer">Bhimavaram Digitals</a></strong> | CSD & CSIT Department, SRKREC
+            </p>
         </div>
     </footer>
     
 
     <?php if ($includeAppJs): ?>
+    <!-- Pagination JavaScript -->
+    <script src="js/pagination.js"></script>
     <!-- App JavaScript -->
     <script src="js/app.js"></script>
     <?php endif; ?>
