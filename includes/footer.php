@@ -58,7 +58,9 @@ $customScripts = $customScripts ?? '';
         
         <div class="footer-bottom">
             <p>JAITRA 2026 - SRKR Engineering College (A), Bhimavaram</p>
-            <p>© 2026 SRKR Engineering College. All rights reserved. | Men & Women Categories</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+                Website Designed by <strong>Bhimavaram Digitals</strong> | CSD & CSIT Department, SRKREC
+            </p>
         </div>
     </footer>
     
