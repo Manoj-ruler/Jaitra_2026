@@ -129,6 +129,9 @@ function getInitialScoreSchema($sport_name) {
     <title><?= ucfirst($sportName) ?> Control | JAITRA 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Select2 CSS for searchable dropdowns -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -339,21 +342,12 @@ function getInitialScoreSchema($sport_name) {
                              <div id="serve-t2" class="service-indicator"></div>
                         </div>
                         <?php endif; ?>
-                        <h4 id="lbl-t2" class="text-danger mb-2 mt-2">Team 2</h4>
+                        <h4 id="lbl-t2" class="text-danger mb-2 mt-2"><?= $activeMatch ? htmlspecialchars($activeMatch['t2_name']) : 'Team 2' ?></h4>
                         <div class="score-display text-primary" id="val-t2">0</div>
                          <!-- Sets Display Removed -->
                     </div>
                 </div>
             </div>
-
-            <?php if ($sportName === 'kabaddi'): ?>
-            <!-- KABADDI TIMEOUT -->
-            <div class="text-center mb-4">
-                <button onclick="toggleTimeout()" id="btn-timeout" class="btn btn-warning fw-bold px-5 py-2">
-                    ⏱️ START TIMEOUT
-                </button>
-            </div>
-            <?php endif; ?>
 
             <!-- Score Controls -->
             <div class="glass-card p-4 mb-4">
@@ -395,6 +389,12 @@ function getInitialScoreSchema($sport_name) {
                             <div class="col-4">
                                 <button onclick="addPoints('t1', 3)" class="btn btn-primary w-100 control-btn">+3</button>
                             </div>
+                        </div>
+                        <!-- Manual Score Input for Kabaddi -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                            <input type="number" id="manual-score-t1" class="form-control text-center" value="0">
+                            <button onclick="updateManualScore('t1')" class="btn btn-secondary">SET</button>
                         </div>
                         <button onclick="addPoints('t1', -1)" class="btn btn-outline-danger w-100 mb-3">-1</button>
                         
@@ -467,6 +467,12 @@ function getInitialScoreSchema($sport_name) {
                                 <button onclick="addPoints('t2', 3)" class="btn btn-danger w-100 control-btn">+3</button>
                             </div>
                         </div>
+                        <!-- Manual Score Input for Kabaddi -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-light text-secondary small">MANUAL</span>
+                            <input type="number" id="manual-score-t2" class="form-control text-center" value="0">
+                            <button onclick="updateManualScore('t2')" class="btn btn-secondary">SET</button>
+                        </div>
                         <button onclick="addPoints('t2', -1)" class="btn btn-outline-danger w-100 mb-3">-1</button>
                         
                         <?php if ($sportName === 'kabaddi'): ?>
@@ -516,6 +522,16 @@ function getInitialScoreSchema($sport_name) {
                 </div>
             </div>
             <?php endif; ?>
+        </div>
+
+        <!-- Timeout Section -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <button onclick="toggleTimeout()" id="timeout-btn" class="btn btn-warning w-100 py-3 fw-bold">
+                    <i class="fas fa-pause-circle me-2"></i>
+                    <span id="timeout-text">START TIMEOUT</span>
+                </button>
+            </div>
         </div>
 
         <!-- End Match -->
@@ -602,7 +618,7 @@ function getInitialScoreSchema($sport_name) {
             if(manT2) manT2.value = state.team2_score;
         });
     }
-
+    
     function toggleNewTeam(num) {
         const select = document.getElementById(`team${num}-select`);
         document.getElementById(`new-team${num}`).classList.toggle('d-none', select.value !== 'new');
@@ -997,7 +1013,57 @@ function getInitialScoreSchema($sport_name) {
         alert('Match Ended!');
         window.location.href = 'dashboard.php';
     }
+    
+    // Toggle Timeout
+    function toggleTimeout() {
+        state.is_timeout = !state.is_timeout;
+        const btn = document.getElementById('timeout-btn');
+        const text = document.getElementById('timeout-text');
+        
+        if (state.is_timeout) {
+            btn.classList.remove('btn-warning');
+            btn.classList.add('btn-success');
+            text.textContent = 'END TIMEOUT';
+        } else {
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-warning');
+            text.textContent = 'START TIMEOUT';
+        }
+        
+        sync();
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    // Initialize Select2 on team dropdowns
+    $(document).ready(function() {
+        $('#team1-select').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Select Existing --',
+            allowClear: true,
+            width: '100%'
+        });
+        
+        $('#team2-select').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Select Existing --',
+            allowClear: true,
+            width: '100%'
+        });
+        
+        // Trigger toggleNewTeam when selection changes
+        $('#team1-select').on('change', function() {
+            toggleNewTeam(1);
+        });
+        
+        $('#team2-select').on('change', function() {
+            toggleNewTeam(2);
+        });
+    });
+</script>
 </body>
 </html>
