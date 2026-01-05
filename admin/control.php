@@ -277,7 +277,10 @@ function getInitialScoreSchema($sport_name) {
             </div>
             <div class="row mb-3">
                 <div class="col-6">
-                    <input type="text" id="venue" class="form-control border-secondary" placeholder="e.g. Court 1">
+                    <select id="venue" class="form-select border-secondary">
+                        <option value="Court1" selected>Court1</option>
+                        <option value="Court2">Court2</option>
+                    </select>
                 </div>
                 <div class="col-6">
                     <input type="text" id="round" class="form-control border-secondary" placeholder="e.g. Semi Final">
