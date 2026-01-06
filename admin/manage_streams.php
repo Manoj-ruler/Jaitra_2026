@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $stmt = $conn->prepare("INSERT INTO featured_videos (title, youtube_url) VALUES (:title, :url)");
                     $stmt->execute(['title' => $title, 'url' => $url]);
-                    $success = "Video added successfully.";
+                    header("Location: manage_streams.php?msg=Video added successfully");
+                    exit;
                 } catch (PDOException $e) {
                     $error = "Error adding video: " . $e->getMessage();
                 }
@@ -46,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $stmt = $conn->prepare("DELETE FROM featured_videos WHERE id = :id");
                 $stmt->execute(['id' => $id]);
-                $success = "Video removed successfully.";
+                header("Location: manage_streams.php?msg=Video removed successfully");
+                exit;
             } catch (PDOException $e) {
                 $error = "Error removing video: " . $e->getMessage();
             }
@@ -57,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $stmt = $conn->prepare("UPDATE featured_videos SET is_active = :status WHERE id = :id");
                 $stmt->execute(['status' => $newStatus, 'id' => $id]);
-                $success = "Status updated.";
+                header("Location: manage_streams.php?msg=Status updated");
+                exit;
             } catch (PDOException $e) {
                 $error = "Error updating status: " . $e->getMessage();
             }
@@ -150,6 +153,36 @@ try {
         .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
         .alert-success { background: #dcfce7; color: #166534; }
         .alert-error { background: #fee2e2; color: #991b1b; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            .video-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .video-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -161,11 +194,11 @@ try {
     </header>
 
     <div class="container">
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php if (isset($_GET['msg'])): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($_GET['msg']) ?></div>
         <?php endif; ?>
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
+        <?php if (isset($_GET['err'])): ?>
+            <div class="alert alert-error"><?= htmlspecialchars($_GET['err']) ?></div>
         <?php endif; ?>
 
         <!-- Add New Video -->
