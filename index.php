@@ -35,8 +35,8 @@ include 'includes/header.php';
 ?>
 
     <!-- Youtube Video Section -->
-    <section class="video-section" style="width: 100%; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; box-sizing: border-box;">
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    <section class="video-section" style="width: 100%; margin: 0; padding: 0;">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
             <iframe 
                 src="https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1" 
                 title="JAITRA 2026 Live Stream"
