@@ -16,7 +16,8 @@
             justify_content: center;
             align-items: center;
             font-family: 'Archivo Black', sans-serif;
-            background-color: white; /* Default to white, can be made transparent if needed */
+            background-color: green; /* Default to white, can be made transparent if needed */
+            color: white;
             overflow: hidden;
         }
 

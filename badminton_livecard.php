@@ -16,7 +16,8 @@
             justify_content: center;
             align-items: center;
             font-family: 'Archivo Black', sans-serif;
-            background-color: white;
+            background-color: green;
+            color: white;
             overflow: hidden;
         }
 
