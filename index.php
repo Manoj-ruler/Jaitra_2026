@@ -34,77 +34,16 @@ $showNav = false; // Home page uses carousel instead of nav
 include 'includes/header.php';
 ?>
 
-    <!-- Image Carousel Section -->
-    <section class="carousel-section">
-        <div class="carousel-container">
-            <div class="carousel-slides" id="carouselSlides">
-                <!-- Hero Slide -->
-                <div class="carousel-slide hero-slide">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="live-dot"></span>
-                            <span id="live-count">0</span> Matches Live Now
-                        </div>
-                        
-                        <h2 class="hero-title">
-                            <span class="highlight">JAITRA 2026</span><br>
-                            AP's Premier Engineering Sports Carnival
-                        </h2>
-                        
-                        <p class="hero-subtitle">
-                            Experience the ultimate sports showdown featuring Volleyball, Kabaddi, Badminton, and Pickleball. 
-                            Compete for glory and a massive ₹5 Lakhs prize pool!
-                        </p>
-                        
-                        <div class="hero-cta">
-                            <a href="scoreboard.php" class="cta-btn cta-btn-primary">
-                                📊 View Scores
-                            </a>
-                            <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" class="cta-btn cta-btn-secondary" id="liveMatchesBtn" target="_blank">
-                                🎥 View Live Matches
-                            </a>
-                        </div>
-                        
-                        <div class="countdown-timer" id="countdown">
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="days">07</span>
-                                <span class="countdown-label">Days</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="hours">00</span>
-                                <span class="countdown-label">Hours</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="minutes">00</span>
-                                <span class="countdown-label">Minutes</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="seconds">00</span>
-                                <span class="countdown-label">Seconds</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Poster Slides -->
-                <div class="carousel-slide">
-                    <img src="assets/home-1.jpeg" alt="JAITRA 2026 - Sports Carnival Poster"
-                        onerror="this.src='https://via.placeholder.com/1200x700/1a2332/ffffff?text=JAITRA+2026+-+Sports+Carnival'">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/home-2.jpeg" alt="JAITRA 2026 - Event Details"
-                        onerror="this.src='https://via.placeholder.com/1200x700/2563eb/ffffff?text=₹5+Lakhs+Prize+Pool'">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/home-3.jpeg" alt="JAITRA 2026 - Registration"
-                        onerror="this.src='https://via.placeholder.com/1200x700/6366f1/ffffff?text=Register+Now+-+All+AP+Colleges'">
-                </div>
-            </div>
-            
-            <button class="carousel-nav prev" onclick="moveSlide(-1)">‹</button>
-            <button class="carousel-nav next" onclick="moveSlide(1)">›</button>
-            
-            <div class="carousel-indicators" id="carouselIndicators"></div>
+    <!-- Youtube Video Section -->
+    <section class="video-section" style="width: 100%; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; box-sizing: border-box;">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+            <iframe 
+                src="https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1" 
+                title="JAITRA 2026 Live Stream"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
         </div>
     </section>
 
@@ -411,59 +350,7 @@ $customScripts = '
             });
         });
 
-        // ===== IMAGE CAROUSEL =====
-        let currentSlide = 0;
-        const slides = document.querySelectorAll(\'.carousel-slide\');
-        const totalSlides = slides.length;
-        const indicatorsContainer = document.getElementById(\'carouselIndicators\');
-        let autoScrollInterval;
-
-        // Create indicators
-        for (let i = 0; i < totalSlides; i++) {
-            const indicator = document.createElement(\'div\');
-            indicator.className = \'carousel-indicator\' + (i === 0 ? \' active\' : \'\');
-            indicator.onclick = () => goToSlide(i);
-            indicatorsContainer.appendChild(indicator);
-        }
-
-        function moveSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide >= totalSlides) currentSlide = 0;
-            if (currentSlide < 0) currentSlide = totalSlides - 1;
-            updateCarousel();
-            resetAutoScroll();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-            resetAutoScroll();
-        }
-
-        function updateCarousel() {
-            const slidesContainer = document.getElementById(\'carouselSlides\');
-            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            // Update indicators
-            const indicators = document.querySelectorAll(\'.carousel-indicator\');
-            indicators.forEach((indicator, index) => {
-                indicator.classList.toggle(\'active\', index === currentSlide);
-            });
-        }
-
-        function resetAutoScroll() {
-            // Clear existing interval
-            if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
-            }
-            // Start new interval
-            autoScrollInterval = setInterval(() => {
-                moveSlide(1);
-            }, 5000);
-        }
-
-        // Start auto-scroll carousel every 5 seconds
-        resetAutoScroll();
+        // ===== IMAGE CAROUSEL REMOVED =====
 
         // ===== UPCOMING MATCHES SCROLL NAVIGATION =====
         const upcomingScrollContainer = document.querySelector(\'.upcoming-matches-scroll\');
