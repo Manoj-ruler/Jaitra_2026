@@ -39,7 +39,7 @@ include 'includes/header.php';
             width: 100%;
             display: flex;
             justify-content: center;
-            background: #000; /* Cinematic background */
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1d4ed8 100%); /* Deep blue theme gradient */
             margin: 0;
             padding: 0;
         }
