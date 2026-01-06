@@ -29,11 +29,11 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `password`, `allowed_sport_id`) VALUES
-(1, 'admin', '$2y$10$jn6qgQmVXFSZrp3xYpN6q.W0jSJO2aPCYOmYfpqp0g59jKZhRCSu.', NULL),
-(2, 'kabaddi', '$2y$10$8uL58j.YtYjK3SaqpmoKoeElo4FCp9N5AeUP4DWE9ZM2/qMxTLd9W', 1),
-(3, 'volleyball', '$2y$10$b3hSHnEK1UV1K4eStgSMtOPC.etWUAChTgUm/gQaX2TqhTUzZTFOa', 2),
-(4, 'badminton', '$2y$10$00W4AoB2/cQf1MdmhPxVx.TOkGRQFwKjyDNggie3rzPLFHbI7WrDK', 3),
-(5, 'pickleball', '$2y$10$5esacaPr0nYTmHRywultgu1uqRM7muTDOAf7dt3JGX.pWvNFDM1vi', 4);
+(1, 'jaitra@admin', '$2y$10$CKzH2JTJNqRUnuDWEV44zOz5UPMtzb6wtA6QGRbqPNAzCeypbK/Ae', NULL),
+(2, 'kabaddi@admin', '$2y$10$FleTroBk0uiAgUOuaQXZqO4h.b8mpQTXQJlXbzvk0964Dm4ijLOGK', 1),
+(3, 'volleyball@admin', '$2y$10$kGdU7MGvgu2d..SG5AEHou/4j4Eis0rmv1UPbdvIz2xAhaEnqCqAa', 2),
+(4, 'badminton@admin', '$2y$10$RoEyofPe27EcjC12jyTCiOahxFyFa9tkOZ1Xv/KUip2MpXp/Oycta', 3),
+(5, 'pickleball@admin', '$2y$10$iLjVwMdiO4ynDwd1/PbxVONk48Ux9nlKdkBIggf0EXVwApBVt5eI6', 4);
 
 -- --------------------------------------------------------
 
