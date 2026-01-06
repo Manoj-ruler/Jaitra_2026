@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volleyball Live Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -12,7 +15,7 @@
             display: flex;
             justify_content: center;
             align-items: center;
-            font-family: sans-serif;
+            font-family: 'Archivo Black', sans-serif;
             background-color: white;
             overflow: hidden;
         }
