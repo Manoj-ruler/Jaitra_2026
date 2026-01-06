@@ -17,7 +17,8 @@ if (empty($venue)) {
 try {
     // Fetch the single most recent LIVE match for this venue
     // We order by id DESC to get the latest one if multiple exist (though ideally only 1 should be live)
-    $stmt = $conn->prepare("
+    // Build query with optional sport_id
+    $sql = "
         SELECT 
             m.id as match_id,
             t1.name as team1_name,
@@ -27,11 +28,20 @@ try {
         JOIN teams t2 ON m.team2_id = t2.id
         WHERE m.venue = :venue 
         AND m.status = 'live'
-        ORDER BY m.id DESC
-        LIMIT 1
-    ");
+    ";
     
-    $stmt->execute(['venue' => $venue]);
+    $params = ['venue' => $venue];
+
+    $sport_id = isset($_GET['sport_id']) ? intval($_GET['sport_id']) : 0;
+    if ($sport_id > 0) {
+        $sql .= " AND m.sport_id = :sport_id ";
+        $params['sport_id'] = $sport_id;
+    }
+
+    $sql .= " ORDER BY m.id DESC LIMIT 1";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
     $match = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($match) {

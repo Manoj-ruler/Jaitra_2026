@@ -54,7 +54,7 @@
                 return;
             }
 
-            fetch(`api/get_live_match.php?venue=${encodeURIComponent(court)}`)
+            fetch(`api/get_live_match.php?venue=${encodeURIComponent(court)}&sport_id=3`)
                 .then(response => response.json())
                 .then(data => {
                     const t1 = document.getElementById('team1');
