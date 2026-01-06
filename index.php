@@ -60,7 +60,7 @@ include 'includes/header.php';
                             <a href="scoreboard.php" class="cta-btn cta-btn-primary">
                                 📊 View Scores
                             </a>
-                            <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" class="cta-btn cta-btn-secondary" id="liveMatchesBtn">
+                            <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" class="cta-btn cta-btn-secondary" id="liveMatchesBtn" target="_blank">
                                 🎥 View Live Matches
                             </a>
                         </div>
