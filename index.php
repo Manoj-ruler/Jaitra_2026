@@ -95,15 +95,132 @@ include 'includes/header.php';
     </style>
 
     <!-- Youtube Video Section -->
+    <!-- Youtube Video Section -->
     <section class="video-container">
-        <div class="video-wrapper">
-            <iframe 
-                src="https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1" 
-                title="JAITRA 2026 Live Stream"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-            </iframe>
+        <?php
+        // Fetch active videos
+        try {
+            $videoStmt = $conn->query("SELECT * FROM featured_videos WHERE is_active = 1 ORDER BY created_at DESC");
+            $videos = $videoStmt->fetchAll();
+        } catch (PDOException $e) {
+            $videos = []; // Fallback if table doesn't exist
+        }
+
+        // Fallback video if DB is empty
+        if (empty($videos)) {
+            $videos = [
+                ['youtube_url' => 'https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1', 'title' => 'Live Stream']
+            ];
+        }
+
+        $totalVideos = count($videos);
+        ?>
+
+        <?php if ($totalVideos > 1): ?>
+            <!-- Video Carousel Controls -->
+            <button class="video-nav prev" onclick="moveVideo(-1)">&#10094;</button>
+            <button class="video-nav next" onclick="moveVideo(1)">&#10095;</button>
+        <?php endif; ?>
+
+        <div class="video-carousel" id="videoCarousel">
+            <?php foreach ($videos as $index => $video): 
+                $url = $video['youtube_url'];
+                // Ensure embed format if user pasted standard link
+                if (strpos($url, 'watch?v=') !== false) {
+                    $url = str_replace('watch?v=', 'embed/', $url);
+                    // Remove other params for clean embed, keep autoplay/mute if needed or add manually
+                    $url = strtok($url, '&'); 
+                }
+                // Add autoplay/mute consistent with requirements
+                if (strpos($url, '?') === false) {
+                    $url .= '?autoplay=1&mute=1&enablejsapi=1';
+                } else {
+                    $url .= '&autoplay=1&mute=1&enablejsapi=1';
+                }
+                
+                // Active class only for first video
+                $activeClass = $index === 0 ? 'active' : '';
+            ?>
+            <div class="video-wrapper <?= $activeClass ?>" data-index="<?= $index ?>">
+                <iframe 
+                    src="<?= htmlspecialchars($url) ?>" 
+                    title="<?= htmlspecialchars($video['title']) ?>"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <?php endforeach; ?>
         </div>
+
+        <?php if ($totalVideos > 1): ?>
+        <script>
+            let currentVideoIndex = 0;
+            const totalVideos = <?= $totalVideos ?>;
+            const slides = document.querySelectorAll('.video-wrapper');
+
+            function moveVideo(direction) {
+                // Hide current
+                slides[currentVideoIndex].classList.remove('active');
+                
+                // Calculate new index
+                currentVideoIndex += direction;
+                if (currentVideoIndex >= totalVideos) currentVideoIndex = 0;
+                if (currentVideoIndex < 0) currentVideoIndex = totalVideos - 1;
+                
+                // Show new
+                slides[currentVideoIndex].classList.add('active');
+            }
+        </script>
+        <style>
+            .video-carousel {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .video-wrapper {
+                display: none; /* Hide all by default */
+                transition: opacity 0.5s ease;
+            }
+            .video-wrapper.active {
+                display: block; /* Show only active */
+                animation: fadeIn 0.5s;
+            }
+            .video-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                font-size: 2rem;
+                padding: 1rem;
+                cursor: pointer;
+                z-index: 20;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s;
+                user-select: none;
+            }
+            .video-nav:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-50%) scale(1.1);
+            }
+            .video-nav.prev { left: 20px; }
+            .video-nav.next { right: 20px; }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        </style>
+        <?php endif; ?>
     </section>
 
     <!-- Live Scoreboard Section -->
