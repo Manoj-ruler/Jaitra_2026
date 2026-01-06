@@ -58,6 +58,7 @@ try {
     ]);
     
 } catch (PDOException $e) {
+    error_log("[" . date("Y-m-d H:i:s") . "] get_score error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/../db_errors.log');
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 ?>

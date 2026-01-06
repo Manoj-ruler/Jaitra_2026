@@ -4,11 +4,11 @@
  * Uses PDO with prepared statements for SQL injection prevention
  */
 
-$db_host = '127.0.0.1';
+$db_host = 'localhost';
 $db_port = '3306';
-$db_name = 'jaitra_scores';
-$db_user = 'root';
-$db_pass = '';
+$db_name = 'jaithra2026';
+$db_user = 'jaithra2026';
+$db_pass = 'Jaithra*2026';
 
 try {
     $conn = new PDO(
@@ -22,6 +22,11 @@ try {
         ]
     );
 } catch (PDOException $e) {
+    // Log error to file
+    $logFile = __DIR__ . '/db_errors.log';
+    $message = "[" . date("Y-m-d H:i:s") . "] Database connection failed: " . $e->getMessage() . PHP_EOL;
+    file_put_contents($logFile, $message, FILE_APPEND);
+    
     die(json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]));
 }
 ?>
