@@ -29,9 +29,8 @@
         }
 
         .team-name {
-            font-size: 8vw; /* Large text */
+            font-size: 3vw; /* Large text */
             font-weight: bold;
-            text-transform: uppercase;
             text-align: center;
         }
 
