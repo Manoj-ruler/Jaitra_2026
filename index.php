@@ -34,13 +34,47 @@ $showNav = false; // Home page uses carousel instead of nav
 include 'includes/header.php';
 ?>
 
+    <style>
+        .video-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background: #000; /* Cinematic background */
+            margin: 0;
+            padding: 0;
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            /* Maintain 16:9 Aspect Ratio */
+            aspect-ratio: 16/9;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* Desktop Adjustment: Limit height to 85vh to prevent too much scrolling 
+           while maintaining aspect ratio (no cropping) */
+        @media (min-width: 1024px) {
+            .video-wrapper {
+                height: 85vh;
+                width: auto; /* Let width scale naturally */
+                max-width: 100%;
+            }
+        }
+    </style>
+
     <!-- Youtube Video Section -->
-    <section class="video-section" style="width: 100%; margin: 0; padding: 0;">
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+    <section class="video-container">
+        <div class="video-wrapper">
             <iframe 
                 src="https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1" 
                 title="JAITRA 2026 Live Stream"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
             </iframe>
