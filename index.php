@@ -124,18 +124,22 @@ include 'includes/header.php';
 
         <div class="video-carousel" id="videoCarousel">
             <?php foreach ($videos as $index => $video): 
-                $url = $video['youtube_url'];
-                // Ensure embed format if user pasted standard link
-                if (strpos($url, 'watch?v=') !== false) {
-                    $url = str_replace('watch?v=', 'embed/', $url);
-                    // Remove other params for clean embed, keep autoplay/mute if needed or add manually
-                    $url = strtok($url, '&'); 
-                }
-                // Add autoplay/mute consistent with requirements
-                if (strpos($url, '?') === false) {
-                    $url .= '?autoplay=1&mute=1&enablejsapi=1';
+                $rawUrl = $video['youtube_url'];
+                $embedUrl = '';
+                
+                // Extract Video ID using Regex to handle various formats:
+                // - youtube.com/watch?v=ID
+                // - m.youtube.com/watch?v=ID
+                // - youtu.be/ID
+                // - youtube.com/embed/ID
+                // - youtube.com/live/ID
+                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $rawUrl, $matches)) {
+                    $videoId = $matches[1];
+                    $embedUrl = 'https://www.youtube.com/embed/' . $videoId . '?autoplay=1&mute=1&enablejsapi=1';
                 } else {
-                    $url .= '&autoplay=1&mute=1&enablejsapi=1';
+                    // Fallback to default styling video if parsing fails (prevents X-Frame-Options error)
+                    // Using the default "Live Stream" ID: mJGugHjtC2w
+                    $embedUrl = 'https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1&enablejsapi=1';
                 }
                 
                 // Active class only for first video
@@ -143,7 +147,7 @@ include 'includes/header.php';
             ?>
             <div class="video-wrapper <?= $activeClass ?>" data-index="<?= $index ?>">
                 <iframe 
-                    src="<?= htmlspecialchars($url) ?>" 
+                    src="<?= htmlspecialchars($embedUrl) ?>" 
                     title="<?= htmlspecialchars($video['title']) ?>"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen>
@@ -154,22 +158,33 @@ include 'includes/header.php';
 
         <?php if ($totalVideos > 1): ?>
         <script>
-            let currentVideoIndex = 0;
-            const totalVideos = <?= $totalVideos ?>;
-            const slides = document.querySelectorAll('.video-wrapper');
-
-            function moveVideo(direction) {
+            // Carousel Logic
+            // Defined globally to ensure onclick works
+            window.moveVideo = function(direction) {
+                const slides = document.querySelectorAll('.video-wrapper');
+                const totalVideos = slides.length;
+                let activeIndex = -1;
+                
+                // Find current active index
+                slides.forEach((slide, index) => {
+                    if (slide.classList.contains('active')) {
+                        activeIndex = index;
+                    }
+                });
+                
+                if (activeIndex === -1) activeIndex = 0; // Fallback
+                
                 // Hide current
-                slides[currentVideoIndex].classList.remove('active');
+                slides[activeIndex].classList.remove('active');
                 
                 // Calculate new index
-                currentVideoIndex += direction;
-                if (currentVideoIndex >= totalVideos) currentVideoIndex = 0;
-                if (currentVideoIndex < 0) currentVideoIndex = totalVideos - 1;
+                let newIndex = activeIndex + direction;
+                if (newIndex >= totalVideos) newIndex = 0;
+                if (newIndex < 0) newIndex = totalVideos - 1;
                 
                 // Show new
-                slides[currentVideoIndex].classList.add('active');
-            }
+                slides[newIndex].classList.add('active');
+            };
         </script>
         <style>
             .video-carousel {
@@ -498,10 +513,15 @@ $customScripts = '
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById(\'days\').textContent = String(days).padStart(2, \'0\');
-            document.getElementById(\'hours\').textContent = String(hours).padStart(2, \'0\');
-            document.getElementById(\'minutes\').textContent = String(minutes).padStart(2, \'0\');
-            document.getElementById(\'seconds\').textContent = String(seconds).padStart(2, \'0\');
+            const daysEl = document.getElementById(\'days\');
+            const hoursEl = document.getElementById(\'hours\');
+            const minutesEl = document.getElementById(\'minutes\');
+            const secondsEl = document.getElementById(\'seconds\');
+
+            if (daysEl) daysEl.textContent = String(days).padStart(2, \'0\');
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, \'0\');
+            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, \'0\');
+            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, \'0\');
 
             if (distance < 0) {
                 document.getElementById(\'countdown\').innerHTML = \'<h3>Event is Live!</h3>\';
