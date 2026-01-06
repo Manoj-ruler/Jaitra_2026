@@ -243,12 +243,6 @@ include 'includes/header.php';
                         for science and technology and created a conducive environment for inclusive and culturally 
                         responsive teaching-learning process.
                     </p>
-                    
-                    <p>
-                        Alongside education and research, it has established a history of work ethos that supports 
-                        students in developing a creative, confident and logical approach to nation building, making 
-                        them highly valued graduates and opening doors to a wide range of exciting careers.
-                    </p>
                 </div>
             </div>
         </div>
