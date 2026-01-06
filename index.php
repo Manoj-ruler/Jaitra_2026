@@ -39,15 +39,39 @@ include 'includes/header.php';
             width: 100%;
             display: flex;
             justify-content: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1d4ed8 100%); /* Deep blue theme gradient */
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 40%), /* Gold glow */
+                radial-gradient(circle at 80% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 40%), /* Blue glow */
+                linear-gradient(to bottom, #020617, #0f172a); /* Dark base */
             margin: 0;
             padding: 0;
+            position: relative;
         }
+        
+        /* Optional: Add a subtle mesh/grid pattern overlay for texture */
+        .video-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
         .video-wrapper {
             position: relative;
             width: 100%;
             /* Maintain 16:9 Aspect Ratio */
             aspect-ratio: 16/9;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); /* Deep shadow */
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle rim light */
+            z-index: 10; /* Ensure video sits above pattern */
         }
         .video-wrapper iframe {
             position: absolute;
@@ -65,6 +89,7 @@ include 'includes/header.php';
                 height: 85vh;
                 width: auto; /* Let width scale naturally */
                 max-width: 100%;
+                border-radius: 4px; /* Slight rounded corners on desktop only */
             }
         }
     </style>
