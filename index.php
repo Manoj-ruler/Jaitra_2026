@@ -34,85 +34,294 @@ $showNav = false; // Home page uses carousel instead of nav
 include 'includes/header.php';
 ?>
 
-    <!-- Image Carousel Section -->
-    <section class="carousel-section">
-        <div class="carousel-container">
-            <div class="carousel-slides" id="carouselSlides">
-                <!-- Hero Slide -->
-                <div class="carousel-slide hero-slide">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="live-dot"></span>
-                            <span id="live-count">0</span> Matches Live Now
-                        </div>
-                        
-                        <h2 class="hero-title">
-                            <span class="highlight">JAITRA 2026</span><br>
-                            AP's Premier Engineering Sports Carnival
-                        </h2>
-                        
-                        <p class="hero-subtitle">
-                            Experience the ultimate sports showdown featuring Volleyball, Kabaddi, Badminton, and Pickleball. 
-                            Compete for glory and a massive ₹5 Lakhs prize pool!
-                        </p>
-                        
-                        <div class="hero-cta">
-                            <a href="scoreboard.php" class="cta-btn cta-btn-primary">
-                                📊 View Scores
-                            </a>
-                            <a href="https://youtube.com/@bhimavaramdigitals?si=LcJdYz2ghJrP-nVa" class="cta-btn cta-btn-secondary" id="liveMatchesBtn" target="_blank">
-                                🎥 View Live Matches
-                            </a>
-                        </div>
-                        
-                        <div class="countdown-timer" id="countdown">
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="days">07</span>
-                                <span class="countdown-label">Days</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="hours">00</span>
-                                <span class="countdown-label">Hours</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="minutes">00</span>
-                                <span class="countdown-label">Minutes</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-value" id="seconds">00</span>
-                                <span class="countdown-label">Seconds</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <style>
+        .video-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 40%), /* Gold glow */
+                radial-gradient(circle at 80% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 40%), /* Blue glow */
+                linear-gradient(to bottom, #020617, #0f172a); /* Dark base */
+            margin: 0;
+            padding: 0;
+            position: relative;
+            /* Ensure container has height even if empty initially */
+            min-height: 200px; 
+        }
+        
+        /* Optional: Add a subtle mesh/grid pattern overlay for texture */
+        .video-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .video-carousel {
+            width: 100%;
+            /* Remove fixed height: 100% so it grows with content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            /* Fallback for aspect-ratio */
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #000; /* Placeholder black while loading */
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* Desktop Adjustment: Use actual height instead of padding hack */
+        @media (min-width: 1024px) {
+            .video-wrapper {
+                height: 85vh;
+                width: auto;
+                max-width: 100%;
+                padding-bottom: 0; /* Reset mobile hack */
+                aspect-ratio: 16/9; /* Use modern property on desktop */
+                border-radius: 4px;
+            }
+        }
+    </style>
+
+    <!-- Youtube Video Section -->
+    <!-- Youtube Video Section -->
+    <section class="video-container">
+        <?php
+        // Fetch active videos
+        try {
+            $videoStmt = $conn->query("SELECT * FROM featured_videos WHERE is_active = 1 ORDER BY created_at DESC");
+            $videos = $videoStmt->fetchAll();
+        } catch (PDOException $e) {
+            $videos = []; // Fallback if table doesn't exist
+        }
+
+        // Fallback video if DB is empty
+        if (empty($videos)) {
+            $videos = [
+                ['youtube_url' => 'https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1', 'title' => 'Live Stream']
+            ];
+        }
+
+        $totalVideos = count($videos);
+        ?>
+
+        <?php if ($totalVideos > 1): ?>
+            <!-- Video Carousel Controls -->
+            <button class="video-nav prev" onclick="moveVideo(-1)">&#10094;</button>
+            <button class="video-nav next" onclick="moveVideo(1)">&#10095;</button>
+        <?php endif; ?>
+
+        <div class="video-carousel" id="videoCarousel">
+            <?php foreach ($videos as $index => $video): 
+                $rawUrl = $video['youtube_url'];
+                $embedUrl = '';
                 
-                <!-- Poster Slides -->
-                <div class="carousel-slide">
-                    <img src="assets/home-1.jpeg" alt="JAITRA 2026 - Sports Carnival Poster"
-                        onerror="this.src='https://via.placeholder.com/1200x700/1a2332/ffffff?text=JAITRA+2026+-+Sports+Carnival'">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/home-2.jpeg" alt="JAITRA 2026 - Event Details"
-                        onerror="this.src='https://via.placeholder.com/1200x700/2563eb/ffffff?text=₹5+Lakhs+Prize+Pool'">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/home-3.jpeg" alt="JAITRA 2026 - Registration"
-                        onerror="this.src='https://via.placeholder.com/1200x700/6366f1/ffffff?text=Register+Now+-+All+AP+Colleges'">
-                </div>
+                // Extract Video ID using Regex to handle various formats:
+                // - youtube.com/watch?v=ID
+                // - m.youtube.com/watch?v=ID
+                // - youtu.be/ID
+                // - youtube.com/embed/ID
+                // - youtube.com/live/ID
+                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $rawUrl, $matches)) {
+                    $videoId = $matches[1];
+                    $embedUrl = 'https://www.youtube.com/embed/' . $videoId . '?autoplay=1&mute=1&enablejsapi=1';
+                } else {
+                    // Fallback to default styling video if parsing fails (prevents X-Frame-Options error)
+                    // Using the default "Live Stream" ID: mJGugHjtC2w
+                    $embedUrl = 'https://www.youtube.com/embed/mJGugHjtC2w?autoplay=1&mute=1&enablejsapi=1';
+                }
+                
+                // Active class only for first video
+                $activeClass = $index === 0 ? 'active' : '';
+            ?>
+            <div class="video-wrapper <?= $activeClass ?>" data-index="<?= $index ?>">
+                <iframe 
+                    src="<?= htmlspecialchars($embedUrl) ?>" 
+                    title="<?= htmlspecialchars($video['title']) ?>"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+                
+                <!-- Watch Live Button Overlay -->
+                <a href="<?= htmlspecialchars($rawUrl) ?>" target="_blank" class="watch-live-btn">
+                    <span class="live-icon">●</span> Watch on YouTube 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
             </div>
-            
-            <button class="carousel-nav prev" onclick="moveSlide(-1)">‹</button>
-            <button class="carousel-nav next" onclick="moveSlide(1)">›</button>
-            
-            <div class="carousel-indicators" id="carouselIndicators"></div>
+            <?php endforeach; ?>
         </div>
+
+        <?php if ($totalVideos > 1): ?>
+        <script>
+            // Carousel Logic
+            // Defined globally to ensure onclick works
+            window.moveVideo = function(direction) {
+                const slides = document.querySelectorAll('.video-wrapper');
+                const totalVideos = slides.length;
+                let activeIndex = -1;
+                
+                // Find current active index
+                slides.forEach((slide, index) => {
+                    if (slide.classList.contains('active')) {
+                        activeIndex = index;
+                    }
+                });
+                
+                if (activeIndex === -1) activeIndex = 0; // Fallback
+                
+                // Hide current
+                slides[activeIndex].classList.remove('active');
+                
+                // Calculate new index
+                let newIndex = activeIndex + direction;
+                if (newIndex >= totalVideos) newIndex = 0;
+                if (newIndex < 0) newIndex = totalVideos - 1;
+                
+                // Show new
+                slides[newIndex].classList.add('active');
+            };
+        </script>
+        <style>
+             /* Additional JavaScript specific styles */
+            .video-wrapper {
+                display: none; /* Hide all by default */
+                transition: opacity 0.5s ease;
+            }
+            .video-wrapper.active {
+                display: block; /* Show only active */
+                animation: fadeIn 0.5s;
+            }
+            .video-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                font-size: 2rem;
+                padding: 1rem;
+                cursor: pointer;
+                z-index: 20;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s;
+                user-select: none;
+            }
+            .video-nav:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-50%) scale(1.1);
+            }
+            .video-nav.prev { left: 20px; }
+            .video-nav.next { right: 20px; }
+            
+            /* Watch Live Button Styles */
+            .watch-live-btn {
+                position: absolute !important;
+                top: 20px;
+                right: 20px;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0, 0, 0, 0.75); /* Darker default for better contrast */
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px); /* Safari support */
+                color: white !important;
+                text-decoration: none !important;
+                padding: 10px 18px;
+                border-radius: 50px;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 600;
+                font-size: 0.9rem;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+                z-index: 9999 !important; /* Force on top of everything */
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+                pointer-events: auto; /* Ensure clickable */
+                transform: translateZ(10px); /* Hardware acceleration lift */
+            }
+            
+            .watch-live-btn:hover {
+                background: rgba(220, 38, 38, 0.9); /* YouTube Red on hover */
+                border-color: rgba(220, 38, 38, 0.5);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            }
+            
+            .live-icon {
+                color: #ef4444;
+                margin-right: 8px;
+                font-size: 0.8rem;
+                animation: pulse-red 2s infinite;
+            }
+            
+            .watch-live-btn:hover .live-icon {
+                color: white;
+            }
+
+            @keyframes pulse-red {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+            
+            @media (max-width: 768px) {
+                .watch-live-btn {
+                    top: 10px;
+                    right: 10px;
+                    padding: 6px 12px;
+                    font-size: 0.75rem;
+                }
+                .watch-live-btn svg {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        </style>
+        <?php endif; ?>
     </section>
 
     <!-- Live Scoreboard Section -->
     <section class="scoreboard-section">
         <div class="scoreboard-container">
-            <!-- Upcoming Matches Section -->
+            <!-- Upcoming Matches Section (Disabled) -->
             <?php
+            /*
             // Fetch upcoming matches
             $upcomingQuery = "SELECT m.*, s.name as sport_name, 
                            t1.name as team1_name, t1.college_name as team1_college,
@@ -194,7 +403,7 @@ include 'includes/header.php';
                 </div>
                 <button class="matches-nav next upcoming-next" aria-label="Next upcoming matches">›</button>
             </div>
-            <?php endif; ?>
+            <?php endif; */ ?>
             
             <div class="scoreboard-header">
                 <h2>🏆 Live Matches & Results</h2>
@@ -383,10 +592,15 @@ $customScripts = '
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById(\'days\').textContent = String(days).padStart(2, \'0\');
-            document.getElementById(\'hours\').textContent = String(hours).padStart(2, \'0\');
-            document.getElementById(\'minutes\').textContent = String(minutes).padStart(2, \'0\');
-            document.getElementById(\'seconds\').textContent = String(seconds).padStart(2, \'0\');
+            const daysEl = document.getElementById(\'days\');
+            const hoursEl = document.getElementById(\'hours\');
+            const minutesEl = document.getElementById(\'minutes\');
+            const secondsEl = document.getElementById(\'seconds\');
+
+            if (daysEl) daysEl.textContent = String(days).padStart(2, \'0\');
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, \'0\');
+            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, \'0\');
+            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, \'0\');
 
             if (distance < 0) {
                 document.getElementById(\'countdown\').innerHTML = \'<h3>Event is Live!</h3>\';
@@ -411,59 +625,7 @@ $customScripts = '
             });
         });
 
-        // ===== IMAGE CAROUSEL =====
-        let currentSlide = 0;
-        const slides = document.querySelectorAll(\'.carousel-slide\');
-        const totalSlides = slides.length;
-        const indicatorsContainer = document.getElementById(\'carouselIndicators\');
-        let autoScrollInterval;
-
-        // Create indicators
-        for (let i = 0; i < totalSlides; i++) {
-            const indicator = document.createElement(\'div\');
-            indicator.className = \'carousel-indicator\' + (i === 0 ? \' active\' : \'\');
-            indicator.onclick = () => goToSlide(i);
-            indicatorsContainer.appendChild(indicator);
-        }
-
-        function moveSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide >= totalSlides) currentSlide = 0;
-            if (currentSlide < 0) currentSlide = totalSlides - 1;
-            updateCarousel();
-            resetAutoScroll();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-            resetAutoScroll();
-        }
-
-        function updateCarousel() {
-            const slidesContainer = document.getElementById(\'carouselSlides\');
-            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            // Update indicators
-            const indicators = document.querySelectorAll(\'.carousel-indicator\');
-            indicators.forEach((indicator, index) => {
-                indicator.classList.toggle(\'active\', index === currentSlide);
-            });
-        }
-
-        function resetAutoScroll() {
-            // Clear existing interval
-            if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
-            }
-            // Start new interval
-            autoScrollInterval = setInterval(() => {
-                moveSlide(1);
-            }, 5000);
-        }
-
-        // Start auto-scroll carousel every 5 seconds
-        resetAutoScroll();
+        // ===== IMAGE CAROUSEL REMOVED =====
 
         // ===== UPCOMING MATCHES SCROLL NAVIGATION =====
         const upcomingScrollContainer = document.querySelector(\'.upcoming-matches-scroll\');
