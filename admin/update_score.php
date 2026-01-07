@@ -45,13 +45,20 @@ function getInitialScoreSchema($sport_name) {
             ];
             
         case 'volleyball':
-        case 'pickleball':
             return [
                 'team1_score' => 0,
                 'team2_score' => 0,
                 't1_sets' => 0,
                 't2_sets' => 0,
                 'current_set' => 1,
+                'server' => null,
+                'is_timeout' => false
+            ];
+
+        case 'pickleball':
+            return [
+                'team1_score' => 0,
+                'team2_score' => 0,
                 'server' => null,
                 'is_timeout' => false
             ];

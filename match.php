@@ -410,7 +410,7 @@ $customScripts = '
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <!-- Match Details JavaScript -->
-    <script src="js/match-details.js"></script>
+    <script src="js/match-details.js?v=<?= time() ?>"></script>
 ';
 
 // Include the common footer
