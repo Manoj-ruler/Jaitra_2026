@@ -167,6 +167,12 @@ include 'includes/header.php';
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen>
                 </iframe>
+                
+                <!-- Watch Live Button Overlay -->
+                <a href="<?= htmlspecialchars($rawUrl) ?>" target="_blank" class="watch-live-btn">
+                    <span class="live-icon">●</span> Watch on YouTube 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
             </div>
             <?php endforeach; ?>
         </div>
@@ -239,6 +245,69 @@ include 'includes/header.php';
             .video-nav.prev { left: 20px; }
             .video-nav.next { right: 20px; }
             
+            /* Watch Live Button Styles */
+            .watch-live-btn {
+                position: absolute !important;
+                top: 20px;
+                right: 20px;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0, 0, 0, 0.75); /* Darker default for better contrast */
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px); /* Safari support */
+                color: white !important;
+                text-decoration: none !important;
+                padding: 10px 18px;
+                border-radius: 50px;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 600;
+                font-size: 0.9rem;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+                z-index: 9999 !important; /* Force on top of everything */
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+                pointer-events: auto; /* Ensure clickable */
+                transform: translateZ(10px); /* Hardware acceleration lift */
+            }
+            
+            .watch-live-btn:hover {
+                background: rgba(220, 38, 38, 0.9); /* YouTube Red on hover */
+                border-color: rgba(220, 38, 38, 0.5);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            }
+            
+            .live-icon {
+                color: #ef4444;
+                margin-right: 8px;
+                font-size: 0.8rem;
+                animation: pulse-red 2s infinite;
+            }
+            
+            .watch-live-btn:hover .live-icon {
+                color: white;
+            }
+
+            @keyframes pulse-red {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+            
+            @media (max-width: 768px) {
+                .watch-live-btn {
+                    top: 10px;
+                    right: 10px;
+                    padding: 6px 12px;
+                    font-size: 0.75rem;
+                }
+                .watch-live-btn svg {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+
             @keyframes fadeIn {
                 from { opacity: 0; }
                 to { opacity: 1; }
