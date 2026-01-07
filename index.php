@@ -47,6 +47,8 @@ include 'includes/header.php';
             margin: 0;
             padding: 0;
             position: relative;
+            /* Ensure container has height even if empty initially */
+            min-height: 200px; 
         }
         
         /* Optional: Add a subtle mesh/grid pattern overlay for texture */
@@ -62,17 +64,29 @@ include 'includes/header.php';
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
+            z-index: 1;
+        }
+
+        .video-carousel {
+            width: 100%;
+            /* Remove fixed height: 100% so it grows with content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
-            /* Maintain 16:9 Aspect Ratio */
-            aspect-ratio: 16/9;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); /* Deep shadow */
-            border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle rim light */
-            z-index: 10; /* Ensure video sits above pattern */
+            /* Fallback for aspect-ratio */
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #000; /* Placeholder black while loading */
         }
+        
         .video-wrapper iframe {
             position: absolute;
             top: 0;
@@ -82,14 +96,15 @@ include 'includes/header.php';
             border: 0;
         }
         
-        /* Desktop Adjustment: Limit height to 85vh to prevent too much scrolling 
-           while maintaining aspect ratio (no cropping) */
+        /* Desktop Adjustment: Use actual height instead of padding hack */
         @media (min-width: 1024px) {
             .video-wrapper {
                 height: 85vh;
-                width: auto; /* Let width scale naturally */
+                width: auto;
                 max-width: 100%;
-                border-radius: 4px; /* Slight rounded corners on desktop only */
+                padding-bottom: 0; /* Reset mobile hack */
+                aspect-ratio: 16/9; /* Use modern property on desktop */
+                border-radius: 4px;
             }
         }
     </style>
@@ -187,13 +202,7 @@ include 'includes/header.php';
             };
         </script>
         <style>
-            .video-carousel {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
+             /* Additional JavaScript specific styles */
             .video-wrapper {
                 display: none; /* Hide all by default */
                 transition: opacity 0.5s ease;
