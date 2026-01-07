@@ -319,8 +319,9 @@ include 'includes/header.php';
     <!-- Live Scoreboard Section -->
     <section class="scoreboard-section">
         <div class="scoreboard-container">
-            <!-- Upcoming Matches Section -->
+            <!-- Upcoming Matches Section (Disabled) -->
             <?php
+            /*
             // Fetch upcoming matches
             $upcomingQuery = "SELECT m.*, s.name as sport_name, 
                            t1.name as team1_name, t1.college_name as team1_college,
@@ -402,7 +403,7 @@ include 'includes/header.php';
                 </div>
                 <button class="matches-nav next upcoming-next" aria-label="Next upcoming matches">›</button>
             </div>
-            <?php endif; ?>
+            <?php endif; */ ?>
             
             <div class="scoreboard-header">
                 <h2>🏆 Live Matches & Results</h2>
