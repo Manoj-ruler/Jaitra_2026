@@ -551,6 +551,7 @@ function getInitialScoreSchema($sport_name) {
 
 <script>
     const SPORT_ID = <?= $sport_id ?>;
+    const CURRENT_SPORT = '<?= strtolower($sportName) ?>';
     let matchId = <?= $activeMatch ? $activeMatch['id'] : 'null' ?>;
     
     // Score state - sport-specific defaults
@@ -804,15 +805,20 @@ function getInitialScoreSchema($sport_name) {
         console.log('📋 Set History:', state.set_history);
         console.log('🏆 Sets Won - T1:', state.t1_sets, 'T2:', state.t2_sets);
         
-        // Always continue to next set (User requested to disable 3-set limit)
-        // Check for Match Win (Best of 3) logic removed
-        
-        // Reset scores for next set
-        state.team1_score = 0;
-        state.team2_score = 0;
-        state.current_set += 1;
-        
-        alert(`Set ${set} Ended. Starting Set ${state.current_set}.`);
+        // Check for Match Win (Best of 3) - ONLY for non-Badminton sports (like Volleyball)
+        if (CURRENT_SPORT !== 'badminton' && (state.t1_sets >= 2 || state.t2_sets >= 2)) {
+             const matchWinner = state.t1_sets > state.t2_sets ? document.getElementById('lbl-t1').innerText : document.getElementById('lbl-t2').innerText;
+             alert(`MATCH OVER!\n${matchWinner} wins the match (${state.t1_sets}-${state.t2_sets}).\n\nPlease click 'END MATCH' to finalize.`);
+        } else {
+             // Match continues (Badminton or not yet won in Volleyball)
+             state.team1_score = 0;
+             state.team2_score = 0;
+             state.current_set += 1;
+             
+             if (CURRENT_SPORT === 'badminton') {
+                alert(`Set ${set} Ended. Starting Set ${state.current_set}.`);
+             }
+        }
         
         sync();
     }
