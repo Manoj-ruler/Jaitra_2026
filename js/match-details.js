@@ -189,7 +189,7 @@ function updateScoreDisplay() {
 
     const isLive = currentMatch.status === 'live';
     const sportName = (currentMatch.sport || '').toLowerCase();
-    const isBadminton = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+    const isBadminton = sportName === 'badminton' || sportName === 'volleyball';
     const isKabaddi = sportName === 'kabaddi';
 
     // Elements
@@ -486,7 +486,7 @@ function triggerWinnerAnimation(winnerName) {
         const s2 = parseInt(currentMatch.scores.team2_score || 0);
         const sportName = (currentMatch.sport || '').toLowerCase();
 
-        if (sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball') {
+        if (sportName === 'badminton' || sportName === 'volleyball') {
             // For Badminton/Volleyball/Pickleball, show Sets Score (e.g. "Won by 2-1")
             const sets1 = currentMatch.scores.t1_sets || 0;
             const sets2 = currentMatch.scores.t2_sets || 0;
@@ -708,7 +708,7 @@ function renderSimilarMatches(containerId, matches) {
         } else if (isCompleted) {
             // Check if this is a set-based sport
             const sportName = (match.sport || '').toLowerCase();
-            const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+            const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball';
 
             if (isSetBasedSport) {
                 // For set-based sports, show set scores

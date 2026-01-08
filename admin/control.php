@@ -101,13 +101,20 @@ function getInitialScoreSchema($sport_name) {
             ];
             
         case 'volleyball':
-        case 'pickleball':
             return [
                 'team1_score' => 0,
                 'team2_score' => 0,
                 't1_sets' => 0,
                 't2_sets' => 0,
                 'current_set' => 1,
+                'server' => null,
+                'is_timeout' => false
+            ];
+
+        case 'pickleball':
+             return [
+                'team1_score' => 0,
+                'team2_score' => 0,
                 'server' => null,
                 'is_timeout' => false
             ];
@@ -331,7 +338,7 @@ function getInitialScoreSchema($sport_name) {
                 </div>
                 <div class="col-2 d-flex flex-column align-items-center justify-content-center">
                     <span class="text-secondary h2 mb-0">VS</span>
-                    <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
+                    <?php if ($sportName === 'badminton' || $sportName === 'volleyball'): ?>
                     <div class="mt-2 text-center">
                         <small class="text-uppercase text-secondary fw-bold" style="font-size: 0.7rem; letter-spacing: 1px;">SET</small>
                         <div id="current-set-display" class="h4 text-primary fw-bold">1</div>
@@ -509,7 +516,7 @@ function getInitialScoreSchema($sport_name) {
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php if ($sportName === 'badminton' || $sportName === 'volleyball' || $sportName === 'pickleball'): ?>
+            <?php if ($sportName === 'badminton' || $sportName === 'volleyball'): ?>
             <!-- Set Controls for Badminton/Volleyball/Pickleball -->
             <div class="row justify-content-center mb-4">
                 <div class="col-md-5 text-center">
@@ -570,13 +577,20 @@ function getInitialScoreSchema($sport_name) {
             'current_set' => 1,
             'is_timeout' => false
         ];
-    } elseif ($sportLower === 'volleyball' || $sportLower === 'pickleball') {
+    } elseif ($sportLower === 'volleyball') {
         $defaultState = [
             'team1_score' => 0,
             'team2_score' => 0,
             't1_sets' => 0,
             't2_sets' => 0,
             'current_set' => 1,
+            'server' => null,
+            'is_timeout' => false
+        ];
+    } elseif ($sportLower === 'pickleball') {
+        $defaultState = [
+            'team1_score' => 0,
+            'team2_score' => 0,
             'server' => null,
             'is_timeout' => false
         ];
@@ -956,7 +970,7 @@ function getInitialScoreSchema($sport_name) {
         
         // Check if this is a set-based sport
         const sportName = '<?= strtolower($sportName) ?>';
-        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball';
         
         if (isSetBasedSport) {
             // For set-based sports, use set scores

@@ -5,6 +5,23 @@
  */
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
+// custom error handler to return JSON
+function jsonErrorHandler($errno, $errstr, $errfile, $errline) {
+    echo json_encode(['success' => false, 'error' => "PHP Error: $errstr in $errfile:$errline"]);
+    exit;
+}
+set_error_handler("jsonErrorHandler");
+
+// custom exception handler
+function jsonExceptionHandler($e) {
+    echo json_encode(['success' => false, 'error' => "Exception: " . $e->getMessage()]);
+    exit;
+}
+set_exception_handler("jsonExceptionHandler");
+
 require_once '../db_connect.php';
 
 $sport = $_GET['sport'] ?? null;

@@ -321,6 +321,7 @@ $sportEmojis = [
         <h1>JAITRA <span>2026</span> Admin</h1>
         <div class="header-actions">
             <span>Welcome, <?= htmlspecialchars($username) ?></span>
+            <a href="manage_streams.php" class="btn btn-light" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">Manage Videos</a>
             <a href="../index.php" class="btn btn-light">View Site</a>
             <a href="logout.php" class="btn btn-light">Logout</a>
         </div>

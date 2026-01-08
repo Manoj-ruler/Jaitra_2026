@@ -167,7 +167,7 @@ function createHomeMatchCard(match) {
     } else if (isCompleted) {
         // Check if this is a set-based sport
         const sportName = (match.sport || '').toLowerCase();
-        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball';
 
         if (isSetBasedSport) {
             // For set-based sports, show set scores
@@ -388,7 +388,7 @@ function createScorecardHTML(match) {
     } else if (isCompleted) {
         // Check if this is a set-based sport
         const sportName = (match.sport || '').toLowerCase();
-        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball' || sportName === 'pickleball';
+        const isSetBasedSport = sportName === 'badminton' || sportName === 'volleyball';
 
         if (isSetBasedSport) {
             // For set-based sports, show set scores
